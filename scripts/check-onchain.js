@@ -9,6 +9,8 @@ const fs = require('fs');
 const { ethers } = require('ethers');
 const { parseNdjson, encodeForChain, KERNEL_ABI, REGISTRY_ABI, VERDICT, REASONS } = require('../tools/lib');
 
+const EIP7825_TX_GAS_CAP = 16777216n;
+
 async function main() {
   const file = process.argv[2];
   if (!file || !process.env.KERNEL) {
@@ -24,6 +26,9 @@ async function main() {
   const gas = await kernel.check.estimateGas(...args).catch(() => null);
   console.log(`verdict: ${VERDICT[Number(verdict)]} (decl ${failedDecl}, ${REASONS[Number(reason)] || reason})` +
     (gas ? `, estimated gas ${gas}` : ''));
+  if (gas && gas > EIP7825_TX_GAS_CAP) {
+    console.warn(`warning: estimated gas exceeds the EIP-7825 per-transaction cap (${EIP7825_TX_GAS_CAP})`);
+  }
 
   if (process.env.SUBMIT && process.env.REGISTRY && process.env.PRIVATE_KEY) {
     const wallet = new ethers.Wallet(process.env.PRIVATE_KEY, provider);

@@ -20,6 +20,14 @@ async function main() {
     console.error('usage: evmlean.js <export.ndjson>   (or set $IN)');
     process.exit(3);
   }
+  const maxBytes = process.env.EVMLEAN_MAX_BYTES === '0'
+    ? 0
+    : Number(process.env.EVMLEAN_MAX_BYTES || 128000);
+  const stat = fs.statSync(file);
+  if (maxBytes > 0 && stat.size > maxBytes) {
+    console.error(`evmlean: export is ${stat.size} bytes, above EVMLEAN_MAX_BYTES=${maxBytes}; declining`);
+    process.exit(2);
+  }
   const text = fs.readFileSync(file, 'utf8');
   const parsed = parseNdjson(text);
 

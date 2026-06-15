@@ -9,7 +9,7 @@ function build(force = false) {
   const srcs = ['LeanKernel.sol', 'TheoremRegistry.sol'].map((f) =>
     fs.readFileSync(path.join(ROOT, 'contracts', f), 'utf8'));
   const crypto = require('crypto');
-  const CACHE_VERSION = 'v2-with-deployed';
+  const CACHE_VERSION = 'v3-with-size-metadata';
   const hash = crypto.createHash('sha256').update(CACHE_VERSION + '\0' + srcs.join('\0')).digest('hex');
   if (!force && fs.existsSync(outPath)) {
     const cached = JSON.parse(fs.readFileSync(outPath, 'utf8'));
@@ -37,12 +37,14 @@ function build(force = false) {
       abi: out.contracts['LeanKernel.sol'].LeanKernel.abi,
       bytecode: '0x' + out.contracts['LeanKernel.sol'].LeanKernel.evm.bytecode.object,
       deployed: '0x' + out.contracts['LeanKernel.sol'].LeanKernel.evm.deployedBytecode.object,
+      initcodeSize: out.contracts['LeanKernel.sol'].LeanKernel.evm.bytecode.object.length / 2,
       deployedSize: out.contracts['LeanKernel.sol'].LeanKernel.evm.deployedBytecode.object.length / 2,
     },
     TheoremRegistry: {
       abi: out.contracts['TheoremRegistry.sol'].TheoremRegistry.abi,
       bytecode: '0x' + out.contracts['TheoremRegistry.sol'].TheoremRegistry.evm.bytecode.object,
       deployed: '0x' + out.contracts['TheoremRegistry.sol'].TheoremRegistry.evm.deployedBytecode.object,
+      initcodeSize: out.contracts['TheoremRegistry.sol'].TheoremRegistry.evm.bytecode.object.length / 2,
       deployedSize: out.contracts['TheoremRegistry.sol'].TheoremRegistry.evm.deployedBytecode.object.length / 2,
     },
   };
@@ -53,7 +55,12 @@ function build(force = false) {
 
 if (require.main === module) {
   const a = build(true);
-  console.log(`LeanKernel:      ${a.LeanKernel.deployedSize} bytes deployed`);
-  console.log(`TheoremRegistry: ${a.TheoremRegistry.deployedSize} bytes deployed`);
+  const EIP170 = 24576;
+  const EIP7907_TARGET = 65536;
+  const status = (size, budget) => (size <= budget ? 'ok' : 'exceeds');
+  console.log(`LeanKernel:      ${a.LeanKernel.deployedSize} bytes deployed, ${a.LeanKernel.initcodeSize} bytes initcode`);
+  console.log(`TheoremRegistry: ${a.TheoremRegistry.deployedSize} bytes deployed, ${a.TheoremRegistry.initcodeSize} bytes initcode`);
+  console.log(`EIP-170 budget:  ${EIP170} bytes (${status(a.LeanKernel.deployedSize, EIP170)})`);
+  console.log(`EIP-7907 target: ${EIP7907_TARGET} bytes (${status(a.LeanKernel.deployedSize, EIP7907_TARGET)})`);
 }
 module.exports = { build };

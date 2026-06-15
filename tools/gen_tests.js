@@ -635,6 +635,30 @@ write('good', '053_quot', (B) => {
     B.Lam(B.Arrow(Bl, B.S(B.lnat(1))), (mo) => B.Lam(B.A(mo, liftApp), (x) => x)));
 }, 'Quotients: registration + Quot.lift ι-reduction');
 
+write('bad', '071_quotBadSignature', (B) => {
+  const v = B.lparam('v');
+  const Sv = B.S(v);
+  B.quot('Quot', ['v'],
+    B.Pi(Sv, (al) => B.Arrow(B.Arrow(al, B.Arrow(al, B.S(0))), Sv)), 'type');
+  B.quot('Quot.ind', ['v'], B.S(0), 'ind');
+}, 'Quot primitive declarations must have canonical signatures');
+
+write('bad', '072_quotBadTypeShape', (B) => {
+  const v = B.lparam('v');
+  const Sv = B.S(v);
+  B.quot('Quot', ['v'], B.Pi(Sv, () => B.Arrow(Sv, Sv)), 'type');
+}, 'Quot type primitive must quantify a Prop-valued relation');
+
+write('bad', '073_quotBadMkArg', (B) => {
+  const v = B.lparam('v');
+  const Sv = B.S(v);
+  B.quot('Quot', ['v'],
+    B.Pi(Sv, (al) => B.Arrow(B.Arrow(al, B.Arrow(al, B.S(0))), Sv)), 'type');
+  B.quot('Quot.mk', ['v'],
+    B.Pi(Sv, (al) => B.Pi(B.Arrow(al, B.Arrow(al, B.S(0))), (r) =>
+      B.Arrow(Sv, B.A(B.C('Quot', [v]), al, r)))), 'ctor');
+}, 'Quot.mk element argument must have type α');
+
 // === BAD: inductive declarations ============================================
 
 write('bad', '054_indNonSort', (B) => {
@@ -773,6 +797,57 @@ write('bad', '065_recWrongRule', (B) => {
     }],
   });
 }, 'Recursor rule with the wrong type must be rejected (nat-rec-rules class)');
+
+write('bad', '070_recBadResult', (B) => {
+  const u = B.lparam('u_1');
+  const Bl = B.C('B4');
+  B.axiom('False', [], B.S(0));
+  B.inductive({
+    types: [{ name: 'B4', levelParams: [], type: B.S(B.lnat(1)), numParams: 0, numIndices: 0, ctors: ['B4.false', 'B4.true'] }],
+    ctors: [
+      { name: 'B4.false', levelParams: [], type: Bl, induct: 'B4', cidx: 0, numParams: 0, numFields: 0 },
+      { name: 'B4.true', levelParams: [], type: Bl, induct: 'B4', cidx: 1, numParams: 0, numFields: 0 },
+    ],
+    recs: [{
+      name: 'B4.rec', levelParams: ['u_1'],
+      type: B.Pi(B.Arrow(Bl, B.S(u)), (mo) =>
+        B.Pi(B.A(mo, B.C('B4.false')), () =>
+          B.Pi(B.A(mo, B.C('B4.true')), () =>
+            B.C('False')))),
+      numParams: 0, numIndices: 0, numMotives: 1, numMinors: 2,
+      rules: [
+        { ctor: 'B4.false', nfields: 0, rhs: B.Lam(B.Arrow(Bl, B.S(u)), (mo) => B.Lam(B.A(mo, B.C('B4.false')), (f) => B.Lam(B.A(mo, B.C('B4.true')), () => f))) },
+        { ctor: 'B4.true', nfields: 0, rhs: B.Lam(B.Arrow(Bl, B.S(u)), (mo) => B.Lam(B.A(mo, B.C('B4.false')), () => B.Lam(B.A(mo, B.C('B4.true')), (t) => t))) },
+      ],
+      k: false,
+    }],
+  });
+}, 'Recursor declaration must end in motive applied to indices and major');
+
+write('bad', '074_recSwappedMinors', (B) => {
+  const u = B.lparam('u_1');
+  const Bl = B.C('Bswap');
+  B.inductive({
+    types: [{ name: 'Bswap', levelParams: [], type: B.S(B.lnat(1)), numParams: 0, numIndices: 0, ctors: ['Bswap.false', 'Bswap.true'] }],
+    ctors: [
+      { name: 'Bswap.false', levelParams: [], type: Bl, induct: 'Bswap', cidx: 0, numParams: 0, numFields: 0 },
+      { name: 'Bswap.true', levelParams: [], type: Bl, induct: 'Bswap', cidx: 1, numParams: 0, numFields: 0 },
+    ],
+    recs: [{
+      name: 'Bswap.rec', levelParams: ['u_1'],
+      type: B.Pi(B.Arrow(Bl, B.S(u)), (mo) =>
+        B.Pi(B.A(mo, B.C('Bswap.true')), () =>
+          B.Pi(B.A(mo, B.C('Bswap.false')), () =>
+            B.Pi(Bl, (b) => B.A(mo, b))))),
+      numParams: 0, numIndices: 0, numMotives: 1, numMinors: 2,
+      rules: [
+        { ctor: 'Bswap.false', nfields: 0, rhs: B.Lam(B.Arrow(Bl, B.S(u)), (mo) => B.Lam(B.A(mo, B.C('Bswap.true')), () => B.Lam(B.A(mo, B.C('Bswap.false')), (f) => f))) },
+        { ctor: 'Bswap.true', nfields: 0, rhs: B.Lam(B.Arrow(Bl, B.S(u)), (mo) => B.Lam(B.A(mo, B.C('Bswap.true')), (t) => B.Lam(B.A(mo, B.C('Bswap.false')), () => t))) },
+      ],
+      k: false,
+    }],
+  });
+}, 'Recursor minor premises must match constructor order and result motives');
 
 write('bad', '066_kOnData', (B) => {
   const u = B.lparam('u_1');

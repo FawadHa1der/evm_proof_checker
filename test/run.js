@@ -15,17 +15,20 @@ const { build } = require('../tools/build');
 
 const { makeVm, installKernel, callContract: call, bytesToHex } = require('../tools/evm');
 
+const EIP170_CODE_SIZE = 24576n;
+const EIP7907_TARGET_CODE_SIZE = 65536n;
+const EIP7825_TX_GAS_CAP = 16777216n;
+
 // ---------------------------------------------------------------------------
 // Main
 // ---------------------------------------------------------------------------
 async function main() {
   console.log('compiling…');
   const artifacts = build();
-  const kBytecode = artifacts.LeanKernel.bytecode;
   const sizeBytes = artifacts.LeanKernel.deployedSize;
   console.log(`LeanKernel deployed bytecode: ${sizeBytes} bytes ` +
-    `(EIP-170: 24576; EIP-7907/Glamsterdam target: 65536)`);
-  if (sizeBytes > 24576) console.warn('!! exceeds EIP-170 — needs EIP-7907 (Glamsterdam) or an L2 without the limit');
+    `(EIP-170: ${EIP170_CODE_SIZE}; EIP-7907/Glamsterdam target: ${EIP7907_TARGET_CODE_SIZE})`);
+  if (BigInt(sizeBytes) > EIP170_CODE_SIZE) console.warn('!! exceeds EIP-170 — needs EIP-7907 (Glamsterdam) or an L2 without the limit');
 
   const vm = await makeVm();
   const kernelAddr = await installKernel(vm, artifacts);
@@ -91,7 +94,39 @@ async function main() {
   console.log(`${pass}/${pass + fail} tests passed`);
 
   // write gas report for the plan
-  fs.writeFileSync(path.join(ROOT, 'gas-report.json'), JSON.stringify({ sizeBytes, rows }, null, 2));
+  const maxGas = rows.reduce((acc, r) => {
+    const g = BigInt(r.gas);
+    return g > acc ? g : acc;
+  }, 0n);
+  const maxCalldataBytes = rows.reduce((acc, r) => Math.max(acc, r.calldataBytes), 0);
+  fs.writeFileSync(path.join(ROOT, 'gas-report.json'), JSON.stringify({
+    sourceHash: artifacts.sourceHash,
+    budgets: {
+      eip170CodeSize: EIP170_CODE_SIZE.toString(),
+      eip7907TargetCodeSize: EIP7907_TARGET_CODE_SIZE.toString(),
+      eip7825TxGasCap: EIP7825_TX_GAS_CAP.toString(),
+    },
+    artifacts: {
+      LeanKernel: {
+        deployedSize: artifacts.LeanKernel.deployedSize,
+        initcodeSize: artifacts.LeanKernel.initcodeSize,
+      },
+      TheoremRegistry: {
+        deployedSize: artifacts.TheoremRegistry.deployedSize,
+        initcodeSize: artifacts.TheoremRegistry.initcodeSize,
+      },
+    },
+    summary: {
+      tests: rows.length,
+      passed: pass,
+      failed: fail,
+      maxGas: maxGas.toString(),
+      txCapHeadroomAtMaxGas: (EIP7825_TX_GAS_CAP - maxGas).toString(),
+      maxCalldataBytes,
+    },
+    sizeBytes,
+    rows,
+  }, null, 2));
 
   if (fail > 0) process.exit(1);
 }

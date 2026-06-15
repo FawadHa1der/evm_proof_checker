@@ -7,12 +7,13 @@ pragma solidity ^0.8.28;
 ///         translation; all *semantic* work happens here, on-chain).
 ///
 /// Supported:   Name hashing, universe levels (full leq with imax case-split),
-///              expressions (bvar/sort/const/app/lam/forallE/letE),
-///              beta/delta/zeta reduction, definitional equality with
-///              function eta and proof irrelevance, type inference, and
-///              declaration checking for axiom/def/theorem/opaque.
-/// Declined:    inductive/quotient declarations, projections, Nat/String
-///              literals, mdata — mirroring the Arena's "decline" verdict
+///              expressions, beta/delta/zeta/iota reduction, definitional
+///              equality with function eta, structure/unit eta, proof
+///              irrelevance, type inference, declaration checking for
+///              axiom/def/theorem/opaque, inductive families/recursors,
+///              projections, quotients, and Nat literals.
+/// Declined:    nested inductives, unsafe/partial declarations, and String
+///              literal reduction — mirroring the Arena's "decline" verdict
 ///              (exit code 2) for features a checker does not support.
 ///
 /// Verdicts:    0 = accept, 1 = reject, 2 = decline, 3 = resource error.
@@ -28,7 +29,8 @@ contract LeanKernel {
     //           2 = const(a = name, b = usStart, c = usLen),
     //           3 = app(a = fn, b = arg), 4 = lam(a = ty, b = body),
     //           5 = pi(a = ty, b = body), 6 = let(a = ty, b = val, c = body),
-    //           7 = unsupported (literals / proj / mdata)
+    //           7 = nat literal, 8 = string literal, 9 = projection,
+    //           10 = unsupported
     // Decls   : two words per record, see DECL_* below.
 
     uint256 internal constant F = (1 << 48) - 1; // 48-bit field mask
@@ -141,6 +143,7 @@ contract LeanKernel {
         uint256 natZeroIdx;
         uint256 natSuccIdx;
         uint256 stringIdx;
+        uint256 quotIdx;
     }
 
     /// Per-inductive-group checking state.
@@ -249,12 +252,14 @@ contract LeanKernel {
         bytes32 hNatZero = keccak256(abi.encodePacked(hNat, uint8(0), "zero"));
         bytes32 hNatSucc = keccak256(abi.encodePacked(hNat, uint8(0), "succ"));
         bytes32 hString = keccak256(abi.encodePacked(bytes32(0), uint8(0), "String"));
+        bytes32 hQuot = keccak256(abi.encodePacked(bytes32(0), uint8(0), "Quot"));
         for (uint256 i = 1; i < nameTab.length; i++) {
             bytes32 h = m.nameHash[i];
             if (h == hNat) m.natIdx = i;
             else if (h == hNatZero) m.natZeroIdx = i;
             else if (h == hNatSucc) m.natSuccIdx = i;
             else if (h == hString) m.stringIdx = i;
+            else if (h == hQuot) m.quotIdx = i;
         }
     }
 
@@ -731,6 +736,7 @@ contract LeanKernel {
         m.envHash[m.envLen] = m.nameHash[d0 & F];
         m.envDecl0[m.envLen] = d0;
         m.envDecl1[m.envLen] = d1;
+        m.envOf[d0 & F] = m.envLen + 1;
         m.envLen++;
     }
 
@@ -1058,7 +1064,8 @@ contract LeanKernel {
         if (mslot == 0 || _dKind(m.envDecl0[mslot - 1]) != D_QUOT) return (e, false);
         if ((m.envDecl1[mslot - 1] & F) != 1) return (e, false); // Quot.mk
         uint256[] memory margs = _collectArgs(m, major, 3);
-        uint256 r = _pushEx(m, _mkE(E_APP, args[majorPos - 2], margs[2], 0)); // f a
+        uint256 eliminator = qk == 2 ? args[majorPos - 2] : args[majorPos - 1]; // lift: f; ind: mk
+        uint256 r = _pushEx(m, _mkE(E_APP, eliminator, margs[2], 0));
         r = _applyRange(m, r, args, majorPos + 1, nArgs);
         return (r, true);
     }
@@ -1819,7 +1826,7 @@ contract LeanKernel {
         m.lpLen = lpN;
 
         // well-formedness scan (unknown consts, undeclared params, unsupported)
-        uint256[] memory seen = new uint256[](m.ex.length / 256 + 1);
+        uint256[] memory seen = new uint256[]((m.exLen + 255) / 256 + 1);
         _wfExpr(m, _dType(d0), seen);
         if (m.fail != 0) return;
         uint256 v = _dValue(d0);
@@ -1871,7 +1878,7 @@ contract LeanKernel {
         if (m.fail != 0) return;
         m.lpStart = _dLpStart(d0);
         m.lpLen = _dLpLen(d0);
-        uint256[] memory seen = new uint256[](m.ex.length / 256 + 1);
+        uint256[] memory seen = new uint256[]((m.exLen + 255) / 256 + 1);
         _wfExpr(m, _dType(d0), seen);
         if (m.fail != 0) return;
         m.ctxLen = 0;
@@ -1883,7 +1890,276 @@ contract LeanKernel {
             _setFail(m, V_REJECT, R_QUOT_SHAPE);
             return;
         }
+        _checkQuotSignature(m, d0, d1);
+        if (m.fail != 0) return;
         _envAdd(m, d0, d1);
+    }
+
+    function _checkQuotSignature(M memory m, uint256 d0, uint256 d1) internal pure {
+        uint256 qk = d1 & F;
+        bytes32 hQuot = keccak256(abi.encodePacked(bytes32(0), uint8(0), "Quot"));
+        bytes32 h = m.nameHash[_dName(d0)];
+        if (qk == 0) {
+            if (h != hQuot || _dLpLen(d0) != 1) {
+                _setFail(m, V_REJECT, R_QUOT_SHAPE);
+                return;
+            }
+            _checkQuotTypeDecl(m, d0);
+            return;
+        }
+        if (m.quotIdx == 0 || _envLookup(m, m.quotIdx) == 0) {
+            _setFail(m, V_REJECT, R_QUOT_SHAPE);
+            return;
+        }
+        if (qk == 1) {
+            if (h != keccak256(abi.encodePacked(hQuot, uint8(0), "mk")) || _dLpLen(d0) != 1) {
+                _setFail(m, V_REJECT, R_QUOT_SHAPE);
+                return;
+            }
+            _checkQuotCtorDecl(m, d0);
+        } else if (qk == 2) {
+            if (h != keccak256(abi.encodePacked(hQuot, uint8(0), "lift")) || _dLpLen(d0) != 2) {
+                _setFail(m, V_REJECT, R_QUOT_SHAPE);
+                return;
+            }
+            _checkQuotLiftDecl(m, d0);
+        } else if (qk == 3) {
+            if (h != keccak256(abi.encodePacked(hQuot, uint8(0), "ind")) || _dLpLen(d0) != 1) {
+                _setFail(m, V_REJECT, R_QUOT_SHAPE);
+                return;
+            }
+            _checkQuotIndDecl(m, d0);
+        } else {
+            _setFail(m, V_REJECT, R_QUOT_SHAPE);
+        }
+    }
+
+    function _checkQuotTypeDecl(M memory m, uint256 d0) internal pure {
+        uint256 savedCtx = m.ctxLen;
+        m.ctxLen = 0;
+        uint256 cur = _dType(d0);
+        cur = _quotExpectPi(m, cur, _sortParam(m, _dLpStart(d0), 0));
+        if (m.fail != 0) {
+            m.ctxLen = savedCtx;
+            return;
+        }
+        cur = _quotExpectPi(m, cur, _quotRelType(m, 0));
+        if (m.fail != 0) {
+            m.ctxLen = savedCtx;
+            return;
+        }
+        cur = _whnf(m, cur);
+        uint256 u = _pushLv(m, _mkL(L_PARAM, m.pool[_dLpStart(d0)], 0));
+        if (m.fail == 0 && (_tag(m, cur) != E_SORT || !_lvlEq(m, _a(m, cur), u))) {
+            _setFail(m, V_REJECT, R_QUOT_SHAPE);
+        }
+        m.ctxLen = savedCtx;
+    }
+
+    function _checkQuotCtorDecl(M memory m, uint256 d0) internal pure {
+        uint256 savedCtx = m.ctxLen;
+        m.ctxLen = 0;
+        uint256 cur = _dType(d0);
+        cur = _quotExpectPi(m, cur, _sortParam(m, _dLpStart(d0), 0));
+        if (m.fail != 0) {
+            m.ctxLen = savedCtx;
+            return;
+        }
+        cur = _quotExpectPi(m, cur, _quotRelType(m, 0));
+        if (m.fail != 0) {
+            m.ctxLen = savedCtx;
+            return;
+        }
+        cur = _quotExpectPi(m, cur, _pushEx(m, _mkE(E_BVAR, 1, 0, 0)));
+        if (m.fail != 0) {
+            m.ctxLen = savedCtx;
+            return;
+        }
+        cur = _whnf(m, cur);
+        uint256 expected = _quotAppAt(m, _dLpStart(d0), 2, 1);
+        if (m.fail == 0 && !_isDefEq(m, cur, expected)) _setFail(m, V_REJECT, R_QUOT_SHAPE);
+        m.ctxLen = savedCtx;
+    }
+
+    function _checkQuotLiftDecl(M memory m, uint256 d0) internal pure {
+        uint256 savedCtx = m.ctxLen;
+        m.ctxLen = 0;
+        uint256 cur = _dType(d0);
+        cur = _quotExpectPi(m, cur, _sortParam(m, _dLpStart(d0), 0));
+        if (m.fail != 0) {
+            m.ctxLen = savedCtx;
+            return;
+        }
+        cur = _quotExpectPi(m, cur, _quotRelType(m, 0));
+        if (m.fail != 0) {
+            m.ctxLen = savedCtx;
+            return;
+        }
+        cur = _quotExpectPi(m, cur, _sortParam(m, _dLpStart(d0), 1));
+        if (m.fail != 0) {
+            m.ctxLen = savedCtx;
+            return;
+        }
+        cur = _quotExpectPi(m, cur, _arrow(m, _pushEx(m, _mkE(E_BVAR, 2, 0, 0)), _pushEx(m, _mkE(E_BVAR, 0, 0, 0))));
+        if (m.fail != 0) {
+            m.ctxLen = savedCtx;
+            return;
+        }
+        cur = _quotExpectPi(m, cur, _quotLiftRespType(m, _dLpStart(d0)));
+        if (m.fail != 0) {
+            m.ctxLen = savedCtx;
+            return;
+        }
+        cur = _quotExpectPi(m, cur, _quotAppAt(m, _dLpStart(d0), 4, 3));
+        if (m.fail != 0) {
+            m.ctxLen = savedCtx;
+            return;
+        }
+        cur = _whnf(m, cur);
+        uint256 expected = _pushEx(m, _mkE(E_BVAR, 3, 0, 0));
+        if (m.fail == 0 && !_isDefEq(m, cur, expected)) _setFail(m, V_REJECT, R_QUOT_SHAPE);
+        m.ctxLen = savedCtx;
+    }
+
+    function _checkQuotIndDecl(M memory m, uint256 d0) internal pure {
+        uint256 savedCtx = m.ctxLen;
+        m.ctxLen = 0;
+        uint256 cur = _dType(d0);
+        cur = _quotExpectPi(m, cur, _sortParam(m, _dLpStart(d0), 0));
+        if (m.fail != 0) {
+            m.ctxLen = savedCtx;
+            return;
+        }
+        cur = _quotExpectPi(m, cur, _quotRelType(m, 0));
+        if (m.fail != 0) {
+            m.ctxLen = savedCtx;
+            return;
+        }
+        cur = _quotExpectPi(m, cur, _arrow(m, _quotAppAt(m, _dLpStart(d0), 1, 0), _pushEx(m, _mkE(E_SORT, 0, 0, 0))));
+        if (m.fail != 0) {
+            m.ctxLen = savedCtx;
+            return;
+        }
+        cur = _quotExpectPi(m, cur, _quotIndMinorType(m, _dLpStart(d0)));
+        if (m.fail != 0) {
+            m.ctxLen = savedCtx;
+            return;
+        }
+        cur = _quotExpectPi(m, cur, _quotAppAt(m, _dLpStart(d0), 3, 2));
+        if (m.fail != 0) {
+            m.ctxLen = savedCtx;
+            return;
+        }
+        cur = _whnf(m, cur);
+        uint256 expected = _pushEx(m, _mkE(E_APP, _pushEx(m, _mkE(E_BVAR, 2, 0, 0)), _pushEx(m, _mkE(E_BVAR, 0, 0, 0)), 0));
+        if (m.fail == 0 && !_isDefEq(m, cur, expected)) _setFail(m, V_REJECT, R_QUOT_SHAPE);
+        m.ctxLen = savedCtx;
+    }
+
+    function _quotExpectPi(M memory m, uint256 cur, uint256 expectedDomain) internal pure returns (uint256) {
+        cur = _whnf(m, cur);
+        if (m.fail != 0) return cur;
+        if (_tag(m, cur) != E_PI) {
+            _setFail(m, V_REJECT, R_QUOT_SHAPE);
+            return cur;
+        }
+        if (!_isDefEq(m, _a(m, cur), expectedDomain)) {
+            if (m.fail == 0) _setFail(m, V_REJECT, R_QUOT_SHAPE);
+            return cur;
+        }
+        _pushCtx(m, _a(m, cur));
+        return _b(m, cur);
+    }
+
+    function _sortParam(M memory m, uint256 lpStart, uint256 off) internal pure returns (uint256) {
+        uint256 u = _pushLv(m, _mkL(L_PARAM, m.pool[lpStart + off], 0));
+        return _pushEx(m, _mkE(E_SORT, u, 0, 0));
+    }
+
+    function _arrow(M memory m, uint256 dom, uint256 cod) internal pure returns (uint256) {
+        return _pushEx(m, _mkE(E_PI, dom, _lift(m, cod, 1, 0), 0));
+    }
+
+    function _quotRelType(M memory m, uint256 alphaBVar) internal pure returns (uint256) {
+        uint256 prop = _pushEx(m, _mkE(E_SORT, 0, 0, 0));
+        uint256 alpha = _pushEx(m, _mkE(E_BVAR, alphaBVar, 0, 0));
+        uint256 alphaUnder1 = _pushEx(m, _mkE(E_BVAR, alphaBVar + 1, 0, 0));
+        return _pushEx(m, _mkE(E_PI, alpha, _pushEx(m, _mkE(E_PI, alphaUnder1, prop, 0)), 0));
+    }
+
+    function _quotLiftRespType(M memory m, uint256 lpStart) internal pure returns (uint256) {
+        uint256 eqName = _envNameByHash(m, keccak256(abi.encodePacked(bytes32(0), uint8(0), "Eq")));
+        if (eqName == 0) {
+            _setFail(m, V_REJECT, R_QUOT_SHAPE);
+            return NONE;
+        }
+        uint256 aTy = _pushEx(m, _mkE(E_BVAR, 3, 0, 0));
+        uint256 bTy = _pushEx(m, _mkE(E_BVAR, 4, 0, 0));
+        uint256 betaTy = _pushEx(m, _mkE(E_BVAR, 3, 0, 0));
+        uint256 f = _pushEx(m, _mkE(E_BVAR, 2, 0, 0));
+        uint256 a = _pushEx(m, _mkE(E_BVAR, 1, 0, 0));
+        uint256 b = _pushEx(m, _mkE(E_BVAR, 0, 0, 0));
+        uint256 r = _pushEx(m, _mkE(E_BVAR, 4, 0, 0));
+        uint256 rab = _pushEx(m, _mkE(E_APP, _pushEx(m, _mkE(E_APP, r, a, 0)), b, 0));
+        uint256 fa = _pushEx(m, _mkE(E_APP, f, a, 0));
+        uint256 fb = _pushEx(m, _mkE(E_APP, f, b, 0));
+        uint256 eq = _eqApp(m, eqName, lpStart, 1, betaTy, fa, fb);
+        uint256 proof = _arrow(m, rab, eq);
+        return _pushEx(m, _mkE(E_PI, aTy, _pushEx(m, _mkE(E_PI, bTy, proof, 0)), 0));
+    }
+
+    function _quotIndMinorType(M memory m, uint256 lpStart) internal pure returns (uint256) {
+        uint256 mkName = _envNameByHash(
+            m, keccak256(abi.encodePacked(keccak256(abi.encodePacked(bytes32(0), uint8(0), "Quot")), uint8(0), "mk"))
+        );
+        if (mkName == 0) {
+            _setFail(m, V_REJECT, R_QUOT_SHAPE);
+            return NONE;
+        }
+        uint256 mk = _constWithParam(m, mkName, lpStart, 0);
+        mk = _pushEx(m, _mkE(E_APP, mk, _pushEx(m, _mkE(E_BVAR, 3, 0, 0)), 0));
+        mk = _pushEx(m, _mkE(E_APP, mk, _pushEx(m, _mkE(E_BVAR, 2, 0, 0)), 0));
+        mk = _pushEx(m, _mkE(E_APP, mk, _pushEx(m, _mkE(E_BVAR, 0, 0, 0)), 0));
+        uint256 body = _pushEx(m, _mkE(E_APP, _pushEx(m, _mkE(E_BVAR, 1, 0, 0)), mk, 0));
+        return _pushEx(m, _mkE(E_PI, _pushEx(m, _mkE(E_BVAR, 2, 0, 0)), body, 0));
+    }
+
+    function _eqApp(
+        M memory m,
+        uint256 eqName,
+        uint256 lpStart,
+        uint256 lpOff,
+        uint256 ty,
+        uint256 a,
+        uint256 b
+    ) internal pure returns (uint256 r) {
+        r = _constWithParam(m, eqName, lpStart, lpOff);
+        r = _pushEx(m, _mkE(E_APP, r, ty, 0));
+        r = _pushEx(m, _mkE(E_APP, r, a, 0));
+        r = _pushEx(m, _mkE(E_APP, r, b, 0));
+    }
+
+    function _constWithParam(M memory m, uint256 nameIdx, uint256 lpStart, uint256 lpOff) internal pure returns (uint256) {
+        uint256 usS = m.poolLen;
+        uint256 lvl = _pushLv(m, _mkL(L_PARAM, m.pool[lpStart + lpOff], 0));
+        _pushPool(m, lvl);
+        return _pushEx(m, _mkE(E_CONST, nameIdx, usS, 1));
+    }
+
+    function _envNameByHash(M memory m, bytes32 h) internal pure returns (uint256) {
+        for (uint256 i = 0; i < m.envLen; i++) {
+            if (m.envHash[i] == h) return _dName(m.envDecl0[i]);
+        }
+        return 0;
+    }
+
+    function _quotAppAt(M memory m, uint256 lpStart, uint256 alphaBVar, uint256 relBVar) internal pure returns (uint256 r) {
+        uint256 usS = m.poolLen;
+        uint256 lvl = _pushLv(m, _mkL(L_PARAM, m.pool[lpStart], 0));
+        _pushPool(m, lvl);
+        r = _pushEx(m, _mkE(E_CONST, m.quotIdx, usS, 1));
+        r = _pushEx(m, _mkE(E_APP, r, _pushEx(m, _mkE(E_BVAR, alphaBVar, 0, 0)), 0));
+        r = _pushEx(m, _mkE(E_APP, r, _pushEx(m, _mkE(E_BVAR, relBVar, 0, 0)), 0));
     }
 
     // ------------------------------------------------------------------
@@ -1903,6 +2179,10 @@ contract LeanKernel {
         uint256 total = 1 + g.nT + g.nC + g.nR;
         if ((g.base + g.nT + g.nC + g.nR) * 2 > declTab.length || g.nT == 0) {
             _setFail(m, V_REJECT, R_IND_SHAPE);
+            return total;
+        }
+        if (g.nT != 1) {
+            _setFail(m, V_DECLINE, R_UNSUPPORTED);
             return total;
         }
         g.indHashes = new bytes32[](g.nT);
@@ -1929,7 +2209,7 @@ contract LeanKernel {
             m.lpStart = _dLpStart(d0);
             m.lpLen = _dLpLen(d0);
             {
-                uint256[] memory seen = new uint256[](m.ex.length / 256 + 1);
+                uint256[] memory seen = new uint256[]((m.exLen + 255) / 256 + 1);
                 _wfExpr(m, _dType(d0), seen);
             }
             if (m.fail != 0) return total;
@@ -2045,7 +2325,7 @@ contract LeanKernel {
         m.lpStart = _dLpStart(cc.d0);
         m.lpLen = _dLpLen(cc.d0);
         {
-            uint256[] memory seen = new uint256[](m.ex.length / 256 + 1);
+            uint256[] memory seen = new uint256[]((m.exLen + 255) / 256 + 1);
             _wfExpr(m, _dType(cc.d0), seen);
         }
         if (m.fail != 0) return false;
@@ -2211,6 +2491,7 @@ contract LeanKernel {
 
     struct RecCtx {
         uint256 p;
+        uint256 i;
         uint256 M_;
         uint256 mm;
         uint256 recLpStart;
@@ -2231,16 +2512,25 @@ contract LeanKernel {
             _setFail(m, V_REJECT, R_REC_SHAPE);
             return;
         }
+        if (!_validRecursorName(m, g, _dName(d0))) {
+            _setFail(m, V_REJECT, R_REC_SHAPE);
+            return;
+        }
         _requireFresh(m, _dName(d0));
         _requireLpsDistinct(m, _dLpStart(d0), _dLpLen(d0));
         if (m.fail != 0) return;
 
         RecCtx memory rc;
         rc.p = d1 & F;
+        rc.i = (d1 >> 48) & F;
         rc.M_ = (d1 >> 96) & F;
         rc.mm = (d1 >> 144) & F;
         rc.recLpStart = _dLpStart(d0);
         rc.indLpLen = _dLpLen(g.indD0[0]);
+        if (g.nT != 1) {
+            _setFail(m, V_DECLINE, R_UNSUPPORTED);
+            return;
+        }
         {
             uint256 recLpLen = _dLpLen(d0);
             if (recLpLen < rc.indLpLen || recLpLen - rc.indLpLen > 1) {
@@ -2255,7 +2545,7 @@ contract LeanKernel {
                 }
             }
         }
-        if (rc.M_ != g.nT || rc.mm != g.nC) {
+        if (rc.p != (g.indD1[0] & F) || rc.i != ((g.indD1[0] >> 48) & F) || rc.M_ != g.nT || rc.mm != g.nC) {
             _setFail(m, V_REJECT, R_REC_SHAPE);
             return;
         }
@@ -2263,7 +2553,7 @@ contract LeanKernel {
         m.lpStart = rc.recLpStart;
         m.lpLen = _dLpLen(d0);
         {
-            uint256[] memory seen = new uint256[](m.ex.length / 256 + 1);
+            uint256[] memory seen = new uint256[]((m.exLen + 255) / 256 + 1);
             _wfExpr(m, _dType(d0), seen);
         }
         if (m.fail != 0) return;
@@ -2281,6 +2571,7 @@ contract LeanKernel {
 
         // walk the recursor type: params, motives (with elim check), minors
         uint256[] memory binders = new uint256[](rc.p + rc.M_ + rc.mm);
+        uint256 recTail;
         {
             uint256 cur = _dType(d0);
             for (uint256 k = 0; k < binders.length; k++) {
@@ -2297,7 +2588,12 @@ contract LeanKernel {
                 }
                 cur = _b(m, cur);
             }
+            recTail = cur;
         }
+        _checkRecursorTail(m, g, rc, binders, recTail);
+        if (m.fail != 0) return;
+        _checkRecursorMinors(m, declTab, g, rc, binders);
+        if (m.fail != 0) return;
 
         // K flag validation
         if ((d1 >> 248) == 1) {
@@ -2359,6 +2655,305 @@ contract LeanKernel {
                 if (m.fail == 0) _setFail(m, V_REJECT, R_REC_RULE);
                 return;
             }
+        }
+    }
+
+    function _validRecursorName(M memory m, G memory g, uint256 nameIdx) internal pure returns (bool) {
+        bytes32 h = m.nameHash[nameIdx];
+        for (uint256 t = 0; t < g.nT; t++) {
+            bytes32 parent = g.indHashes[t];
+            if (h == keccak256(abi.encodePacked(parent, uint8(0), "rec"))) return true;
+            if (g.nR > 1) {
+                if (h == keccak256(abi.encodePacked(parent, uint8(0), "rec_1"))) return true;
+                if (h == keccak256(abi.encodePacked(parent, uint8(0), "rec_2"))) return true;
+                if (h == keccak256(abi.encodePacked(parent, uint8(0), "rec_3"))) return true;
+            }
+        }
+        return false;
+    }
+
+    /// Validate the recursor declaration's tail after params/motives/minors:
+    ///   ∀ indices, major : I params indices, motive indices major
+    function _checkRecursorTail(
+        M memory m,
+        G memory g,
+        RecCtx memory rc,
+        uint256[] memory binders,
+        uint256 cur
+    ) internal pure {
+        uint256 savedCtx = m.ctxLen;
+        m.ctxLen = 0;
+        for (uint256 k = 0; k < binders.length; k++) _pushCtx(m, binders[k]);
+
+        for (uint256 k = 0; k < rc.i; k++) {
+            cur = _whnf(m, cur);
+            if (m.fail != 0) {
+                m.ctxLen = savedCtx;
+                return;
+            }
+            if (_tag(m, cur) != E_PI) {
+                _setFail(m, V_REJECT, R_REC_SHAPE);
+                m.ctxLen = savedCtx;
+                return;
+            }
+            _pushCtx(m, _a(m, cur));
+            cur = _b(m, cur);
+        }
+
+        cur = _whnf(m, cur);
+        if (m.fail != 0) {
+            m.ctxLen = savedCtx;
+            return;
+        }
+        if (_tag(m, cur) != E_PI) {
+            _setFail(m, V_REJECT, R_REC_SHAPE);
+            m.ctxLen = savedCtx;
+            return;
+        }
+
+        uint256 expectedMajor = _recursorIndApp(m, g, rc);
+        if (m.fail != 0) {
+            m.ctxLen = savedCtx;
+            return;
+        }
+        if (!_isDefEq(m, _a(m, cur), expectedMajor)) {
+            if (m.fail == 0) _setFail(m, V_REJECT, R_REC_SHAPE);
+            m.ctxLen = savedCtx;
+            return;
+        }
+
+        _pushCtx(m, _a(m, cur));
+        cur = _b(m, cur);
+        cur = _whnf(m, cur);
+        if (m.fail != 0) {
+            m.ctxLen = savedCtx;
+            return;
+        }
+
+        uint256 expectedResult = _pushEx(m, _mkE(E_BVAR, rc.i + 1 + rc.mm + (rc.M_ - 1), 0, 0));
+        for (uint256 k = 0; k < rc.i; k++) {
+            expectedResult = _pushEx(m, _mkE(E_APP, expectedResult, _pushEx(m, _mkE(E_BVAR, rc.i - k, 0, 0)), 0));
+        }
+        expectedResult = _pushEx(m, _mkE(E_APP, expectedResult, _pushEx(m, _mkE(E_BVAR, 0, 0, 0)), 0));
+        if (!_isDefEq(m, cur, expectedResult) && m.fail == 0) {
+            _setFail(m, V_REJECT, R_REC_SHAPE);
+        }
+        m.ctxLen = savedCtx;
+    }
+
+    function _checkRecursorMinors(
+        M memory m,
+        uint256[] calldata declTab,
+        G memory g,
+        RecCtx memory rc,
+        uint256[] memory binders
+    ) internal pure {
+        uint256 savedCtx = m.ctxLen;
+        m.ctxLen = 0;
+        for (uint256 k = 0; k < rc.p + rc.M_; k++) _pushCtx(m, binders[k]);
+        for (uint256 r = 0; r < g.nC; r++) {
+            uint256 cd0 = declTab[2 * (g.base + g.nT + r)];
+            uint256 cd1 = declTab[2 * (g.base + g.nT + r) + 1];
+            uint256 tpos = type(uint256).max;
+            {
+                bytes32 ih = m.nameHash[cd1 & F];
+                for (uint256 t = 0; t < g.nT; t++) {
+                    if (g.indHashes[t] == ih) {
+                        tpos = t;
+                        break;
+                    }
+                }
+            }
+            if (tpos == type(uint256).max) {
+                _setFail(m, V_REJECT, R_REC_SHAPE);
+                m.ctxLen = savedCtx;
+                return;
+            }
+            uint256 expected = _minorExpected(m, g, rc, cd0, cd1, tpos, r);
+            if (m.fail != 0) {
+                m.ctxLen = savedCtx;
+                return;
+            }
+            if (!_isDefEq(m, binders[rc.p + rc.M_ + r], expected)) {
+                if (m.fail == 0) _setFail(m, V_REJECT, R_REC_SHAPE);
+                m.ctxLen = savedCtx;
+                return;
+            }
+            _pushCtx(m, binders[rc.p + rc.M_ + r]);
+        }
+        m.ctxLen = savedCtx;
+    }
+
+    function _minorExpected(
+        M memory m,
+        G memory g,
+        RecCtx memory rc,
+        uint256 cd0,
+        uint256 cd1,
+        uint256 tpos,
+        uint256 priorMinors
+    ) internal pure returns (uint256) {
+        uint256 nf = (cd1 >> 144) & F;
+        uint256 cur = _dType(cd0);
+        for (uint256 k = 0; k < rc.p; k++) {
+            cur = _whnf(m, cur);
+            if (m.fail != 0) return NONE;
+            if (_tag(m, cur) != E_PI) {
+                _setFail(m, V_REJECT, R_REC_SHAPE);
+                return NONE;
+            }
+            cur = _b(m, cur);
+        }
+        cur = _lift(m, cur, rc.M_ + priorMinors, 0);
+
+        uint256[] memory domains = new uint256[](nf * 2 + 1);
+        uint256[] memory fieldTypes = new uint256[](nf);
+        uint256[] memory fieldPos = new uint256[](nf);
+        uint256 nBinders = 0;
+        for (uint256 j = 0; j < nf; j++) {
+            cur = _whnf(m, cur);
+            if (m.fail != 0) return NONE;
+            if (_tag(m, cur) != E_PI) {
+                _setFail(m, V_REJECT, R_REC_SHAPE);
+                return NONE;
+            }
+            uint256 fieldTy = _a(m, cur);
+            domains[nBinders] = fieldTy;
+            fieldTypes[j] = fieldTy;
+            fieldPos[j] = nBinders;
+            nBinders++;
+            cur = _b(m, cur);
+        }
+
+        uint256 nIH = 0;
+        for (uint256 j = 0; j < nf; j++) {
+            (bool rec, uint256 ihTy) = _ihForField(
+                m,
+                g,
+                rc,
+                _lift(m, fieldTypes[j], nf - j + nIH, 0),
+                _pushEx(m, _mkE(E_BVAR, nf - 1 - j + nIH, 0, 0)),
+                priorMinors,
+                nBinders
+            );
+            if (m.fail != 0) return NONE;
+            if (rec) {
+                domains[nBinders] = ihTy;
+                nBinders++;
+                nIH++;
+                cur = _lift(m, cur, 1, 0);
+            }
+        }
+
+        (uint256 h, uint256 nArgs) = _spineHead(m, cur);
+        if (_tag(m, h) != E_CONST || m.nameHash[_a(m, h)] != g.indHashes[tpos]) {
+            _setFail(m, V_REJECT, R_REC_SHAPE);
+            return NONE;
+        }
+        uint256[] memory rargs = _collectArgs(m, cur, nArgs);
+        uint256 body = _pushEx(m, _mkE(E_BVAR, nBinders + priorMinors + (rc.M_ - 1 - tpos), 0, 0));
+        uint256 ni = (g.indD1[tpos] >> 48) & F;
+        for (uint256 k = rc.p; k < rc.p + ni && k < nArgs; k++) {
+            body = _pushEx(m, _mkE(E_APP, body, rargs[k], 0));
+        }
+
+        uint256 capp = _ctorAppForMinor(m, rc, cd0, nf, nBinders, priorMinors, fieldPos);
+        body = _pushEx(m, _mkE(E_APP, body, capp, 0));
+        for (uint256 i = nBinders; i > 0; i--) {
+            body = _pushEx(m, _mkE(E_PI, domains[i - 1], body, 0));
+        }
+        return body;
+    }
+
+    function _ihForField(
+        M memory m,
+        G memory g,
+        RecCtx memory rc,
+        uint256 cur,
+        uint256 fieldApp,
+        uint256 priorMinors,
+        uint256 innerCount
+    ) internal pure returns (bool rec, uint256 ihTy) {
+        cur = _whnf(m, cur);
+        if (m.fail != 0) return (false, NONE);
+        if (!_hasIndOcc(m, cur, g.indHashes)) return (false, NONE);
+        if (_tag(m, cur) == E_PI) {
+            uint256 app = _pushEx(m, _mkE(E_APP, _lift(m, fieldApp, 1, 0), _pushEx(m, _mkE(E_BVAR, 0, 0, 0)), 0));
+            (bool subRec, uint256 subTy) = _ihForField(m, g, rc, _b(m, cur), app, priorMinors, innerCount + 1);
+            if (m.fail != 0) return (false, NONE);
+            if (!subRec) {
+                _setFail(m, V_DECLINE, R_UNSUPPORTED);
+                return (false, NONE);
+            }
+            return (true, _pushEx(m, _mkE(E_PI, _a(m, cur), subTy, 0)));
+        }
+        (uint256 h, uint256 nArgs) = _spineHead(m, cur);
+        if (_tag(m, h) != E_CONST) {
+            _setFail(m, V_DECLINE, R_UNSUPPORTED);
+            return (false, NONE);
+        }
+        uint256 tpos = type(uint256).max;
+        {
+            bytes32 hh = m.nameHash[_a(m, h)];
+            for (uint256 t = 0; t < g.nT; t++) {
+                if (g.indHashes[t] == hh) {
+                    tpos = t;
+                    break;
+                }
+            }
+        }
+        if (tpos == type(uint256).max) {
+            _setFail(m, V_DECLINE, R_UNSUPPORTED);
+            return (false, NONE);
+        }
+        uint256[] memory args = _collectArgs(m, cur, nArgs);
+        uint256 body = _pushEx(m, _mkE(E_BVAR, innerCount + priorMinors + (rc.M_ - 1 - tpos), 0, 0));
+        uint256 ni = (g.indD1[tpos] >> 48) & F;
+        for (uint256 k = rc.p; k < rc.p + ni && k < nArgs; k++) {
+            body = _pushEx(m, _mkE(E_APP, body, args[k], 0));
+        }
+        body = _pushEx(m, _mkE(E_APP, body, fieldApp, 0));
+        return (true, body);
+    }
+
+    function _ctorAppForMinor(
+        M memory m,
+        RecCtx memory rc,
+        uint256 cd0,
+        uint256 nf,
+        uint256 nBinders,
+        uint256 priorMinors,
+        uint256[] memory fieldPos
+    ) internal pure returns (uint256 capp) {
+        uint256 usS = m.poolLen;
+        for (uint256 k = 0; k < rc.indLpLen; k++) {
+            uint256 lvl = _pushLv(m, _mkL(L_PARAM, m.pool[rc.recLpStart + rc.extra + k], 0));
+            _pushPool(m, lvl);
+        }
+        capp = _pushEx(m, _mkE(E_CONST, _dName(cd0), usS, rc.indLpLen));
+        for (uint256 k = 0; k < rc.p; k++) {
+            capp = _pushEx(
+                m,
+                _mkE(E_APP, capp, _pushEx(m, _mkE(E_BVAR, nBinders + priorMinors + rc.M_ + rc.p - 1 - k, 0, 0)), 0)
+            );
+        }
+        for (uint256 j = 0; j < nf; j++) {
+            capp = _pushEx(m, _mkE(E_APP, capp, _pushEx(m, _mkE(E_BVAR, nBinders - 1 - fieldPos[j], 0, 0)), 0));
+        }
+    }
+
+    function _recursorIndApp(M memory m, G memory g, RecCtx memory rc) internal pure returns (uint256 r) {
+        uint256 usS = m.poolLen;
+        for (uint256 k = 0; k < rc.indLpLen; k++) {
+            uint256 lvl = _pushLv(m, _mkL(L_PARAM, m.pool[rc.recLpStart + rc.extra + k], 0));
+            _pushPool(m, lvl);
+        }
+        r = _pushEx(m, _mkE(E_CONST, _dName(g.indD0[0]), usS, rc.indLpLen));
+        for (uint256 k = 0; k < rc.p; k++) {
+            r = _pushEx(m, _mkE(E_APP, r, _pushEx(m, _mkE(E_BVAR, m.ctxLen - 1 - k, 0, 0)), 0));
+        }
+        for (uint256 k = 0; k < rc.i; k++) {
+            r = _pushEx(m, _mkE(E_APP, r, _pushEx(m, _mkE(E_BVAR, rc.i - 1 - k, 0, 0)), 0));
         }
     }
 

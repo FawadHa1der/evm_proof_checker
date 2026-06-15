@@ -9,21 +9,23 @@
 # Supported: defs/theorems/axioms/opaques, full universe algebra,
 # beta/delta/zeta/iota reduction, definitional equality with function eta,
 # structure/unit eta and proof irrelevance, inductive families (positivity,
-# elimination restrictions, K validation, recursor rules checked against
-# independently reconstructed types), projections, quotients, Nat literals.
-# Declines (exit 2): nested inductives, unsafe declarations, String-literal
-# reduction, and anything beyond its gas/step budget.
+# elimination restrictions, K validation, recursor minor premises and rules
+# checked against independently reconstructed types), projections, quotients
+# with exact primitive signature checks, Nat literals.
+# Declines (exit 2): nested inductives, multi-type mutual groups, unsafe
+# declarations, String-literal reduction, and anything beyond its gas/step/size
+# budget.
 description: |
   A Lean 4 kernel implemented in Solidity and executed on the Ethereum
   Virtual Machine. Accepting a proof is a metered EVM execution; the same
-  call can be replayed on any EVM chain (29.5KB deployed — sized for the
+  call can be replayed on any EVM chain (36.7KB deployed — sized for the
   EIP-7907 limit). Rejects all five of the Arena's static adversarial
   exports at the offending declaration. Declines declarations outside its
-  fragment (nested inductives, unsafe decls, String reduction) and exports
-  beyond its resource budget.
+  fragment (nested inductives, multi-type mutual groups, unsafe decls,
+  String reduction) and exports beyond its resource budget.
 version: "0.1.0"
-url: https://github.com/<your-username>/evmlean   # publish this repo first
+url: https://github.com/FawadHa1der/eve_proof_checker
 ref: main
-rev: <pin-a-revision>
+rev: <pin-after-commit>
 build: npm install --no-audit --no-fund && node tools/build.js
 run: node bin/evmlean.js $IN

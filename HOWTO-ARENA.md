@@ -9,7 +9,7 @@ performed by the `LeanKernel` Solidity contract inside an in-process EVM.
 
 ## Route A — the bundled suite (zero setup)
 
-The repo ships 65 generated tutorial-parity vectors plus the Arena's five
+The repo ships 70 generated tutorial-parity/regression vectors plus the Arena's five
 hand-crafted adversarial soundness tests (real files from the
 [lean-kernel-arena repo](https://github.com/leanprover/lean-kernel-arena/tree/master/tests):
 `constlevels`, `level-imax-leq`, `level-imax-normalization`, `nat-rec-rules`,
@@ -18,7 +18,7 @@ hand-crafted adversarial soundness tests (real files from the
 ```bash
 npm install
 npm run gen     # regenerate tests/good|bad|decline
-npm test        # compile + run all 70 in a local EVM, with gas report
+npm test        # compile + run all 75 in a local EVM, with gas report
 ```
 
 Run any single export through the Arena-style entry point:
@@ -41,16 +41,23 @@ Most Arena tests (`tutorial/*`, `bogus1`, `proj-of-prop`, `std`, `mathlib`, …)
 are *generated* from Lean sources by the Arena's tooling, so they need a Lean
 toolchain. Two options:
 
-**B1. Download the test zip.** The Arena website offers a zip of all test
-exports excluding the giant ones (see the [Arena README](https://github.com/leanprover/lean-kernel-arena)
-— "On the arena website you can download a zipfile with the arena tests").
-Then simply:
+**B1. Download the test tarball.** The Arena website offers
+`lean-arena-tests.tar.gz` for generated exports under 10 MB; as of
+2026-06-15 it contains 97 good and 49 bad files. Then run the byte-real
+exports through the single-VM harness:
 
 ```bash
-unzip arena-tests.zip -d arena-tests
-for f in $(find arena-tests -name '*.ndjson' | sort); do
-  node bin/evmlean.js "$f"; echo "$f → exit $?"
-done
+curl -fsSL https://arena.lean-lang.org/lean-arena-tests.tar.gz -o /tmp/lean-arena-tests.tar.gz
+mkdir -p /tmp/lean-arena-tests
+tar -xzf /tmp/lean-arena-tests.tar.gz -C /tmp/lean-arena-tests
+
+# Acceptance criterion for M1: byte-real tutorial parity.
+node tools/run-arena-tests.js /tmp/lean-arena-tests --tutorial
+
+# Submission-shaped check for the downloadable tarball: run every export that
+# fits the single-transaction guard, and count the same explicit size declines
+# that bin/evmlean.js will report to the Arena.
+node tools/run-arena-tests.js /tmp/lean-arena-tests --entrypoint-max-bytes=128000 --allow-non-tutorial-decline
 ```
 
 **B2. Run the official harness (`lka.py`).** This is how the leaderboard
@@ -103,14 +110,13 @@ versions it doesn't recognize.)
 | Test class | Expected result |
 |---|---|
 | Arena static adversarial 5 (constlevels, level-imax-leq, level-imax-normalization, nat-rec-rules, large-elim-param) | **reject — all pass, at exactly the poisoned declaration** |
-| Tutorial-ladder material: defs/theorems, universe algebra, δβζ, defeq, lets, Church-numeral Peano, inductives, recursors+ι, rule K, projections, structure/unit eta, proof irrelevance, function eta, Nat literals, quotients | accept/reject correctly (70/70 in the bundled mirror suite) |
-| Nested inductives (`numNested > 0`), unsafe/partial declarations, String-literal *reduction* | decline (exit 2) — honest out-of-fragment verdicts |
-| Mutual inductive blocks | implemented but lightly tested — treat as experimental |
-| Multi-hundred-MB exports (std, mathlib, init) | impractical in an EVM today: expect step-limit/garbage-collection walls long before completion (decline/error). That's the expected placement for this checker — see PLAN.md §6/§7 for the multi-tx and zkVM routes to scale |
+| Tutorial-ladder material: defs/theorems, universe algebra, δβζ, defeq, lets, Church-numeral Peano, inductives, recursors+ι, rule K, projections, structure/unit eta, proof irrelevance, function eta, Nat literals, quotients | accept/reject correctly (75/75 bundled; 133/133 byte-real Arena tutorial; current downloadable tarball: 142 exact + 4 explicit size declines) |
+| Nested inductives (`numNested > 0`), multi-type mutual blocks, unsafe/partial declarations, String-literal *reduction* | decline (exit 2) — honest out-of-fragment verdicts |
+| Large perf/init/std/mathlib exports | `bin/evmlean.js` declines files above `EVMLEAN_MAX_BYTES` (default 128000). That's the expected placement for this checker — see PLAN.md §6/§7 for the multi-tx and zkVM routes to scale |
 
-Gas intuition from the bundled runs: ~160k gas for a trivial def, 2.5–3M for
+Gas intuition from the bundled runs: ~160k gas for a trivial def, 3.0M for
 Church-numeral arithmetic, 6.3M for all 24 prelude-style declarations of
-`constlevels` (False/True/Bool/Eq + Eq.symm + false_ne_true + casesOn), 6.5M
+`constlevels` (False/True/Bool/Eq + Eq.symm + false_ne_true + casesOn), 6.8M
 for the quotient test — every single test fits within one post-Fusaka mainnet
 transaction (16.77M cap).
 
@@ -119,9 +125,9 @@ transaction (16.77M cap).
 Anything the local runner does can be replayed against a deployed kernel:
 
 ```bash
-# local node with a raised code-size limit (kernel is 29.5KB — Glamsterdam-class):
+# local node with a raised code-size limit (kernel is 36.7KB — Glamsterdam-class):
 anvil --code-size-limit 65536
-RPC_URL=http://127.0.0.1:8545 PRIVATE_KEY=<anvil key> node scripts/deploy.js
+ALLOW_EIP7907=1 RPC_URL=http://127.0.0.1:8545 PRIVATE_KEY=<anvil key> node scripts/deploy.js
 KERNEL=0x... node scripts/check-onchain.js tests/arena/level-imax-leq.ndjson
 # record an accepted export permanently:
 KERNEL=0x... REGISTRY=0x... PRIVATE_KEY=... SUBMIT=1 node scripts/check-onchain.js tests/good/048_eqRuleK.ndjson

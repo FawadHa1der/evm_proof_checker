@@ -1,12 +1,36 @@
 {
-  "sizeBytes": 29574,
+  "sourceHash": "311aa2998b114913c3f9be731fe92da4154e6b2e90ee2b4e08bd2fb27c81b96a",
+  "budgets": {
+    "eip170CodeSize": "24576",
+    "eip7907TargetCodeSize": "65536",
+    "eip7825TxGasCap": "16777216"
+  },
+  "artifacts": {
+    "LeanKernel": {
+      "deployedSize": 36693,
+      "initcodeSize": 36719
+    },
+    "TheoremRegistry": {
+      "deployedSize": 1321,
+      "initcodeSize": 1456
+    }
+  },
+  "summary": {
+    "tests": 75,
+    "passed": 75,
+    "failed": 0,
+    "maxGas": "6718411",
+    "txCapHeadroomAtMaxGas": "10058805",
+    "maxCalldataBytes": 12484
+  },
+  "sizeBytes": 36693,
   "rows": [
     {
       "test": "good/001_basicDef",
       "expected": "accept",
       "got": "accept",
       "reason": "",
-      "gas": "165572",
+      "gas": "165610",
       "calldataBytes": 676,
       "ok": true
     },
@@ -15,7 +39,7 @@
       "expected": "accept",
       "got": "accept",
       "reason": "",
-      "gas": "175787",
+      "gas": "175825",
       "calldataBytes": 708,
       "ok": true
     },
@@ -24,7 +48,7 @@
       "expected": "accept",
       "got": "accept",
       "reason": "",
-      "gas": "174053",
+      "gas": "174091",
       "calldataBytes": 676,
       "ok": true
     },
@@ -33,7 +57,7 @@
       "expected": "accept",
       "got": "accept",
       "reason": "",
-      "gas": "200010",
+      "gas": "200048",
       "calldataBytes": 804,
       "ok": true
     },
@@ -42,7 +66,7 @@
       "expected": "accept",
       "got": "accept",
       "reason": "",
-      "gas": "273073",
+      "gas": "272408",
       "calldataBytes": 1124,
       "ok": true
     },
@@ -51,7 +75,7 @@
       "expected": "accept",
       "got": "accept",
       "reason": "",
-      "gas": "285461",
+      "gas": "284796",
       "calldataBytes": 1156,
       "ok": true
     },
@@ -60,7 +84,7 @@
       "expected": "accept",
       "got": "accept",
       "reason": "",
-      "gas": "304479",
+      "gas": "303834",
       "calldataBytes": 1284,
       "ok": true
     },
@@ -69,7 +93,7 @@
       "expected": "accept",
       "got": "accept",
       "reason": "",
-      "gas": "183446",
+      "gas": "183484",
       "calldataBytes": 708,
       "ok": true
     },
@@ -78,7 +102,7 @@
       "expected": "accept",
       "got": "accept",
       "reason": "",
-      "gas": "189989",
+      "gas": "190027",
       "calldataBytes": 740,
       "ok": true
     },
@@ -87,7 +111,7 @@
       "expected": "accept",
       "got": "accept",
       "reason": "",
-      "gas": "203504",
+      "gas": "203541",
       "calldataBytes": 772,
       "ok": true
     },
@@ -96,7 +120,7 @@
       "expected": "accept",
       "got": "accept",
       "reason": "",
-      "gas": "289463",
+      "gas": "288819",
       "calldataBytes": 1252,
       "ok": true
     },
@@ -105,7 +129,7 @@
       "expected": "accept",
       "got": "accept",
       "reason": "",
-      "gas": "185171",
+      "gas": "185231",
       "calldataBytes": 804,
       "ok": true
     },
@@ -114,7 +138,7 @@
       "expected": "accept",
       "got": "accept",
       "reason": "",
-      "gas": "187945",
+      "gas": "188005",
       "calldataBytes": 804,
       "ok": true
     },
@@ -123,7 +147,7 @@
       "expected": "accept",
       "got": "accept",
       "reason": "",
-      "gas": "191000",
+      "gas": "191038",
       "calldataBytes": 804,
       "ok": true
     },
@@ -132,7 +156,7 @@
       "expected": "accept",
       "got": "accept",
       "reason": "",
-      "gas": "229984",
+      "gas": "230021",
       "calldataBytes": 836,
       "ok": true
     },
@@ -141,7 +165,7 @@
       "expected": "accept",
       "got": "accept",
       "reason": "",
-      "gas": "195777",
+      "gas": "195815",
       "calldataBytes": 804,
       "ok": true
     },
@@ -150,7 +174,7 @@
       "expected": "accept",
       "got": "accept",
       "reason": "",
-      "gas": "336222",
+      "gas": "336258",
       "calldataBytes": 1060,
       "ok": true
     },
@@ -159,7 +183,7 @@
       "expected": "accept",
       "got": "accept",
       "reason": "",
-      "gas": "1181407",
+      "gas": "1171872",
       "calldataBytes": 4196,
       "ok": true
     },
@@ -168,7 +192,7 @@
       "expected": "accept",
       "got": "accept",
       "reason": "",
-      "gas": "1941130",
+      "gas": "1929903",
       "calldataBytes": 4324,
       "ok": true
     },
@@ -177,7 +201,7 @@
       "expected": "accept",
       "got": "accept",
       "reason": "",
-      "gas": "2979494",
+      "gas": "2966148",
       "calldataBytes": 4388,
       "ok": true
     },
@@ -186,7 +210,7 @@
       "expected": "accept",
       "got": "accept",
       "reason": "",
-      "gas": "174954",
+      "gas": "174992",
       "calldataBytes": 740,
       "ok": true
     },
@@ -195,7 +219,7 @@
       "expected": "accept",
       "got": "accept",
       "reason": "",
-      "gas": "246158",
+      "gas": "244630",
       "calldataBytes": 1156,
       "ok": true
     },
@@ -204,7 +228,7 @@
       "expected": "accept",
       "got": "accept",
       "reason": "",
-      "gas": "186735",
+      "gas": "186073",
       "calldataBytes": 868,
       "ok": true
     },
@@ -213,7 +237,7 @@
       "expected": "accept",
       "got": "accept",
       "reason": "",
-      "gas": "220290",
+      "gas": "218619",
       "calldataBytes": 1124,
       "ok": true
     },
@@ -222,7 +246,7 @@
       "expected": "accept",
       "got": "accept",
       "reason": "",
-      "gas": "330509",
+      "gas": "327952",
       "calldataBytes": 1284,
       "ok": true
     },
@@ -231,7 +255,7 @@
       "expected": "accept",
       "got": "accept",
       "reason": "",
-      "gas": "350337",
+      "gas": "349673",
       "calldataBytes": 1124,
       "ok": true
     },
@@ -240,7 +264,7 @@
       "expected": "reject",
       "got": "reject",
       "reason": "decl#0: value/type mismatch",
-      "gas": "171413",
+      "gas": "171329",
       "calldataBytes": 676,
       "ok": true
     },
@@ -249,7 +273,7 @@
       "expected": "reject",
       "got": "reject",
       "reason": "decl#1: binder domain is not a sort",
-      "gas": "276883",
+      "gas": "276115",
       "calldataBytes": 1380,
       "ok": true
     },
@@ -258,7 +282,7 @@
       "expected": "reject",
       "got": "reject",
       "reason": "decl#1: type is not a sort",
-      "gas": "212278",
+      "gas": "211494",
       "calldataBytes": 964,
       "ok": true
     },
@@ -267,7 +291,7 @@
       "expected": "reject",
       "got": "reject",
       "reason": "decl#0: theorem type not a Prop",
-      "gas": "165724",
+      "gas": "165640",
       "calldataBytes": 676,
       "ok": true
     },
@@ -276,7 +300,7 @@
       "expected": "reject",
       "got": "reject",
       "reason": "decl#0: duplicate universe param",
-      "gas": "160367",
+      "gas": "160787",
       "calldataBytes": 772,
       "ok": true
     },
@@ -285,7 +309,7 @@
       "expected": "reject",
       "got": "reject",
       "reason": "decl#10: value/type mismatch",
-      "gas": "2184454",
+      "gas": "2174773",
       "calldataBytes": 4196,
       "ok": true
     },
@@ -294,7 +318,7 @@
       "expected": "reject",
       "got": "reject",
       "reason": "decl#1: duplicate name",
-      "gas": "169855",
+      "gas": "169915",
       "calldataBytes": 772,
       "ok": true
     },
@@ -303,7 +327,7 @@
       "expected": "reject",
       "got": "reject",
       "reason": "decl#0: unknown constant",
-      "gas": "162885",
+      "gas": "162823",
       "calldataBytes": 708,
       "ok": true
     },
@@ -312,7 +336,7 @@
       "expected": "reject",
       "got": "reject",
       "reason": "decl#0: bvar out of range",
-      "gas": "162198",
+      "gas": "162114",
       "calldataBytes": 676,
       "ok": true
     },
@@ -321,7 +345,7 @@
       "expected": "reject",
       "got": "reject",
       "reason": "decl#0: undeclared universe param",
-      "gas": "161304",
+      "gas": "161243",
       "calldataBytes": 740,
       "ok": true
     },
@@ -330,7 +354,7 @@
       "expected": "reject",
       "got": "reject",
       "reason": "decl#1: universe count mismatch",
-      "gas": "212098",
+      "gas": "211313",
       "calldataBytes": 1060,
       "ok": true
     },
@@ -339,7 +363,7 @@
       "expected": "reject",
       "got": "reject",
       "reason": "decl#1: duplicate name",
-      "gas": "159924",
+      "gas": "159962",
       "calldataBytes": 676,
       "ok": true
     },
@@ -348,7 +372,7 @@
       "expected": "reject",
       "got": "reject",
       "reason": "decl#3: value/type mismatch",
-      "gas": "355026",
+      "gas": "352345",
       "calldataBytes": 1348,
       "ok": true
     },
@@ -357,7 +381,7 @@
       "expected": "reject",
       "got": "reject",
       "reason": "decl#2: value/type mismatch",
-      "gas": "644348",
+      "gas": "642695",
       "calldataBytes": 1284,
       "ok": true
     },
@@ -366,7 +390,7 @@
       "expected": "reject",
       "got": "reject",
       "reason": "decl#10: value/type mismatch",
-      "gas": "3792623",
+      "gas": "3781079",
       "calldataBytes": 4324,
       "ok": true
     },
@@ -375,7 +399,7 @@
       "expected": "accept",
       "got": "accept",
       "reason": "",
-      "gas": "385809",
+      "gas": "397562",
       "calldataBytes": 1540,
       "ok": true
     },
@@ -384,7 +408,7 @@
       "expected": "accept",
       "got": "accept",
       "reason": "",
-      "gas": "895052",
+      "gas": "922525",
       "calldataBytes": 2884,
       "ok": true
     },
@@ -393,7 +417,7 @@
       "expected": "accept",
       "got": "accept",
       "reason": "",
-      "gas": "1462875",
+      "gas": "1507440",
       "calldataBytes": 3556,
       "ok": true
     },
@@ -402,7 +426,7 @@
       "expected": "accept",
       "got": "accept",
       "reason": "",
-      "gas": "3381232",
+      "gas": "3465436",
       "calldataBytes": 5092,
       "ok": true
     },
@@ -411,7 +435,7 @@
       "expected": "accept",
       "got": "accept",
       "reason": "",
-      "gas": "1551885",
+      "gas": "1621185",
       "calldataBytes": 4708,
       "ok": true
     },
@@ -420,7 +444,7 @@
       "expected": "accept",
       "got": "accept",
       "reason": "",
-      "gas": "1528706",
+      "gas": "1571811",
       "calldataBytes": 4516,
       "ok": true
     },
@@ -429,7 +453,7 @@
       "expected": "accept",
       "got": "accept",
       "reason": "",
-      "gas": "688767",
+      "gas": "709835",
       "calldataBytes": 2084,
       "ok": true
     },
@@ -438,8 +462,35 @@
       "expected": "accept",
       "got": "accept",
       "reason": "",
-      "gas": "6467300",
+      "gas": "6718411",
       "calldataBytes": 7812,
+      "ok": true
+    },
+    {
+      "test": "bad/071_quotBadSignature",
+      "expected": "reject",
+      "got": "reject",
+      "reason": "decl#1: quotient shape",
+      "gas": "307842",
+      "calldataBytes": 1060,
+      "ok": true
+    },
+    {
+      "test": "bad/072_quotBadTypeShape",
+      "expected": "reject",
+      "got": "reject",
+      "reason": "decl#0: quotient shape",
+      "gas": "206051",
+      "calldataBytes": 772,
+      "ok": true
+    },
+    {
+      "test": "bad/073_quotBadMkArg",
+      "expected": "reject",
+      "got": "reject",
+      "reason": "decl#1: quotient shape",
+      "gas": "529434",
+      "calldataBytes": 1316,
       "ok": true
     },
     {
@@ -447,7 +498,7 @@
       "expected": "reject",
       "got": "reject",
       "reason": "decl#1: inductive shape",
-      "gas": "173748",
+      "gas": "172995",
       "calldataBytes": 868,
       "ok": true
     },
@@ -456,7 +507,7 @@
       "expected": "reject",
       "got": "reject",
       "reason": "decl#0: duplicate universe param",
-      "gas": "161242",
+      "gas": "161694",
       "calldataBytes": 836,
       "ok": true
     },
@@ -465,7 +516,7 @@
       "expected": "reject",
       "got": "reject",
       "reason": "decl#0: inductive shape",
-      "gas": "177431",
+      "gas": "177377",
       "calldataBytes": 804,
       "ok": true
     },
@@ -474,7 +525,7 @@
       "expected": "reject",
       "got": "reject",
       "reason": "decl#0: constructor result type",
-      "gas": "264701",
+      "gas": "263911",
       "calldataBytes": 1188,
       "ok": true
     },
@@ -483,7 +534,7 @@
       "expected": "reject",
       "got": "reject",
       "reason": "decl#0: constructor result levels",
-      "gas": "193090",
+      "gas": "192345",
       "calldataBytes": 1220,
       "ok": true
     },
@@ -492,7 +543,7 @@
       "expected": "reject",
       "got": "reject",
       "reason": "decl#0: positivity violation",
-      "gas": "202485",
+      "gas": "201698",
       "calldataBytes": 964,
       "ok": true
     },
@@ -501,7 +552,7 @@
       "expected": "reject",
       "got": "reject",
       "reason": "decl#1: constructor result type",
-      "gas": "213223",
+      "gas": "211570",
       "calldataBytes": 1092,
       "ok": true
     },
@@ -510,7 +561,7 @@
       "expected": "reject",
       "got": "reject",
       "reason": "decl#1: constructor result type",
-      "gas": "188675",
+      "gas": "187547",
       "calldataBytes": 996,
       "ok": true
     },
@@ -519,7 +570,7 @@
       "expected": "reject",
       "got": "reject",
       "reason": "decl#0: field universe too large",
-      "gas": "203678",
+      "gas": "202892",
       "calldataBytes": 932,
       "ok": true
     },
@@ -528,7 +579,7 @@
       "expected": "reject",
       "got": "reject",
       "reason": "decl#8: projection violation",
-      "gas": "671321",
+      "gas": "697990",
       "calldataBytes": 2724,
       "ok": true
     },
@@ -537,7 +588,7 @@
       "expected": "reject",
       "got": "reject",
       "reason": "decl#5: projection violation",
-      "gas": "743526",
+      "gas": "789366",
       "calldataBytes": 2692,
       "ok": true
     },
@@ -546,8 +597,26 @@
       "expected": "reject",
       "got": "reject",
       "reason": "decl#0: recursor rule invalid",
-      "gas": "639407",
+      "gas": "669469",
       "calldataBytes": 1988,
+      "ok": true
+    },
+    {
+      "test": "bad/070_recBadResult",
+      "expected": "reject",
+      "got": "reject",
+      "reason": "decl#1: recursor shape",
+      "gas": "301126",
+      "calldataBytes": 2148,
+      "ok": true
+    },
+    {
+      "test": "bad/074_recSwappedMinors",
+      "expected": "reject",
+      "got": "reject",
+      "reason": "decl#0: recursor shape",
+      "gas": "523270",
+      "calldataBytes": 2084,
       "ok": true
     },
     {
@@ -555,7 +624,7 @@
       "expected": "reject",
       "got": "reject",
       "reason": "decl#0: invalid K flag",
-      "gas": "336819",
+      "gas": "358123",
       "calldataBytes": 1604,
       "ok": true
     },
@@ -564,7 +633,7 @@
       "expected": "reject",
       "got": "reject",
       "reason": "decl#0: elimination universe violation",
-      "gas": "385496",
+      "gas": "383697",
       "calldataBytes": 2052,
       "ok": true
     },
@@ -573,7 +642,7 @@
       "expected": "decline",
       "got": "decline",
       "reason": "decl#0: unsupported feature",
-      "gas": "158397",
+      "gas": "158826",
       "calldataBytes": 740,
       "ok": true
     },
@@ -582,7 +651,7 @@
       "expected": "decline",
       "got": "decline",
       "reason": "decl#0: unsupported feature",
-      "gas": "157014",
+      "gas": "157411",
       "calldataBytes": 676,
       "ok": true
     },
@@ -591,7 +660,7 @@
       "expected": "reject",
       "got": "reject",
       "reason": "decl#23: universe count mismatch",
-      "gas": "6274941",
+      "gas": "6381225",
       "calldataBytes": 12484,
       "ok": true
     },
@@ -600,7 +669,7 @@
       "expected": "reject",
       "got": "reject",
       "reason": "decl#10: unknown constant",
-      "gas": "479841",
+      "gas": "472096",
       "calldataBytes": 3108,
       "ok": true
     },
@@ -609,7 +678,7 @@
       "expected": "reject",
       "got": "reject",
       "reason": "decl#12: value/type mismatch",
-      "gas": "929759",
+      "gas": "989529",
       "calldataBytes": 5060,
       "ok": true
     },
@@ -618,7 +687,7 @@
       "expected": "reject",
       "got": "reject",
       "reason": "decl#12: value/type mismatch",
-      "gas": "927016",
+      "gas": "986829",
       "calldataBytes": 5124,
       "ok": true
     },
@@ -627,7 +696,7 @@
       "expected": "reject",
       "got": "reject",
       "reason": "decl#12: recursor rule invalid",
-      "gas": "1437919",
+      "gas": "1539825",
       "calldataBytes": 6916,
       "ok": true
     }

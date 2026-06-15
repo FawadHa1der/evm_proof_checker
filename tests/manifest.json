@@ -246,6 +246,21 @@
   },
   {
     "group": "bad",
+    "name": "071_quotBadSignature",
+    "note": "Quot primitive declarations must have canonical signatures"
+  },
+  {
+    "group": "bad",
+    "name": "072_quotBadTypeShape",
+    "note": "Quot type primitive must quantify a Prop-valued relation"
+  },
+  {
+    "group": "bad",
+    "name": "073_quotBadMkArg",
+    "note": "Quot.mk element argument must have type α"
+  },
+  {
+    "group": "bad",
     "name": "054_indNonSort",
     "note": "Inductive type must be a sort"
   },
@@ -303,6 +318,16 @@
     "group": "bad",
     "name": "065_recWrongRule",
     "note": "Recursor rule with the wrong type must be rejected (nat-rec-rules class)"
+  },
+  {
+    "group": "bad",
+    "name": "070_recBadResult",
+    "note": "Recursor declaration must end in motive applied to indices and major"
+  },
+  {
+    "group": "bad",
+    "name": "074_recSwappedMinors",
+    "note": "Recursor minor premises must match constructor order and result motives"
   },
   {
     "group": "bad",
