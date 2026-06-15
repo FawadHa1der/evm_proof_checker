@@ -24,7 +24,7 @@ description: |
   fragment (nested inductives, multi-type mutual groups, unsafe decls,
   String reduction) and exports beyond its resource budget.
 version: "0.1.0"
-url: https://github.com/FawadHa1der/eve_proof_checker
+url: https://github.com/FawadHa1der/evm_proof_checker
 ref: main
 rev: <pin-after-commit>
 build: npm install --no-audit --no-fund && node tools/build.js
