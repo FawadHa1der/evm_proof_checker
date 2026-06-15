@@ -1,0 +1,8 @@
+{"meta":{"exporter":{"name":"evmlean-gen","version":"0.1.0"},"lean":{"githash":"0000000000000000000000000000000000000000","version":"4.27.0-rc1"},"format":{"version":"3.1.0"}}}
+{"str":{"pre":0,"str":"A"},"in":1}
+{"str":{"pre":0,"str":"J"},"in":2}
+{"succ":0,"il":1}
+{"sort":1,"ie":0}
+{"const":{"name":1,"us":[]},"ie":1}
+{"axiom":{"name":1,"levelParams":[],"type":0,"isUnsafe":false}}
+{"inductive":{"types":[{"numNested":0,"isRec":false,"isUnsafe":false,"isReflexive":false,"name":2,"levelParams":[],"type":1,"numParams":0,"numIndices":0,"ctors":[],"all":[2]}],"ctors":[],"recs":[]}}

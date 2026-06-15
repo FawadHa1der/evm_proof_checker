@@ -1,0 +1,5 @@
+{"meta":{"exporter":{"name":"evmlean-gen","version":"0.1.0"},"lean":{"githash":"0000000000000000000000000000000000000000","version":"4.27.0-rc1"},"format":{"version":"3.1.0"}}}
+{"str":{"pre":0,"str":"a"},"in":1}
+{"sort":0,"ie":0}
+{"axiom":{"name":1,"levelParams":[],"type":0,"isUnsafe":false}}
+{"axiom":{"name":1,"levelParams":[],"type":0,"isUnsafe":false}}

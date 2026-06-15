@@ -1,0 +1,635 @@
+{
+  "sizeBytes": 29574,
+  "rows": [
+    {
+      "test": "good/001_basicDef",
+      "expected": "accept",
+      "got": "accept",
+      "reason": "",
+      "gas": "165572",
+      "calldataBytes": 676,
+      "ok": true
+    },
+    {
+      "test": "good/003_arrowType",
+      "expected": "accept",
+      "got": "accept",
+      "reason": "",
+      "gas": "175787",
+      "calldataBytes": 708,
+      "ok": true
+    },
+    {
+      "test": "good/004_dependentType",
+      "expected": "accept",
+      "got": "accept",
+      "reason": "",
+      "gas": "174053",
+      "calldataBytes": 676,
+      "ok": true
+    },
+    {
+      "test": "good/005_constType",
+      "expected": "accept",
+      "got": "accept",
+      "reason": "",
+      "gas": "200010",
+      "calldataBytes": 804,
+      "ok": true
+    },
+    {
+      "test": "good/006_betaReduction",
+      "expected": "accept",
+      "got": "accept",
+      "reason": "",
+      "gas": "273073",
+      "calldataBytes": 1124,
+      "ok": true
+    },
+    {
+      "test": "good/007_betaReduction2",
+      "expected": "accept",
+      "got": "accept",
+      "reason": "",
+      "gas": "285461",
+      "calldataBytes": 1156,
+      "ok": true
+    },
+    {
+      "test": "good/008_forallSortWhnf",
+      "expected": "accept",
+      "got": "accept",
+      "reason": "",
+      "gas": "304479",
+      "calldataBytes": 1284,
+      "ok": true
+    },
+    {
+      "test": "good/012_levelComp1",
+      "expected": "accept",
+      "got": "accept",
+      "reason": "",
+      "gas": "183446",
+      "calldataBytes": 708,
+      "ok": true
+    },
+    {
+      "test": "good/013_levelComp2",
+      "expected": "accept",
+      "got": "accept",
+      "reason": "",
+      "gas": "189989",
+      "calldataBytes": 740,
+      "ok": true
+    },
+    {
+      "test": "good/014_levelComp3",
+      "expected": "accept",
+      "got": "accept",
+      "reason": "",
+      "gas": "203504",
+      "calldataBytes": 772,
+      "ok": true
+    },
+    {
+      "test": "good/015_levelParams",
+      "expected": "accept",
+      "got": "accept",
+      "reason": "",
+      "gas": "289463",
+      "calldataBytes": 1252,
+      "ok": true
+    },
+    {
+      "test": "good/017_levelComp4",
+      "expected": "accept",
+      "got": "accept",
+      "reason": "",
+      "gas": "185171",
+      "calldataBytes": 804,
+      "ok": true
+    },
+    {
+      "test": "good/018_levelComp5",
+      "expected": "accept",
+      "got": "accept",
+      "reason": "",
+      "gas": "187945",
+      "calldataBytes": 804,
+      "ok": true
+    },
+    {
+      "test": "good/019_imax1",
+      "expected": "accept",
+      "got": "accept",
+      "reason": "",
+      "gas": "191000",
+      "calldataBytes": 804,
+      "ok": true
+    },
+    {
+      "test": "good/020_imax2",
+      "expected": "accept",
+      "got": "accept",
+      "reason": "",
+      "gas": "229984",
+      "calldataBytes": 836,
+      "ok": true
+    },
+    {
+      "test": "good/021_inferVar",
+      "expected": "accept",
+      "got": "accept",
+      "reason": "",
+      "gas": "195777",
+      "calldataBytes": 804,
+      "ok": true
+    },
+    {
+      "test": "good/022_defEqLambda",
+      "expected": "accept",
+      "got": "accept",
+      "reason": "",
+      "gas": "336222",
+      "calldataBytes": 1060,
+      "ok": true
+    },
+    {
+      "test": "good/023_peano1",
+      "expected": "accept",
+      "got": "accept",
+      "reason": "",
+      "gas": "1181407",
+      "calldataBytes": 4196,
+      "ok": true
+    },
+    {
+      "test": "good/024_peano2",
+      "expected": "accept",
+      "got": "accept",
+      "reason": "",
+      "gas": "1941130",
+      "calldataBytes": 4324,
+      "ok": true
+    },
+    {
+      "test": "good/025_peano3",
+      "expected": "accept",
+      "got": "accept",
+      "reason": "",
+      "gas": "2979494",
+      "calldataBytes": 4388,
+      "ok": true
+    },
+    {
+      "test": "good/026_letType",
+      "expected": "accept",
+      "got": "accept",
+      "reason": "",
+      "gas": "174954",
+      "calldataBytes": 740,
+      "ok": true
+    },
+    {
+      "test": "good/027_letTypeDep",
+      "expected": "accept",
+      "got": "accept",
+      "reason": "",
+      "gas": "246158",
+      "calldataBytes": 1156,
+      "ok": true
+    },
+    {
+      "test": "good/028_letRed",
+      "expected": "accept",
+      "got": "accept",
+      "reason": "",
+      "gas": "186735",
+      "calldataBytes": 868,
+      "ok": true
+    },
+    {
+      "test": "good/029_axioms",
+      "expected": "accept",
+      "got": "accept",
+      "reason": "",
+      "gas": "220290",
+      "calldataBytes": 1124,
+      "ok": true
+    },
+    {
+      "test": "good/030_proofIrrel",
+      "expected": "accept",
+      "got": "accept",
+      "reason": "",
+      "gas": "330509",
+      "calldataBytes": 1284,
+      "ok": true
+    },
+    {
+      "test": "good/031_funEta",
+      "expected": "accept",
+      "got": "accept",
+      "reason": "",
+      "gas": "350337",
+      "calldataBytes": 1124,
+      "ok": true
+    },
+    {
+      "test": "bad/002_badDef",
+      "expected": "reject",
+      "got": "reject",
+      "reason": "decl#0: value/type mismatch",
+      "gas": "171413",
+      "calldataBytes": 676,
+      "ok": true
+    },
+    {
+      "test": "bad/009_forallSortBad",
+      "expected": "reject",
+      "got": "reject",
+      "reason": "decl#1: binder domain is not a sort",
+      "gas": "276883",
+      "calldataBytes": 1380,
+      "ok": true
+    },
+    {
+      "test": "bad/010_nonTypeType",
+      "expected": "reject",
+      "got": "reject",
+      "reason": "decl#1: type is not a sort",
+      "gas": "212278",
+      "calldataBytes": 964,
+      "ok": true
+    },
+    {
+      "test": "bad/011_nonPropThm",
+      "expected": "reject",
+      "got": "reject",
+      "reason": "decl#0: theorem type not a Prop",
+      "gas": "165724",
+      "calldataBytes": 676,
+      "ok": true
+    },
+    {
+      "test": "bad/016_dupLevelParams",
+      "expected": "reject",
+      "got": "reject",
+      "reason": "decl#0: duplicate universe param",
+      "gas": "160367",
+      "calldataBytes": 772,
+      "ok": true
+    },
+    {
+      "test": "bad/033_wrongPeano",
+      "expected": "reject",
+      "got": "reject",
+      "reason": "decl#10: value/type mismatch",
+      "gas": "2184454",
+      "calldataBytes": 4196,
+      "ok": true
+    },
+    {
+      "test": "bad/034_dupDefs",
+      "expected": "reject",
+      "got": "reject",
+      "reason": "decl#1: duplicate name",
+      "gas": "169855",
+      "calldataBytes": 772,
+      "ok": true
+    },
+    {
+      "test": "bad/035_unknownConst",
+      "expected": "reject",
+      "got": "reject",
+      "reason": "decl#0: unknown constant",
+      "gas": "162885",
+      "calldataBytes": 708,
+      "ok": true
+    },
+    {
+      "test": "bad/036_bvarOutOfRange",
+      "expected": "reject",
+      "got": "reject",
+      "reason": "decl#0: bvar out of range",
+      "gas": "162198",
+      "calldataBytes": 676,
+      "ok": true
+    },
+    {
+      "test": "bad/037_undeclaredParam",
+      "expected": "reject",
+      "got": "reject",
+      "reason": "decl#0: undeclared universe param",
+      "gas": "161304",
+      "calldataBytes": 740,
+      "ok": true
+    },
+    {
+      "test": "bad/038_constLevelMismatch",
+      "expected": "reject",
+      "got": "reject",
+      "reason": "decl#1: universe count mismatch",
+      "gas": "212098",
+      "calldataBytes": 1060,
+      "ok": true
+    },
+    {
+      "test": "bad/039_axiomCollision",
+      "expected": "reject",
+      "got": "reject",
+      "reason": "decl#1: duplicate name",
+      "gas": "159924",
+      "calldataBytes": 676,
+      "ok": true
+    },
+    {
+      "test": "bad/042_proofIrrelBad",
+      "expected": "reject",
+      "got": "reject",
+      "reason": "decl#3: value/type mismatch",
+      "gas": "355026",
+      "calldataBytes": 1348,
+      "ok": true
+    },
+    {
+      "test": "bad/043_funEtaBad",
+      "expected": "reject",
+      "got": "reject",
+      "reason": "decl#2: value/type mismatch",
+      "gas": "644348",
+      "calldataBytes": 1284,
+      "ok": true
+    },
+    {
+      "test": "bad/044_wrongPeanoMul",
+      "expected": "reject",
+      "got": "reject",
+      "reason": "decl#10: value/type mismatch",
+      "gas": "3792623",
+      "calldataBytes": 4324,
+      "ok": true
+    },
+    {
+      "test": "good/045_empty",
+      "expected": "accept",
+      "got": "accept",
+      "reason": "",
+      "gas": "385809",
+      "calldataBytes": 1540,
+      "ok": true
+    },
+    {
+      "test": "good/046_bool",
+      "expected": "accept",
+      "got": "accept",
+      "reason": "",
+      "gas": "895052",
+      "calldataBytes": 2884,
+      "ok": true
+    },
+    {
+      "test": "good/047_natN",
+      "expected": "accept",
+      "got": "accept",
+      "reason": "",
+      "gas": "1462875",
+      "calldataBytes": 3556,
+      "ok": true
+    },
+    {
+      "test": "good/048_eqRuleK",
+      "expected": "accept",
+      "got": "accept",
+      "reason": "",
+      "gas": "3381232",
+      "calldataBytes": 5092,
+      "ok": true
+    },
+    {
+      "test": "good/050_struct",
+      "expected": "accept",
+      "got": "accept",
+      "reason": "",
+      "gas": "1551885",
+      "calldataBytes": 4708,
+      "ok": true
+    },
+    {
+      "test": "good/051_natLit",
+      "expected": "accept",
+      "got": "accept",
+      "reason": "",
+      "gas": "1528706",
+      "calldataBytes": 4516,
+      "ok": true
+    },
+    {
+      "test": "good/052_unit",
+      "expected": "accept",
+      "got": "accept",
+      "reason": "",
+      "gas": "688767",
+      "calldataBytes": 2084,
+      "ok": true
+    },
+    {
+      "test": "good/053_quot",
+      "expected": "accept",
+      "got": "accept",
+      "reason": "",
+      "gas": "6467300",
+      "calldataBytes": 7812,
+      "ok": true
+    },
+    {
+      "test": "bad/054_indNonSort",
+      "expected": "reject",
+      "got": "reject",
+      "reason": "decl#1: inductive shape",
+      "gas": "173748",
+      "calldataBytes": 868,
+      "ok": true
+    },
+    {
+      "test": "bad/055_indDupLp",
+      "expected": "reject",
+      "got": "reject",
+      "reason": "decl#0: duplicate universe param",
+      "gas": "161242",
+      "calldataBytes": 836,
+      "ok": true
+    },
+    {
+      "test": "bad/056_indTooFewParams",
+      "expected": "reject",
+      "got": "reject",
+      "reason": "decl#0: inductive shape",
+      "gas": "177431",
+      "calldataBytes": 804,
+      "ok": true
+    },
+    {
+      "test": "bad/057_ctorSwappedParams",
+      "expected": "reject",
+      "got": "reject",
+      "reason": "decl#0: constructor result type",
+      "gas": "264701",
+      "calldataBytes": 1188,
+      "ok": true
+    },
+    {
+      "test": "bad/058_ctorSwappedLevels",
+      "expected": "reject",
+      "got": "reject",
+      "reason": "decl#0: constructor result levels",
+      "gas": "193090",
+      "calldataBytes": 1220,
+      "ok": true
+    },
+    {
+      "test": "bad/059_indNegative",
+      "expected": "reject",
+      "got": "reject",
+      "reason": "decl#0: positivity violation",
+      "gas": "202485",
+      "calldataBytes": 964,
+      "ok": true
+    },
+    {
+      "test": "bad/060_indInIndex",
+      "expected": "reject",
+      "got": "reject",
+      "reason": "decl#1: constructor result type",
+      "gas": "213223",
+      "calldataBytes": 1092,
+      "ok": true
+    },
+    {
+      "test": "bad/061_ctorBadResult",
+      "expected": "reject",
+      "got": "reject",
+      "reason": "decl#1: constructor result type",
+      "gas": "188675",
+      "calldataBytes": 996,
+      "ok": true
+    },
+    {
+      "test": "bad/062_fieldTooLarge",
+      "expected": "reject",
+      "got": "reject",
+      "reason": "decl#0: field universe too large",
+      "gas": "203678",
+      "calldataBytes": 932,
+      "ok": true
+    },
+    {
+      "test": "bad/063_projOutOfRange",
+      "expected": "reject",
+      "got": "reject",
+      "reason": "decl#8: projection violation",
+      "gas": "671321",
+      "calldataBytes": 2724,
+      "ok": true
+    },
+    {
+      "test": "bad/064_projNotStruct",
+      "expected": "reject",
+      "got": "reject",
+      "reason": "decl#5: projection violation",
+      "gas": "743526",
+      "calldataBytes": 2692,
+      "ok": true
+    },
+    {
+      "test": "bad/065_recWrongRule",
+      "expected": "reject",
+      "got": "reject",
+      "reason": "decl#0: recursor rule invalid",
+      "gas": "639407",
+      "calldataBytes": 1988,
+      "ok": true
+    },
+    {
+      "test": "bad/066_kOnData",
+      "expected": "reject",
+      "got": "reject",
+      "reason": "decl#0: invalid K flag",
+      "gas": "336819",
+      "calldataBytes": 1604,
+      "ok": true
+    },
+    {
+      "test": "bad/067_elimViolation",
+      "expected": "reject",
+      "got": "reject",
+      "reason": "decl#0: elimination universe violation",
+      "gas": "385496",
+      "calldataBytes": 2052,
+      "ok": true
+    },
+    {
+      "test": "decline/068_nested",
+      "expected": "decline",
+      "got": "decline",
+      "reason": "decl#0: unsupported feature",
+      "gas": "158397",
+      "calldataBytes": 740,
+      "ok": true
+    },
+    {
+      "test": "decline/069_unsafeDef",
+      "expected": "decline",
+      "got": "decline",
+      "reason": "decl#0: unsupported feature",
+      "gas": "157014",
+      "calldataBytes": 676,
+      "ok": true
+    },
+    {
+      "test": "arena/constlevels",
+      "expected": "reject",
+      "got": "reject",
+      "reason": "decl#23: universe count mismatch",
+      "gas": "6274941",
+      "calldataBytes": 12484,
+      "ok": true
+    },
+    {
+      "test": "arena/large-elim-param",
+      "expected": "reject",
+      "got": "reject",
+      "reason": "decl#10: unknown constant",
+      "gas": "479841",
+      "calldataBytes": 3108,
+      "ok": true
+    },
+    {
+      "test": "arena/level-imax-leq",
+      "expected": "reject",
+      "got": "reject",
+      "reason": "decl#12: value/type mismatch",
+      "gas": "929759",
+      "calldataBytes": 5060,
+      "ok": true
+    },
+    {
+      "test": "arena/level-imax-normalization",
+      "expected": "reject",
+      "got": "reject",
+      "reason": "decl#12: value/type mismatch",
+      "gas": "927016",
+      "calldataBytes": 5124,
+      "ok": true
+    },
+    {
+      "test": "arena/nat-rec-rules",
+      "expected": "reject",
+      "got": "reject",
+      "reason": "decl#12: recursor rule invalid",
+      "gas": "1437919",
+      "calldataBytes": 6916,
+      "ok": true
+    }
+  ]
+}

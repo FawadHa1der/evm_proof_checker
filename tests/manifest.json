@@ -1,0 +1,327 @@
+[
+  {
+    "group": "good",
+    "name": "001_basicDef",
+    "note": "Basic definition: def basicDef : Type := Prop"
+  },
+  {
+    "group": "good",
+    "name": "003_arrowType",
+    "note": "Arrow type: def arrowType : Type := Prop → Prop"
+  },
+  {
+    "group": "good",
+    "name": "004_dependentType",
+    "note": "Dependent type: def dependentType : Prop := ∀ (p : Prop), p"
+  },
+  {
+    "group": "good",
+    "name": "005_constType",
+    "note": "Lambda: def constType : Type → Type → Type := fun x y => x"
+  },
+  {
+    "group": "good",
+    "name": "006_betaReduction",
+    "note": "Beta: def betaReduction : constType Prop (Prop → Prop) := ∀ p : Prop, p"
+  },
+  {
+    "group": "good",
+    "name": "007_betaReduction2",
+    "note": "Beta under binder"
+  },
+  {
+    "group": "good",
+    "name": "008_forallSortWhnf",
+    "note": "Binder domain needs whnf before becoming a sort"
+  },
+  {
+    "group": "good",
+    "name": "012_levelComp1",
+    "note": "Sort (imax 1 0) : Sort 1"
+  },
+  {
+    "group": "good",
+    "name": "013_levelComp2",
+    "note": "Sort (imax 0 1) : Sort 2"
+  },
+  {
+    "group": "good",
+    "name": "014_levelComp3",
+    "note": "Sort (imax 2 1) : Sort 3"
+  },
+  {
+    "group": "good",
+    "name": "015_levelParams",
+    "note": "Universe-polymorphic function applied at level 1"
+  },
+  {
+    "group": "good",
+    "name": "017_levelComp4",
+    "note": "Sort (imax u 0) : Type 0"
+  },
+  {
+    "group": "good",
+    "name": "018_levelComp5",
+    "note": "Sort (imax u u) : Type u"
+  },
+  {
+    "group": "good",
+    "name": "019_imax1",
+    "note": "imax in forall inference: fun p => (Type → p) : Prop → Prop"
+  },
+  {
+    "group": "good",
+    "name": "020_imax2",
+    "note": "imax in forall inference: fun α => (Type → α) : Type → Type 1"
+  },
+  {
+    "group": "good",
+    "name": "021_inferVar",
+    "note": "Type inference of local variables"
+  },
+  {
+    "group": "good",
+    "name": "022_defEqLambda",
+    "note": "Definitional equality between lambdas"
+  },
+  {
+    "group": "good",
+    "name": "023_peano1",
+    "note": "Peano: 2 = 2"
+  },
+  {
+    "group": "good",
+    "name": "024_peano2",
+    "note": "Peano: 1 + 1 = 2 (δβ-normalization of Church numerals)"
+  },
+  {
+    "group": "good",
+    "name": "025_peano3",
+    "note": "Peano: 2 * 2 = 4 (δβ-normalization of Church numerals)"
+  },
+  {
+    "group": "good",
+    "name": "026_letType",
+    "note": "Non-dependent let"
+  },
+  {
+    "group": "good",
+    "name": "027_letTypeDep",
+    "note": "Dependent let"
+  },
+  {
+    "group": "good",
+    "name": "028_letRed",
+    "note": "Reducing a let (zeta) in the declared type"
+  },
+  {
+    "group": "good",
+    "name": "029_axioms",
+    "note": "Plain axioms"
+  },
+  {
+    "group": "good",
+    "name": "030_proofIrrel",
+    "note": "Proof irrelevance: q h1 and q h2 are defeq"
+  },
+  {
+    "group": "good",
+    "name": "031_funEta",
+    "note": "Function eta: (fun x => f x) ≡ f"
+  },
+  {
+    "group": "bad",
+    "name": "002_badDef",
+    "note": "Mismatched types: def badDef : Prop := Type"
+  },
+  {
+    "group": "bad",
+    "name": "009_forallSortBad",
+    "note": "Binder domain must be a sort (proof used as a type)"
+  },
+  {
+    "group": "bad",
+    "name": "010_nonTypeType",
+    "note": "Declaration's type must be a type, not a function"
+  },
+  {
+    "group": "bad",
+    "name": "011_nonPropThm",
+    "note": "Theorem type must be a Prop (Sort 0 itself is not)"
+  },
+  {
+    "group": "bad",
+    "name": "016_dupLevelParams",
+    "note": "Duplicate universe parameters"
+  },
+  {
+    "group": "bad",
+    "name": "033_wrongPeano",
+    "note": "Claim about 3 proved with witness for 2 must fail"
+  },
+  {
+    "group": "bad",
+    "name": "034_dupDefs",
+    "note": "Two declarations with the same (re-interned) name"
+  },
+  {
+    "group": "bad",
+    "name": "035_unknownConst",
+    "note": "Reference to an undeclared constant"
+  },
+  {
+    "group": "bad",
+    "name": "036_bvarOutOfRange",
+    "note": "Loose bound variable"
+  },
+  {
+    "group": "bad",
+    "name": "037_undeclaredParam",
+    "note": "Universe parameter used but not declared"
+  },
+  {
+    "group": "bad",
+    "name": "038_constLevelMismatch",
+    "note": "Constant applied to wrong number of universe levels"
+  },
+  {
+    "group": "bad",
+    "name": "039_axiomCollision",
+    "note": "Axiom name collision"
+  },
+  {
+    "group": "bad",
+    "name": "042_proofIrrelBad",
+    "note": "Proof irrelevance must not apply at Type"
+  },
+  {
+    "group": "bad",
+    "name": "043_funEtaBad",
+    "note": "Eta must not equate fun x => f (g x) with f"
+  },
+  {
+    "group": "bad",
+    "name": "044_wrongPeanoMul",
+    "note": "2*2 = 3 must fail after full normalization"
+  },
+  {
+    "group": "good",
+    "name": "045_empty",
+    "note": "Empty inductive + large-eliminating recursor"
+  },
+  {
+    "group": "good",
+    "name": "046_bool",
+    "note": "Bool + recursor + ι-reduction forced through the type"
+  },
+  {
+    "group": "good",
+    "name": "047_natN",
+    "note": "Recursive inductive: 1+1 computed by recursor ι-reduction"
+  },
+  {
+    "group": "good",
+    "name": "048_eqRuleK",
+    "note": "K-like reduction for Eq with a stuck major premise"
+  },
+  {
+    "group": "good",
+    "name": "050_struct",
+    "note": "Structure: projection typing, projection ι, structure eta"
+  },
+  {
+    "group": "good",
+    "name": "051_natLit",
+    "note": "Nat literals: typing, literal↔constructor conversion, ι on a literal"
+  },
+  {
+    "group": "good",
+    "name": "052_unit",
+    "note": "Unit-like eta: any two elements of a unit type are defeq"
+  },
+  {
+    "group": "good",
+    "name": "053_quot",
+    "note": "Quotients: registration + Quot.lift ι-reduction"
+  },
+  {
+    "group": "bad",
+    "name": "054_indNonSort",
+    "note": "Inductive type must be a sort"
+  },
+  {
+    "group": "bad",
+    "name": "055_indDupLp",
+    "note": "Inductive with duplicate universe params"
+  },
+  {
+    "group": "bad",
+    "name": "056_indTooFewParams",
+    "note": "Inductive with too few parameters in its type"
+  },
+  {
+    "group": "bad",
+    "name": "057_ctorSwappedParams",
+    "note": "Constructor result must apply the inductive to its params in order"
+  },
+  {
+    "group": "bad",
+    "name": "058_ctorSwappedLevels",
+    "note": "Constructor result universe params must match in order"
+  },
+  {
+    "group": "bad",
+    "name": "059_indNegative",
+    "note": "Negative recursive occurrence"
+  },
+  {
+    "group": "bad",
+    "name": "060_indInIndex",
+    "note": "Recursive occurrence in index position"
+  },
+  {
+    "group": "bad",
+    "name": "061_ctorBadResult",
+    "note": "Constructor result must target its inductive"
+  },
+  {
+    "group": "bad",
+    "name": "062_fieldTooLarge",
+    "note": "Field universe exceeds the inductive universe"
+  },
+  {
+    "group": "bad",
+    "name": "063_projOutOfRange",
+    "note": "Out-of-range projection"
+  },
+  {
+    "group": "bad",
+    "name": "064_projNotStruct",
+    "note": "Projection out of a non-structure"
+  },
+  {
+    "group": "bad",
+    "name": "065_recWrongRule",
+    "note": "Recursor rule with the wrong type must be rejected (nat-rec-rules class)"
+  },
+  {
+    "group": "bad",
+    "name": "066_kOnData",
+    "note": "K flag on a non-Prop inductive must be rejected"
+  },
+  {
+    "group": "bad",
+    "name": "067_elimViolation",
+    "note": "Large elimination from a 2-constructor Prop must be rejected"
+  },
+  {
+    "group": "decline",
+    "name": "068_nested",
+    "note": "Nested inductives are out of fragment → decline"
+  },
+  {
+    "group": "decline",
+    "name": "069_unsafeDef",
+    "note": "Partial/unsafe definitions are out of fragment → decline"
+  }
+]

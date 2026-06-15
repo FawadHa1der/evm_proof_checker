@@ -1,0 +1,17 @@
+{"meta":{"exporter":{"name":"evmlean-gen","version":"0.1.0"},"lean":{"githash":"0000000000000000000000000000000000000000","version":"4.27.0-rc1"},"format":{"version":"3.1.0"}}}
+{"str":{"pre":0,"str":"aType"},"in":1}
+{"str":{"pre":0,"str":"aProp"},"in":2}
+{"str":{"pre":0,"str":"aDepProp"},"in":3}
+{"str":{"pre":0,"str":"mkADepProp"},"in":4}
+{"succ":0,"il":1}
+{"sort":1,"ie":0}
+{"sort":0,"ie":1}
+{"forallE":{"name":0,"type":0,"body":1,"binderInfo":"default"},"ie":2}
+{"const":{"name":3,"us":[]},"ie":3}
+{"bvar":0,"ie":4}
+{"app":{"fn":3,"arg":4},"ie":5}
+{"forallE":{"name":0,"type":0,"body":5,"binderInfo":"default"},"ie":6}
+{"axiom":{"name":1,"levelParams":[],"type":0,"isUnsafe":false}}
+{"axiom":{"name":2,"levelParams":[],"type":1,"isUnsafe":false}}
+{"axiom":{"name":3,"levelParams":[],"type":2,"isUnsafe":false}}
+{"axiom":{"name":4,"levelParams":[],"type":6,"isUnsafe":false}}

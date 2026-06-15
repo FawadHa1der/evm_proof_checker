@@ -1,0 +1,11 @@
+{"meta":{"exporter":{"name":"evmlean-gen","version":"0.1.0"},"lean":{"githash":"0000000000000000000000000000000000000000","version":"4.27.0-rc1"},"format":{"version":"3.1.0"}}}
+{"str":{"pre":0,"str":"u1"},"in":1}
+{"str":{"pre":0,"str":"u2"},"in":2}
+{"str":{"pre":0,"str":"V"},"in":3}
+{"str":{"pre":3,"str":"mk"},"in":4}
+{"param":1,"il":1}
+{"param":2,"il":2}
+{"succ":0,"il":3}
+{"sort":3,"ie":0}
+{"const":{"name":3,"us":[2,1]},"ie":1}
+{"inductive":{"types":[{"numNested":0,"isRec":false,"isUnsafe":false,"isReflexive":false,"name":3,"levelParams":[1,2],"type":0,"numParams":0,"numIndices":0,"ctors":[4],"all":[3]}],"ctors":[{"isUnsafe":false,"name":4,"levelParams":[1,2],"type":1,"induct":3,"cidx":0,"numParams":0,"numFields":0}],"recs":[]}}

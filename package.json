@@ -1,0 +1,20 @@
+{
+  "name": "evmlean",
+  "version": "0.1.0",
+  "description": "A Lean 4 kernel fragment implemented in Solidity, checking lean4export NDJSON proofs on the EVM",
+  "private": true,
+  "type": "commonjs",
+  "scripts": {
+    "gen": "node tools/gen_tests.js",
+    "test": "node test/run.js",
+    "deploy": "node scripts/deploy.js",
+    "check": "node scripts/check-onchain.js"
+  },
+  "dependencies": {
+    "@ethereumjs/common": "^4.4.0",
+    "@ethereumjs/util": "^9.1.0",
+    "@ethereumjs/vm": "^8.1.1",
+    "ethers": "^6.13.4",
+    "solc": "0.8.28"
+  }
+}
