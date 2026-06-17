@@ -65,7 +65,11 @@ async function main() {
     `evmlean: ${VERDICT[v]} (decl ${failedDecl}, ${REASONS[Number(reason)] || reason}); ` +
     `gas=${r.execResult.executionGasUsed}`
   );
-  process.exit(v === 3 ? 4 : v); // contract resource-error → checker error
+  if (v === 3) {
+    console.error('evmlean: contract resource budget exhausted; declining');
+    process.exit(2);
+  }
+  process.exit(v);
 }
 
 main().catch((e) => { console.error(e); process.exit(3); });
