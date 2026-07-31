@@ -348,5 +348,20 @@
     "group": "decline",
     "name": "069_unsafeDef",
     "note": "Partial/unsafe definitions are out of fragment → decline"
+  },
+  {
+    "group": "bad",
+    "name": "075_projWrongStruct",
+    "note": "Projection names a structure other than the value’s inferred type (lean4#14576)"
+  },
+  {
+    "group": "bad",
+    "name": "076_projNameIsCtor",
+    "note": "Projection names a constructor rather than a structure (lean4#14576)"
+  },
+  {
+    "group": "bad",
+    "name": "077_projNameNotStruct",
+    "note": "Projection names a multi-constructor inductive (lean4#14576)"
   }
 ]

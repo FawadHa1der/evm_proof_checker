@@ -25,7 +25,7 @@ Out-of-fragment (honest Arena-style *decline*, exit 2): nested inductives,
 multi-type mutual inductive groups, unsafe/partial declarations, String-literal
 reduction, and Arena exports above the single-transaction checker size guard.
 
-**Headline results** (measured; `gas-report.json`): **75/75 local tests** plus
+**Headline results** (measured; `gas-report.json`): **78/78 local tests** plus
 **133/133 exact** on the current byte-real Arena tutorial tarball and **142
 exact + 4 explicit size declines** on the current downloadable Arena tarball,
 including the Arena's five hand-crafted proof-of-False soundness attacks —
@@ -33,7 +33,7 @@ each rejected at exactly the poisoned declaration after accepting all legitimate
 prelude-style material around it (`Eq.symm`, `false_ne_true`, `Eq.casesOn`,
 K-recursors, …). One of those attacks (`level-imax-leq`, which broke nanoda
 once) caught a live bug in this kernel during development — fixed and now a
-regression test. Kernel size: **36.7KB deployed** — within the EIP-7907
+regression test. Kernel size: **36.8KB deployed** — within the EIP-7907
 (Glamsterdam) budget this project targets; over today's EIP-170, so on-chain
 deployment currently needs a devnet/L2 with a raised limit. Every test in the
 suite fits a single post-Fusaka mainnet transaction (≤6.8M gas vs the 16.77M
@@ -49,7 +49,7 @@ or your own `lean4export` output).
 ```bash
 npm install
 npm run gen          # generate the tutorial-parity test vectors
-npm test             # compile, install into in-process EVM, run all 75 tests + gas report
+npm test             # compile, install into in-process EVM, run all 78 tests + gas report
 npm run size         # report deployed/initcode size against EIP-170/EIP-7907
 node scripts/demo-local.js                       # kernel+registry, real submit tx, on-chain record
 node bin/evmlean.js tests/arena/nat-rec-rules.ndjson ; echo $?   # Arena checker contract: exit 1 (reject)

@@ -1,5 +1,5 @@
 {
-  "sourceHash": "311aa2998b114913c3f9be731fe92da4154e6b2e90ee2b4e08bd2fb27c81b96a",
+  "sourceHash": "f20315bbe62821ada3284c0f55c3547e026fd27eba3f0cac53d0bda19110b60a",
   "budgets": {
     "eip170CodeSize": "24576",
     "eip7907TargetCodeSize": "65536",
@@ -7,8 +7,8 @@
   },
   "artifacts": {
     "LeanKernel": {
-      "deployedSize": 36693,
-      "initcodeSize": 36719
+      "deployedSize": 36796,
+      "initcodeSize": 36822
     },
     "TheoremRegistry": {
       "deployedSize": 1321,
@@ -16,14 +16,14 @@
     }
   },
   "summary": {
-    "tests": 75,
-    "passed": 75,
+    "tests": 78,
+    "passed": 78,
     "failed": 0,
     "maxGas": "6718411",
     "txCapHeadroomAtMaxGas": "10058805",
     "maxCalldataBytes": 12484
   },
-  "sizeBytes": 36693,
+  "sizeBytes": 36796,
   "rows": [
     {
       "test": "good/001_basicDef",
@@ -435,7 +435,7 @@
       "expected": "accept",
       "got": "accept",
       "reason": "",
-      "gas": "1621185",
+      "gas": "1624638",
       "calldataBytes": 4708,
       "ok": true
     },
@@ -579,7 +579,7 @@
       "expected": "reject",
       "got": "reject",
       "reason": "decl#8: projection violation",
-      "gas": "697990",
+      "gas": "698433",
       "calldataBytes": 2724,
       "ok": true
     },
@@ -588,7 +588,7 @@
       "expected": "reject",
       "got": "reject",
       "reason": "decl#5: projection violation",
-      "gas": "789366",
+      "gas": "789809",
       "calldataBytes": 2692,
       "ok": true
     },
@@ -653,6 +653,33 @@
       "reason": "decl#0: unsupported feature",
       "gas": "157411",
       "calldataBytes": 676,
+      "ok": true
+    },
+    {
+      "test": "bad/075_projWrongStruct",
+      "expected": "reject",
+      "got": "reject",
+      "reason": "decl#11: projection violation",
+      "gas": "711259",
+      "calldataBytes": 3044,
+      "ok": true
+    },
+    {
+      "test": "bad/076_projNameIsCtor",
+      "expected": "reject",
+      "got": "reject",
+      "reason": "decl#11: projection violation",
+      "gas": "711259",
+      "calldataBytes": 3044,
+      "ok": true
+    },
+    {
+      "test": "bad/077_projNameNotStruct",
+      "expected": "reject",
+      "got": "reject",
+      "reason": "decl#11: projection violation",
+      "gas": "711259",
+      "calldataBytes": 3044,
       "ok": true
     },
     {

@@ -909,6 +909,37 @@ write('decline', '069_unsafeDef', (B) => {
   });
 }, 'Partial/unsafe definitions are out of fragment → decline');
 
+// === PROJECTION STRUCTURE NAME (lean4#14576) ================================
+// The name recorded in an `Expr.proj` node must be the inductive that the
+// projected value's type actually reduces to. Two structurally identical
+// wrappers, so in 075 the *only* thing wrong is the recorded name.
+function addTwoWrappers(B) {
+  addBool(B);
+  for (const n of ['W1', 'W2']) {
+    B.inductive({
+      types: [{ name: n, levelParams: [], type: B.S(B.lnat(1)), numParams: 0, numIndices: 0, ctors: [`${n}.mk`] }],
+      ctors: [{ name: `${n}.mk`, levelParams: [], type: B.Arrow(B.C('Bool'), B.C(n)), induct: n, cidx: 0, numParams: 0, numFields: 1 }],
+      recs: [],
+    });
+  }
+}
+
+write('bad', '075_projWrongStruct', (B) => {
+  addTwoWrappers(B);
+  // def bad : Bool := proj `W2 0 (W1.mk Bool.true)   -- value is a W1, node says W2
+  B.def('bad', [], B.C('Bool'), B.PROJ('W2', 0, B.A(B.C('W1.mk'), B.C('Bool.true'))));
+}, 'Projection names a structure other than the value’s inferred type (lean4#14576)');
+
+write('bad', '076_projNameIsCtor', (B) => {
+  addTwoWrappers(B);
+  B.def('bad', [], B.C('Bool'), B.PROJ('W1.mk', 0, B.A(B.C('W1.mk'), B.C('Bool.true'))));
+}, 'Projection names a constructor rather than a structure (lean4#14576)');
+
+write('bad', '077_projNameNotStruct', (B) => {
+  addTwoWrappers(B);
+  B.def('bad', [], B.C('Bool'), B.PROJ('Bool', 0, B.A(B.C('W1.mk'), B.C('Bool.true'))));
+}, 'Projection names a multi-constructor inductive (lean4#14576)');
+
 fs.mkdirSync(ROOT, { recursive: true });
 fs.writeFileSync(path.join(ROOT, 'manifest.json'), JSON.stringify(tests, null, 2));
 console.log(`generated ${tests.length} test vectors in tests/`);

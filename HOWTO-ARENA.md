@@ -110,7 +110,7 @@ versions it doesn't recognize.)
 | Test class | Expected result |
 |---|---|
 | Arena static adversarial 5 (constlevels, level-imax-leq, level-imax-normalization, nat-rec-rules, large-elim-param) | **reject — all pass, at exactly the poisoned declaration** |
-| Tutorial-ladder material: defs/theorems, universe algebra, δβζ, defeq, lets, Church-numeral Peano, inductives, recursors+ι, rule K, projections, structure/unit eta, proof irrelevance, function eta, Nat literals, quotients | accept/reject correctly (75/75 bundled; 133/133 byte-real Arena tutorial; current downloadable tarball: 142 exact + 4 explicit size declines) |
+| Tutorial-ladder material: defs/theorems, universe algebra, δβζ, defeq, lets, Church-numeral Peano, inductives, recursors+ι, rule K, projections, structure/unit eta, proof irrelevance, function eta, Nat literals, quotients | accept/reject correctly (78/78 bundled; 133/133 byte-real Arena tutorial; current downloadable tarball: 142 exact + 4 explicit size declines) |
 | Nested inductives (`numNested > 0`), multi-type mutual blocks, unsafe/partial declarations, String-literal *reduction* | decline (exit 2) — honest out-of-fragment verdicts |
 | Large perf/init/std/mathlib exports | `bin/evmlean.js` declines files above `EVMLEAN_MAX_BYTES` (default 128000). That's the expected placement for this checker — see PLAN.md §6/§7 for the multi-tx and zkVM routes to scale |
 
@@ -125,7 +125,7 @@ transaction (16.77M cap).
 Anything the local runner does can be replayed against a deployed kernel:
 
 ```bash
-# local node with a raised code-size limit (kernel is 36.7KB — Glamsterdam-class):
+# local node with a raised code-size limit (kernel is 36.8KB — Glamsterdam-class):
 anvil --code-size-limit 65536
 ALLOW_EIP7907=1 RPC_URL=http://127.0.0.1:8545 PRIVATE_KEY=<anvil key> node scripts/deploy.js
 KERNEL=0x... node scripts/check-onchain.js tests/arena/level-imax-leq.ndjson

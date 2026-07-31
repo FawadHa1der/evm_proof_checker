@@ -916,7 +916,12 @@ contract LeanKernel {
                 uint256 np = (cd1 >> 96) & F;
                 uint256 nf = (cd1 >> 144) & F;
                 uint256 idx = _b(m, e);
-                if (nArgs == np + nf && idx < nf) {
+                // The constructor must belong to the structure named by the
+                // projection node (cf. lean4#14576). Leave the projection stuck
+                // rather than failing: _projStep runs inside speculative whnf
+                // calls that are not all rollback-protected, and refusing to
+                // reduce can only make a later defEq fail, never wrongly succeed.
+                if (m.nameHash[cd1 & F] == m.nameHash[_a(m, e)] && nArgs == np + nf && idx < nf) {
                     uint256[] memory args = _collectArgs(m, s, nArgs);
                     return (args[np + idx], true);
                 }
@@ -1557,6 +1562,14 @@ contract LeanKernel {
         }
         uint256 slot = _envLookup(m, _a(m, h));
         if (slot == 0 || _dKind(m.envDecl0[slot - 1]) != D_IND) {
+            _setFail(m, V_REJECT, R_PROJ);
+            return NONE;
+        }
+        // The structure named by the projection node must be the inductive we
+        // actually inferred for the projected value. Without this, `proj C i v`
+        // with `v : W` (C != W) is typed off W's constructor and the recorded
+        // name is inert — the laxness behind lean4#14576.
+        if (m.nameHash[_a(m, e)] != m.nameHash[_a(m, h)]) {
             _setFail(m, V_REJECT, R_PROJ);
             return NONE;
         }
