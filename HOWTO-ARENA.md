@@ -9,7 +9,9 @@ performed by the `LeanKernel` Solidity contract inside an in-process EVM.
 
 ## Route A — the bundled suite (zero setup)
 
-The repo ships 70 generated tutorial-parity/regression vectors plus the Arena's five
+The repo ships 94 generated tutorial-parity/regression vectors plus 29 byte-real
+`lean4export` fixtures under `tests/nested/` and `tests/lean/` (12 of them adversarial
+soundness regressions from a red-team audit), plus the Arena's five
 hand-crafted adversarial soundness tests (real files from the
 [lean-kernel-arena repo](https://github.com/leanprover/lean-kernel-arena/tree/master/tests):
 `constlevels`, `level-imax-leq`, `level-imax-normalization`, `nat-rec-rules`,
@@ -18,7 +20,7 @@ hand-crafted adversarial soundness tests (real files from the
 ```bash
 npm install
 npm run gen     # regenerate tests/good|bad|decline
-npm test        # compile + run all 75 in a local EVM, with gas report
+npm test        # compile + run all 128 in a local EVM, with gas report
 ```
 
 Run any single export through the Arena-style entry point:
@@ -110,22 +112,23 @@ versions it doesn't recognize.)
 | Test class | Expected result |
 |---|---|
 | Arena static adversarial 5 (constlevels, level-imax-leq, level-imax-normalization, nat-rec-rules, large-elim-param) | **reject — all pass, at exactly the poisoned declaration** |
-| Tutorial-ladder material: defs/theorems, universe algebra, δβζ, defeq, lets, Church-numeral Peano, inductives, recursors+ι, rule K, projections, structure/unit eta, proof irrelevance, function eta, Nat literals, quotients | accept/reject correctly (78/78 bundled; 133/133 byte-real Arena tutorial; current downloadable tarball: 142 exact + 4 explicit size declines) |
-| Nested inductives (`numNested > 0`), multi-type mutual blocks, unsafe/partial declarations, String-literal *reduction* | decline (exit 2) — honest out-of-fragment verdicts |
+| Tutorial-ladder material: defs/theorems, universe algebra, δβζ, defeq, lets, Church-numeral Peano, inductives, recursors+ι, rule K, projections, structure/unit eta, proof irrelevance, function eta, Nat literals, quotients | accept/reject correctly (128/128 bundled; see README for the full-corpus figure) |
+| Nested inductives (`numNested > 0`), multi-type mutual blocks, String-literal *reduction*, Nat-literal arithmetic | **checked** — accept/reject on the merits |
+| unsafe/partial declarations | decline (exit 2) — a deliberate reading for a proof checker |
 | Large perf/init/std/mathlib exports | `bin/evmlean.js` declines files above `EVMLEAN_MAX_BYTES` (default 128000). That's the expected placement for this checker — see PLAN.md §6/§7 for the multi-tx and zkVM routes to scale |
 
 Gas intuition from the bundled runs: ~160k gas for a trivial def, 3.0M for
 Church-numeral arithmetic, 6.3M for all 24 prelude-style declarations of
 `constlevels` (False/True/Bool/Eq + Eq.symm + false_ne_true + casesOn), 6.8M
-for the quotient test — every single test fits within one post-Fusaka mainnet
-transaction (16.77M cap).
+for the quotient test — 119 of the 128 tests fit within one post-Fusaka mainnet
+transaction (16.77M cap); the seven byte-real lean4export fixtures (17.5–40.4M) do not.
 
 ## On-chain variants
 
 Anything the local runner does can be replayed against a deployed kernel:
 
 ```bash
-# local node with a raised code-size limit (kernel is 36.8KB — Glamsterdam-class):
+# local node with a raised code-size limit (kernel is 58.0KB — Glamsterdam-class):
 anvil --code-size-limit 65536
 ALLOW_EIP7907=1 RPC_URL=http://127.0.0.1:8545 PRIVATE_KEY=<anvil key> node scripts/deploy.js
 KERNEL=0x... node scripts/check-onchain.js tests/arena/level-imax-leq.ndjson

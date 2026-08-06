@@ -894,12 +894,12 @@ write('bad', '067_elimViolation', (B) => {
 
 // === DECLINE =================================================================
 
-write('decline', '068_nested', (B) => {
+write('bad', '068_nested', (B) => {
   B.inductive({
     types: [{ name: 'Nst', levelParams: [], type: B.S(B.lnat(1)), numParams: 0, numIndices: 0, ctors: [], numNested: 1 }],
     ctors: [], recs: [],
   });
-}, 'Nested inductives are out of fragment → decline');
+}, 'numNested = 1 but no nested occurrence exists → metadata mismatch, reject');
 
 write('decline', '069_unsafeDef', (B) => {
   const n = B.name('unsafeThing');
@@ -940,6 +940,270 @@ write('bad', '077_projNameNotStruct', (B) => {
   B.def('bad', [], B.C('Bool'), B.PROJ('Bool', 0, B.A(B.C('W1.mk'), B.C('Bool.true'))));
 }, 'Projection names a multi-constructor inductive (lean4#14576)');
 
+// === STRING LITERAL CONSTRUCTOR REDUCTION ===================================
+// Lean's string_lit_to_constructor turns "hi" into
+//   String.ofList (List.cons Char (Char.ofNat 104) (List.cons Char (Char.ofNat 105) (List.nil Char)))
+// with the list at universe 0 and the code points being Unicode scalar values.
+// These vectors force literal-vs-constructor definitional equality.
+function addStringEnv(B) {
+  addNatLike(B, 'Nat');
+  const Ty = B.S(B.lnat(1));
+  // Char : Type := ofNat (n : Nat)   -- the real Char.ofNat is a def, but a
+  // constructor is enough to exercise the literal expansion path.
+  B.inductive({
+    types: [{ name: 'Char', levelParams: [], type: Ty, numParams: 0, numIndices: 0, ctors: ['Char.ofNat'] }],
+    ctors: [{ name: 'Char.ofNat', levelParams: [], type: B.Arrow(B.C('Nat'), B.C('Char')), induct: 'Char', cidx: 0, numParams: 0, numFields: 1 }],
+    recs: [],
+  });
+  // List.{u} (α : Type u) : Type u
+  // List.{u} (a : Type u) : Type u   -- Type u is Sort (u+1)
+  const u = B.lparam('u_1');
+  const TyU = B.S(B.ls(u));
+  B.inductive({
+    types: [{ name: 'List', levelParams: ['u_1'], type: B.Pi(TyU, () => TyU), numParams: 1, numIndices: 0, ctors: ['List.nil', 'List.cons'], isRec: true }],
+    ctors: [
+      { name: 'List.nil', levelParams: ['u_1'], type: B.Pi(TyU, (a) => B.A(B.C('List', [u]), a)), induct: 'List', cidx: 0, numParams: 1, numFields: 0 },
+      { name: 'List.cons', levelParams: ['u_1'], type: B.Pi(TyU, (a) => B.Arrow(a, B.Arrow(B.A(B.C('List', [u]), a), B.A(B.C('List', [u]), a)))), induct: 'List', cidx: 1, numParams: 1, numFields: 2 },
+    ],
+    recs: [],
+  });
+  B.inductive({
+    types: [{ name: 'String', levelParams: [], type: Ty, numParams: 0, numIndices: 0, ctors: ['String.ofList'] }],
+    ctors: [{ name: 'String.ofList', levelParams: [], type: B.Arrow(B.A(B.C('List', [B.lz()]), B.C('Char')), B.C('String')), induct: 'String', cidx: 0, numParams: 0, numFields: 1 }],
+    recs: [],
+  });
+}
+
+// String.ofList (cons Char (ofNat c0) (cons Char (ofNat c1) (nil Char)))
+function strCtorForm(B, codes) {
+  const ch = B.C('Char');
+  let lst = B.A(B.C('List.nil', [B.lz()]), ch);
+  for (let i = codes.length - 1; i >= 0; i--) {
+    lst = B.A(B.C('List.cons', [B.lz()]), ch, B.A(B.C('Char.ofNat'), B.NAT(String(codes[i]))), lst);
+  }
+  return B.A(B.C('String.ofList'), lst);
+}
+
+function writeStrLitTest(group, name, literal, codes, note) {
+  write(group, name, (B) => {
+    addStringEnv(B);
+    B.axiom('P', [], B.Arrow(B.C('String'), B.S(0)));
+    B.axiom('hp', [], B.A(B.C('P'), strCtorForm(B, codes)));
+    // typing this at `P <literal>` forces literal <-> constructor-form defeq
+    B.def('viaLit', [], B.A(B.C('P'), B.STRL(literal)), B.C('hp'));
+  }, note);
+}
+
+writeStrLitTest('good', '078_stringLit', 'hi', [104, 105],
+  'String literal reduces to String.ofList of a Char list');
+writeStrLitTest('good', '079_stringLitEmpty', '', [],
+  'Empty string literal reduces to String.ofList (List.nil Char)');
+writeStrLitTest('good', '080_stringLitUnicode', 'é中', [0xe9, 0x4e2d],
+  'Multi-byte UTF-8 decodes to Unicode scalar values, not bytes');
+writeStrLitTest('bad', '081_stringLitWrong', 'hi', [104, 106],
+  'String literal must not equal a different Char list');
+
+// === NAT LITERAL ACCELERATION (Lean's reduce_nat) ===========================
+// The kernel constant-folds Nat.add/sub/mul/div/mod/pow/gcd/beq/ble and the
+// bitwise operations when both arguments are literals. Without it these only
+// reduce by unfolding their recursive definitions, which real exports rely on
+// being short-circuited.
+function natOpEnv(B, ops) {
+  addNatLike(B, 'Nat');
+  addBool(B);
+  const N = B.C('Nat');
+  for (const o of ops) B.axiom(`Nat.${o}`, [], B.Arrow(N, B.Arrow(N, N)));
+  return N;
+}
+
+// P <expected> is inhabited, and we type the same proof at P <expr>
+function natFold(group, name, op, x, y, expected, note) {
+  write(group, name, (B) => {
+    const N = natOpEnv(B, [op]);
+    B.axiom('P', [], B.Arrow(N, B.S(0)));
+    B.axiom('hp', [], B.A(B.C('P'), B.NAT(expected)));
+    B.def('folded', [], B.A(B.C('P'), B.A(B.C(`Nat.${op}`), B.NAT(x), B.NAT(y))), B.C('hp'));
+  }, note);
+}
+
+natFold('good', '082_natAdd', 'add', '2', '3', '5', 'Nat.add on literals folds to 5');
+natFold('good', '083_natMul', 'mul', '6', '7', '42', 'Nat.mul on literals folds to 42');
+natFold('good', '084_natSub', 'sub', '3', '5', '0', 'Nat.sub is truncated: 3 - 5 = 0');
+natFold('good', '085_natDivMod', 'mod', '17', '5', '2', 'Nat.mod on literals folds to 2');
+natFold('good', '086_natPow', 'pow', '2', '10', '1024', 'Nat.pow on literals folds to 1024');
+natFold('good', '087_natGcd', 'gcd', '12', '18', '6', 'Nat.gcd on literals folds to 6');
+natFold('bad', '088_natAddWrong', 'add', '2', '3', '6', 'Nat.add 2 3 must not equal 6');
+natFold('bad', '089_natDivByZero', 'div', '7', '0', '7', 'Nat.div n 0 = 0, not n');
+
+// Nat.beq / Nat.ble return Bool, so they need the Bool constructors
+function natPred(group, name, op, x, y, expected, note) {
+  write(group, name, (B) => {
+    addNatLike(B, 'Nat');
+    addBool(B);
+    const N = B.C('Nat');
+    B.axiom(`Nat.${op}`, [], B.Arrow(N, B.Arrow(N, B.C('Bool'))));
+    B.axiom('Q', [], B.Arrow(B.C('Bool'), B.S(0)));
+    B.axiom('hq', [], B.A(B.C('Q'), B.C(`Bool.${expected}`)));
+    B.def('folded', [], B.A(B.C('Q'), B.A(B.C(`Nat.${op}`), B.NAT(x), B.NAT(y))), B.C('hq'));
+  }, note);
+}
+
+natPred('good', '090_natBeq', 'beq', '7', '7', 'true', 'Nat.beq 7 7 folds to Bool.true');
+natPred('good', '091_natBle', 'ble', '3', '9', 'true', 'Nat.ble 3 9 folds to Bool.true');
+natPred('good', '092_natBleFalse', 'ble', '9', '3', 'false', 'Nat.ble 9 3 folds to Bool.false');
+natPred('bad', '093_natBeqWrong', 'beq', '7', '8', 'true', 'Nat.beq 7 8 is Bool.false, not true');
+
+// === NESTED INDUCTIVES (negative; the positive cases are the byte-real
+// lean4export ground truth in tests/nested/) ================================
+
+write('bad', '094_nestedNegativeParam', (B) => {
+  addBool(B);
+  const Ty = B.S(B.lnat(1));
+  // Cont (a : Type) where mk : (a → Bool) → Cont a     (legal on its own)
+  B.inductive({
+    types: [{ name: 'Cont', levelParams: [], type: B.Arrow(Ty, Ty), numParams: 1, numIndices: 0, ctors: ['Cont.mk'] }],
+    ctors: [{
+      name: 'Cont.mk', levelParams: [],
+      type: B.Pi(Ty, (a) => B.Arrow(B.Arrow(a, B.C('Bool')), B.A(B.C('Cont'), a))),
+      induct: 'Cont', cidx: 0, numParams: 1, numFields: 1,
+    }],
+    recs: [],
+  });
+  // Bad where mk : Cont Bad → Bad — Bad occurs negatively once Cont's ctors
+  // are expanded at a := Bad; ordinary positivity on the aux group rejects.
+  B.inductive({
+    types: [{ name: 'Bad', levelParams: [], type: Ty, numParams: 0, numIndices: 0, ctors: ['Bad.mk'], numNested: 1 }],
+    ctors: [{
+      name: 'Bad.mk', levelParams: [],
+      type: B.Arrow(B.A(B.C('Cont'), B.C('Bad')), B.C('Bad')),
+      induct: 'Bad', cidx: 0, numParams: 0, numFields: 1,
+    }],
+    recs: [],
+  });
+}, 'Negative occurrence through a nested target\'s parameter (Cont Bad) must reject');
+
+write('bad', '095_nestedDefAlias', (B) => {
+  const Ty = B.S(B.lnat(1));
+  B.inductive({
+    types: [{ name: 'L', levelParams: [], type: B.Arrow(Ty, Ty), numParams: 1, numIndices: 0, ctors: ['L.nil'] }],
+    ctors: [{
+      name: 'L.nil', levelParams: [], type: B.Pi(Ty, (a) => B.A(B.C('L'), a)),
+      induct: 'L', cidx: 0, numParams: 1, numFields: 0,
+    }],
+    recs: [],
+  });
+  B.def('MyL', [], B.Arrow(Ty, Ty), B.C('L'));
+  // T where mk : MyL T → T — nesting behind a def is NOT a nested occurrence
+  // (Lean's replace is syntactic), so positivity sees a non-member head.
+  B.inductive({
+    types: [{ name: 'T', levelParams: [], type: Ty, numParams: 0, numIndices: 0, ctors: ['T.mk'] }],
+    ctors: [{
+      name: 'T.mk', levelParams: [], type: B.Arrow(B.A(B.C('MyL'), B.C('T')), B.C('T')),
+      induct: 'T', cidx: 0, numParams: 0, numFields: 1,
+    }],
+    recs: [],
+  });
+}, 'Nesting behind a def alias is not nested; must reject, not accept');
+
+write('bad', '096_nestedGroupInIndex', (B) => {
+  const Ty = B.S(B.lnat(1));
+  // W (a : Type) : Type → Type where mk : W a a
+  B.inductive({
+    types: [{ name: 'W', levelParams: [], type: B.Arrow(Ty, B.Arrow(Ty, Ty)), numParams: 1, numIndices: 1, ctors: ['W.mk'] }],
+    ctors: [{
+      name: 'W.mk', levelParams: [], type: B.Pi(Ty, (a) => B.A(B.C('W'), a, a)),
+      induct: 'W', cidx: 0, numParams: 1, numFields: 0,
+    }],
+    recs: [],
+  });
+  // T where mk : W T T → T — the group in a nested occurrence's INDEX args
+  // trips the lean4#2125 guard on the aux member.
+  B.inductive({
+    types: [{ name: 'T', levelParams: [], type: Ty, numParams: 0, numIndices: 0, ctors: ['T.mk'], numNested: 1 }],
+    ctors: [{
+      name: 'T.mk', levelParams: [], type: B.Arrow(B.A(B.C('W'), B.C('T'), B.C('T')), B.C('T')),
+      induct: 'T', cidx: 0, numParams: 0, numFields: 1,
+    }],
+    recs: [],
+  });
+}, 'Group occurrence in a nested occurrence\'s index arguments must reject');
+
+write('bad', '097_nestedLocalParam', (B) => {
+  addBool(B);
+  const Ty = B.S(B.lnat(1));
+  // V2 (b : Bool) (a : Type) where mk : a → V2 b a
+  B.inductive({
+    types: [{ name: 'V2', levelParams: [], type: B.Arrow(B.C('Bool'), B.Arrow(Ty, Ty)), numParams: 2, numIndices: 0, ctors: ['V2.mk'] }],
+    ctors: [{
+      name: 'V2.mk', levelParams: [],
+      type: B.Pi(B.C('Bool'), (b) => B.Pi(Ty, (a) => B.Arrow(a, B.A(B.C('V2'), b, a)))),
+      induct: 'V2', cidx: 0, numParams: 2, numFields: 1,
+    }],
+    recs: [],
+  });
+  // T where mk : (b : Bool) → V2 b T → T — Ds depend on a preceding field
+  // ("nested inductive datatypes parameters cannot contain local variables").
+  B.inductive({
+    types: [{ name: 'T', levelParams: [], type: Ty, numParams: 0, numIndices: 0, ctors: ['T.mk'], numNested: 1 }],
+    ctors: [{
+      name: 'T.mk', levelParams: [],
+      type: B.Pi(B.C('Bool'), (b) => B.Arrow(B.A(B.C('V2'), b, B.C('T')), B.C('T'))),
+      induct: 'T', cidx: 0, numParams: 0, numFields: 2,
+    }],
+    recs: [],
+  });
+}, 'Nested occurrence whose parameters mention a constructor field must reject');
+
+write('bad', '098_nestedIllTypedDs', (B) => {
+  addBool(B);
+  const Ty = B.S(B.lnat(1));
+  // S where mk : Bool → S    (a single-field structure)
+  B.inductive({
+    types: [{ name: 'S', levelParams: [], type: Ty, numParams: 0, numIndices: 0, ctors: ['S.mk'] }],
+    ctors: [{
+      name: 'S.mk', levelParams: [], type: B.Arrow(B.C('Bool'), B.C('S')),
+      induct: 'S', cidx: 0, numParams: 0, numFields: 1,
+    }],
+    recs: [],
+  });
+  // L2 (a : Type) (b : Bool) where mk : L2 a b
+  B.inductive({
+    types: [{ name: 'L2', levelParams: [], type: B.Arrow(Ty, B.Arrow(B.C('Bool'), Ty)), numParams: 2, numIndices: 0, ctors: ['L2.mk'] }],
+    ctors: [{
+      name: 'L2.mk', levelParams: [],
+      type: B.Pi(Ty, (a) => B.Pi(B.C('Bool'), (b) => B.A(B.C('L2'), a, b))),
+      induct: 'L2', cidx: 0, numParams: 2, numFields: 0,
+    }],
+    recs: [],
+  });
+  // E (w : S) where mk : L2 (E w) (proj S 1 w) → E w — the out-of-range
+  // projection hides inside the dropped Ds (the lean4#14576 hole); the
+  // #14577 guard must type-check `L2 (E w) (proj S 1 w)` and reject.
+  B.inductive({
+    types: [{ name: 'E', levelParams: [], type: B.Arrow(B.C('S'), Ty), numParams: 1, numIndices: 0, ctors: ['E.mk'], numNested: 1 }],
+    ctors: [{
+      name: 'E.mk', levelParams: [],
+      type: B.Pi(B.C('S'), (w) =>
+        B.Arrow(B.A(B.C('L2'), B.A(B.C('E'), w), B.PROJ('S', 1, w)), B.A(B.C('E'), w))),
+      induct: 'E', cidx: 0, numParams: 1, numFields: 1,
+    }],
+    recs: [],
+  });
+}, 'Ill-typed projection inside a nested occurrence\'s Ds (lean4#14576/#14577) must reject');
+
 fs.mkdirSync(ROOT, { recursive: true });
+// Drop vectors that earlier revisions generated but this one no longer does —
+// otherwise a test that changes group (e.g. decline -> bad once a feature lands)
+// leaves its old file behind, unlisted and never run.
+{
+  const live = new Set(tests.map((t) => `${t.group}/${t.name}.ndjson`));
+  for (const group of ['good', 'bad', 'decline']) {
+    const dir = path.join(ROOT, group);
+    if (!fs.existsSync(dir)) continue;
+    for (const f of fs.readdirSync(dir)) {
+      if (f.endsWith('.ndjson') && !live.has(`${group}/${f}`)) fs.rmSync(path.join(dir, f));
+    }
+  }
+}
 fs.writeFileSync(path.join(ROOT, 'manifest.json'), JSON.stringify(tests, null, 2));
 console.log(`generated ${tests.length} test vectors in tests/`);

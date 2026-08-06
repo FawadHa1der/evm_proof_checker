@@ -15,29 +15,51 @@ entirely on the EVM:
   minor-premise binders, and reduction rules checked against
   **independently reconstructed expected types** (this is what defeats the
   Arena's `nat-rec-rules` attack);
-- structure projections (typing with the Prop-projection rules + reduction);
+- **multi-type mutual inductive groups**: shared-parameter discipline, block-wide
+  positivity and universes, per-type motives/minors ordering, and rule checking
+  deferred until every recursor in the block is registered (a rule RHS may call
+  a sibling recursor);
+- **nested inductives** (`inductive Tree | node : List Tree → Tree`): the export
+  erases the auxiliary types but keeps their recursors, so the kernel re-runs
+  Lean's nested→mutual elimination internally — discovering each occurrence
+  `I Ds`, materialising one auxiliary type per member of `I`'s block, and
+  checking positivity on the *expanded* group, which is what makes `List Tree`
+  legal and `Cont Bad` illegal. The parametric arguments `Ds` are type-checked
+  separately, closing the hole behind [lean4#14576](https://github.com/leanprover/lean4/issues/14576);
+- structure projections (typing with the Prop-projection rules + reduction),
+  including projection congruence in definitional equality;
 - quotients (`Quot.lift`/`Quot.ind` reduction, with canonical primitive
   signature checks);
-- Nat literals (typing, literal↔constructor conversion, ι on literals);
+- Nat literals (typing, literal↔constructor conversion, ι on literals) and the
+  full **`reduce_nat`** acceleration — `add sub mul div mod pow gcd beq ble
+  land lor xor shiftLeft shiftRight` folded on literal arguments;
+- **String literals**, expanded to `String.ofList` of a `Char` list exactly as
+  Lean's `string_lit_to_constructor` does, in both ι-reduction and defEq;
 - declarations: `axiom`, `def`, `theorem`, `opaque`, `quot`, inductive groups.
 
-Out-of-fragment (honest Arena-style *decline*, exit 2): nested inductives,
-multi-type mutual inductive groups, unsafe/partial declarations, String-literal
-reduction, and Arena exports above the single-transaction checker size guard.
+Out-of-fragment (honest Arena-style *decline*, exit 2): unsafe/partial
+declarations, and Arena exports above the single-transaction checker size guard.
+The corpus contains no unsafe/partial declarations at all, and for a *proof*
+checker declining them is the conservative reading.
 
-**Headline results** (measured; `gas-report.json`): **78/78 local tests** plus
-**133/133 exact** on the current byte-real Arena tutorial tarball and **142
-exact + 4 explicit size declines** on the current downloadable Arena tarball,
+**Headline results** (measured; `gas-report.json`): **128/128 local tests** plus
+**zero failures on the full downloadable Arena corpus** — 158 exact
+accept/reject plus 3 honest resource-exhaustion declines on multi-megabyte
+exports, up from 153 exact + 1 decline + 7 failures (of which five were false
+rejects on valid proofs and two were crashes) —
 including the Arena's five hand-crafted proof-of-False soundness attacks —
 each rejected at exactly the poisoned declaration after accepting all legitimate
 prelude-style material around it (`Eq.symm`, `false_ne_true`, `Eq.casesOn`,
 K-recursors, …). One of those attacks (`level-imax-leq`, which broke nanoda
 once) caught a live bug in this kernel during development — fixed and now a
-regression test. Kernel size: **36.8KB deployed** — within the EIP-7907
+regression test. Kernel size: **58.0KB deployed** — within the EIP-7907
 (Glamsterdam) budget this project targets; over today's EIP-170, so on-chain
-deployment currently needs a devnet/L2 with a raised limit. Every test in the
-suite fits a single post-Fusaka mainnet transaction (≤6.8M gas vs the 16.77M
-cap).
+deployment currently needs a devnet/L2 with a raised limit. 119 of the 128 tests
+fit a single post-Fusaka mainnet transaction (≤14.4M gas vs the 16.77M EIP-7825
+cap). The seven that do not are the byte-real `lean4export` fixtures (17.5–40.4M):
+real Lean declarations pull in `brecOn`, `PProd` and the auxiliary types of
+nested inductives, which makes them by far the most expensive things the kernel
+checks. They need an L2 or the multi-transaction architecture in PLAN.md §6B.
 
 See **[PLAN.md](PLAN.md)** for the feasibility analysis and roadmap, and
 **[HOWTO-ARENA.md](HOWTO-ARENA.md)** for running Lean Kernel Arena tests
@@ -49,7 +71,7 @@ or your own `lean4export` output).
 ```bash
 npm install
 npm run gen          # generate the tutorial-parity test vectors
-npm test             # compile, install into in-process EVM, run all 78 tests + gas report
+npm test             # compile, install into in-process EVM, run all 128 tests + gas report
 npm run size         # report deployed/initcode size against EIP-170/EIP-7907
 node scripts/demo-local.js                       # kernel+registry, real submit tx, on-chain record
 node bin/evmlean.js tests/arena/nat-rec-rules.ndjson ; echo $?   # Arena checker contract: exit 1 (reject)
@@ -74,6 +96,8 @@ tools/lib.js                   NDJSON parser, chain encoder, HOAS test builder
 tools/gen_tests.js             generates tests/ (good/bad/decline + manifest)
 tools/fetch-arena-tests.sh     re-downloads the Arena's static adversarial tests
 tools/run-arena-tests.js       run a downloaded Arena tarball/directory
+tools/fuzz.js                  seeded mutation fuzzer (no-crash / no-false-accept)
+tests/nested/ tests/lean/      byte-real fixtures + adversarial soundness regressions
 tools/build.js | tools/evm.js  solc artifact cache | in-process EVM harness
 test/run.js                    full suite + gas report
 bin/evmlean.js                 Arena-style checker entry point ($IN, exit 0/1/2)
@@ -99,11 +123,28 @@ reconstructing the expected RHS type from the constructor and recursor
 telescopes — imported rules are never compared against themselves.
 
 Verdicts: `0 accept · 1 reject · 2 decline · 3 resource-error`, plus the
-failing declaration index and a reason code. Resource exhaustion is never
-reported as reject, matching the Arena's distinction between "wrong proof"
-and "checker gave up".
+failing declaration index and a reason code. Resource exhaustion — the
+contract's own step/depth budget, or the host EVM running out of gas or stack —
+is reported as a decline, never as a reject and never as a checker fault. That
+is the Arena's distinction between "wrong proof", "checker gave up", and
+"checker is broken", and only a genuine fault (revert, bad opcode) earns exit 3.
 
-Known limits (documented in PLAN.md): nested inductives, multi-type mutual
-inductive groups, and String-literal constructor reduction are deliberately
-declined; no caching yet, so gas scales with redex count. Research prototype —
-not audited.
+Known limits (documented in PLAN.md): the well-formedness scan is iterative but
+type inference and definitional equality still recurse under a depth guard, so
+one Arena performance export (a 4000-deep lambda nest) declines on depth rather
+than checking. No caching yet, so gas scales with redex count. Research
+prototype — not audited.
+
+A red-team audit of this revision produced five distinct exports that an earlier
+build accepted as proofs of `False` — a lying constructor-name window, duplicate
+entries in that window, `Nat.zero.{u}` read as the literal zero, a forged
+`isRec` flag, and an intransitive definitional equality caused by omitting
+`reduce_nat` from `whnf`. All are closed, and each is checked in under
+`tests/lean/` as a regression that has been verified to fail without its fix.
+Every one of them was in a *redundant serialised field* rather than in the type
+theory, and none was reachable from any honest exporter — which is why the
+Arena corpus stayed green throughout.
+
+`npm run fuzz` runs a seeded mutation fuzzer over the known-good vectors,
+asserting the property that matters most for a checker: no input, however
+malformed, may produce a *checker error* rather than a verdict.

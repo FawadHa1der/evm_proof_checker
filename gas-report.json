@@ -1,5 +1,5 @@
 {
-  "sourceHash": "f20315bbe62821ada3284c0f55c3547e026fd27eba3f0cac53d0bda19110b60a",
+  "sourceHash": "182bb38f7aaa04ea0e6da2b454d8a8376872e8d2e87da41d012b10cb0476bf08",
   "budgets": {
     "eip170CodeSize": "24576",
     "eip7907TargetCodeSize": "65536",
@@ -7,8 +7,8 @@
   },
   "artifacts": {
     "LeanKernel": {
-      "deployedSize": 36796,
-      "initcodeSize": 36822
+      "deployedSize": 60897,
+      "initcodeSize": 60923
     },
     "TheoremRegistry": {
       "deployedSize": 1321,
@@ -16,21 +16,21 @@
     }
   },
   "summary": {
-    "tests": 78,
-    "passed": 78,
+    "tests": 138,
+    "passed": 138,
     "failed": 0,
-    "maxGas": "6718411",
-    "txCapHeadroomAtMaxGas": "10058805",
-    "maxCalldataBytes": 12484
+    "maxGas": "37807714",
+    "txCapHeadroomAtMaxGas": "-21030498",
+    "maxCalldataBytes": 42820
   },
-  "sizeBytes": 36796,
+  "sizeBytes": 60897,
   "rows": [
     {
       "test": "good/001_basicDef",
       "expected": "accept",
       "got": "accept",
       "reason": "",
-      "gas": "165610",
+      "gas": "200073",
       "calldataBytes": 676,
       "ok": true
     },
@@ -39,7 +39,7 @@
       "expected": "accept",
       "got": "accept",
       "reason": "",
-      "gas": "175825",
+      "gas": "212337",
       "calldataBytes": 708,
       "ok": true
     },
@@ -48,7 +48,7 @@
       "expected": "accept",
       "got": "accept",
       "reason": "",
-      "gas": "174091",
+      "gas": "207191",
       "calldataBytes": 676,
       "ok": true
     },
@@ -57,7 +57,7 @@
       "expected": "accept",
       "got": "accept",
       "reason": "",
-      "gas": "200048",
+      "gas": "241726",
       "calldataBytes": 804,
       "ok": true
     },
@@ -66,7 +66,7 @@
       "expected": "accept",
       "got": "accept",
       "reason": "",
-      "gas": "272408",
+      "gas": "341287",
       "calldataBytes": 1124,
       "ok": true
     },
@@ -75,7 +75,7 @@
       "expected": "accept",
       "got": "accept",
       "reason": "",
-      "gas": "284796",
+      "gas": "357741",
       "calldataBytes": 1156,
       "ok": true
     },
@@ -84,7 +84,7 @@
       "expected": "accept",
       "got": "accept",
       "reason": "",
-      "gas": "303834",
+      "gas": "372968",
       "calldataBytes": 1284,
       "ok": true
     },
@@ -93,7 +93,7 @@
       "expected": "accept",
       "got": "accept",
       "reason": "",
-      "gas": "183484",
+      "gas": "223396",
       "calldataBytes": 708,
       "ok": true
     },
@@ -102,7 +102,7 @@
       "expected": "accept",
       "got": "accept",
       "reason": "",
-      "gas": "190027",
+      "gas": "232069",
       "calldataBytes": 740,
       "ok": true
     },
@@ -111,7 +111,7 @@
       "expected": "accept",
       "got": "accept",
       "reason": "",
-      "gas": "203541",
+      "gas": "247714",
       "calldataBytes": 772,
       "ok": true
     },
@@ -120,7 +120,7 @@
       "expected": "accept",
       "got": "accept",
       "reason": "",
-      "gas": "288819",
+      "gas": "357142",
       "calldataBytes": 1252,
       "ok": true
     },
@@ -129,7 +129,7 @@
       "expected": "accept",
       "got": "accept",
       "reason": "",
-      "gas": "185231",
+      "gas": "229553",
       "calldataBytes": 804,
       "ok": true
     },
@@ -138,7 +138,7 @@
       "expected": "accept",
       "got": "accept",
       "reason": "",
-      "gas": "188005",
+      "gas": "231068",
       "calldataBytes": 804,
       "ok": true
     },
@@ -147,7 +147,7 @@
       "expected": "accept",
       "got": "accept",
       "reason": "",
-      "gas": "191038",
+      "gas": "231546",
       "calldataBytes": 804,
       "ok": true
     },
@@ -156,7 +156,7 @@
       "expected": "accept",
       "got": "accept",
       "reason": "",
-      "gas": "230021",
+      "gas": "277650",
       "calldataBytes": 836,
       "ok": true
     },
@@ -165,7 +165,7 @@
       "expected": "accept",
       "got": "accept",
       "reason": "",
-      "gas": "195815",
+      "gas": "234489",
       "calldataBytes": 804,
       "ok": true
     },
@@ -174,7 +174,7 @@
       "expected": "accept",
       "got": "accept",
       "reason": "",
-      "gas": "336258",
+      "gas": "395907",
       "calldataBytes": 1060,
       "ok": true
     },
@@ -183,7 +183,7 @@
       "expected": "accept",
       "got": "accept",
       "reason": "",
-      "gas": "1171872",
+      "gas": "1444054",
       "calldataBytes": 4196,
       "ok": true
     },
@@ -192,7 +192,7 @@
       "expected": "accept",
       "got": "accept",
       "reason": "",
-      "gas": "1929903",
+      "gas": "2271177",
       "calldataBytes": 4324,
       "ok": true
     },
@@ -201,7 +201,7 @@
       "expected": "accept",
       "got": "accept",
       "reason": "",
-      "gas": "2966148",
+      "gas": "3532377",
       "calldataBytes": 4388,
       "ok": true
     },
@@ -210,7 +210,7 @@
       "expected": "accept",
       "got": "accept",
       "reason": "",
-      "gas": "174992",
+      "gas": "213115",
       "calldataBytes": 740,
       "ok": true
     },
@@ -219,7 +219,7 @@
       "expected": "accept",
       "got": "accept",
       "reason": "",
-      "gas": "244630",
+      "gas": "305959",
       "calldataBytes": 1156,
       "ok": true
     },
@@ -228,7 +228,7 @@
       "expected": "accept",
       "got": "accept",
       "reason": "",
-      "gas": "186073",
+      "gas": "232995",
       "calldataBytes": 868,
       "ok": true
     },
@@ -237,7 +237,7 @@
       "expected": "accept",
       "got": "accept",
       "reason": "",
-      "gas": "218619",
+      "gas": "277035",
       "calldataBytes": 1124,
       "ok": true
     },
@@ -246,7 +246,7 @@
       "expected": "accept",
       "got": "accept",
       "reason": "",
-      "gas": "327952",
+      "gas": "417077",
       "calldataBytes": 1284,
       "ok": true
     },
@@ -255,7 +255,7 @@
       "expected": "accept",
       "got": "accept",
       "reason": "",
-      "gas": "349673",
+      "gas": "427653",
       "calldataBytes": 1124,
       "ok": true
     },
@@ -264,7 +264,7 @@
       "expected": "reject",
       "got": "reject",
       "reason": "decl#0: value/type mismatch",
-      "gas": "171329",
+      "gas": "207665",
       "calldataBytes": 676,
       "ok": true
     },
@@ -273,7 +273,7 @@
       "expected": "reject",
       "got": "reject",
       "reason": "decl#1: binder domain is not a sort",
-      "gas": "276115",
+      "gas": "345979",
       "calldataBytes": 1380,
       "ok": true
     },
@@ -282,7 +282,7 @@
       "expected": "reject",
       "got": "reject",
       "reason": "decl#1: type is not a sort",
-      "gas": "211494",
+      "gas": "264083",
       "calldataBytes": 964,
       "ok": true
     },
@@ -291,7 +291,7 @@
       "expected": "reject",
       "got": "reject",
       "reason": "decl#0: theorem type not a Prop",
-      "gas": "165640",
+      "gas": "197743",
       "calldataBytes": 676,
       "ok": true
     },
@@ -300,7 +300,7 @@
       "expected": "reject",
       "got": "reject",
       "reason": "decl#0: duplicate universe param",
-      "gas": "160787",
+      "gas": "192269",
       "calldataBytes": 772,
       "ok": true
     },
@@ -309,7 +309,7 @@
       "expected": "reject",
       "got": "reject",
       "reason": "decl#10: value/type mismatch",
-      "gas": "2174773",
+      "gas": "3425361",
       "calldataBytes": 4196,
       "ok": true
     },
@@ -318,7 +318,7 @@
       "expected": "reject",
       "got": "reject",
       "reason": "decl#1: duplicate name",
-      "gas": "169915",
+      "gas": "207866",
       "calldataBytes": 772,
       "ok": true
     },
@@ -327,7 +327,7 @@
       "expected": "reject",
       "got": "reject",
       "reason": "decl#0: unknown constant",
-      "gas": "162823",
+      "gas": "199632",
       "calldataBytes": 708,
       "ok": true
     },
@@ -336,7 +336,7 @@
       "expected": "reject",
       "got": "reject",
       "reason": "decl#0: bvar out of range",
-      "gas": "162114",
+      "gas": "196515",
       "calldataBytes": 676,
       "ok": true
     },
@@ -345,7 +345,7 @@
       "expected": "reject",
       "got": "reject",
       "reason": "decl#0: undeclared universe param",
-      "gas": "161243",
+      "gas": "195348",
       "calldataBytes": 740,
       "ok": true
     },
@@ -354,7 +354,7 @@
       "expected": "reject",
       "got": "reject",
       "reason": "decl#1: universe count mismatch",
-      "gas": "211313",
+      "gas": "266648",
       "calldataBytes": 1060,
       "ok": true
     },
@@ -363,7 +363,7 @@
       "expected": "reject",
       "got": "reject",
       "reason": "decl#1: duplicate name",
-      "gas": "159962",
+      "gas": "188869",
       "calldataBytes": 676,
       "ok": true
     },
@@ -372,7 +372,7 @@
       "expected": "reject",
       "got": "reject",
       "reason": "decl#3: value/type mismatch",
-      "gas": "352345",
+      "gas": "447096",
       "calldataBytes": 1348,
       "ok": true
     },
@@ -381,7 +381,7 @@
       "expected": "reject",
       "got": "reject",
       "reason": "decl#2: value/type mismatch",
-      "gas": "642695",
+      "gas": "770403",
       "calldataBytes": 1284,
       "ok": true
     },
@@ -390,7 +390,7 @@
       "expected": "reject",
       "got": "reject",
       "reason": "decl#10: value/type mismatch",
-      "gas": "3781079",
+      "gas": "4755771",
       "calldataBytes": 4324,
       "ok": true
     },
@@ -399,7 +399,7 @@
       "expected": "accept",
       "got": "accept",
       "reason": "",
-      "gas": "397562",
+      "gas": "489976",
       "calldataBytes": 1540,
       "ok": true
     },
@@ -408,7 +408,7 @@
       "expected": "accept",
       "got": "accept",
       "reason": "",
-      "gas": "922525",
+      "gas": "1106763",
       "calldataBytes": 2884,
       "ok": true
     },
@@ -417,7 +417,7 @@
       "expected": "accept",
       "got": "accept",
       "reason": "",
-      "gas": "1507440",
+      "gas": "1759990",
       "calldataBytes": 3556,
       "ok": true
     },
@@ -426,7 +426,7 @@
       "expected": "accept",
       "got": "accept",
       "reason": "",
-      "gas": "3465436",
+      "gas": "3807717",
       "calldataBytes": 5092,
       "ok": true
     },
@@ -435,7 +435,7 @@
       "expected": "accept",
       "got": "accept",
       "reason": "",
-      "gas": "1624638",
+      "gas": "2036835",
       "calldataBytes": 4708,
       "ok": true
     },
@@ -444,7 +444,7 @@
       "expected": "accept",
       "got": "accept",
       "reason": "",
-      "gas": "1571811",
+      "gas": "1896351",
       "calldataBytes": 4516,
       "ok": true
     },
@@ -453,7 +453,7 @@
       "expected": "accept",
       "got": "accept",
       "reason": "",
-      "gas": "709835",
+      "gas": "866091",
       "calldataBytes": 2084,
       "ok": true
     },
@@ -462,7 +462,7 @@
       "expected": "accept",
       "got": "accept",
       "reason": "",
-      "gas": "6718411",
+      "gas": "7254400",
       "calldataBytes": 7812,
       "ok": true
     },
@@ -471,7 +471,7 @@
       "expected": "reject",
       "got": "reject",
       "reason": "decl#1: quotient shape",
-      "gas": "307842",
+      "gas": "358211",
       "calldataBytes": 1060,
       "ok": true
     },
@@ -480,7 +480,7 @@
       "expected": "reject",
       "got": "reject",
       "reason": "decl#0: quotient shape",
-      "gas": "206051",
+      "gas": "246180",
       "calldataBytes": 772,
       "ok": true
     },
@@ -489,7 +489,7 @@
       "expected": "reject",
       "got": "reject",
       "reason": "decl#1: quotient shape",
-      "gas": "529434",
+      "gas": "597819",
       "calldataBytes": 1316,
       "ok": true
     },
@@ -498,7 +498,7 @@
       "expected": "reject",
       "got": "reject",
       "reason": "decl#1: inductive shape",
-      "gas": "172995",
+      "gas": "215153",
       "calldataBytes": 868,
       "ok": true
     },
@@ -507,7 +507,7 @@
       "expected": "reject",
       "got": "reject",
       "reason": "decl#0: duplicate universe param",
-      "gas": "161694",
+      "gas": "194917",
       "calldataBytes": 836,
       "ok": true
     },
@@ -516,7 +516,7 @@
       "expected": "reject",
       "got": "reject",
       "reason": "decl#0: inductive shape",
-      "gas": "177377",
+      "gas": "215111",
       "calldataBytes": 804,
       "ok": true
     },
@@ -525,7 +525,7 @@
       "expected": "reject",
       "got": "reject",
       "reason": "decl#0: constructor result type",
-      "gas": "263911",
+      "gas": "331180",
       "calldataBytes": 1188,
       "ok": true
     },
@@ -534,7 +534,7 @@
       "expected": "reject",
       "got": "reject",
       "reason": "decl#0: constructor result levels",
-      "gas": "192345",
+      "gas": "248678",
       "calldataBytes": 1220,
       "ok": true
     },
@@ -543,7 +543,7 @@
       "expected": "reject",
       "got": "reject",
       "reason": "decl#0: positivity violation",
-      "gas": "201698",
+      "gas": "254895",
       "calldataBytes": 964,
       "ok": true
     },
@@ -552,7 +552,7 @@
       "expected": "reject",
       "got": "reject",
       "reason": "decl#1: constructor result type",
-      "gas": "211570",
+      "gas": "272400",
       "calldataBytes": 1092,
       "ok": true
     },
@@ -561,7 +561,7 @@
       "expected": "reject",
       "got": "reject",
       "reason": "decl#1: constructor result type",
-      "gas": "187547",
+      "gas": "240462",
       "calldataBytes": 996,
       "ok": true
     },
@@ -570,7 +570,7 @@
       "expected": "reject",
       "got": "reject",
       "reason": "decl#0: field universe too large",
-      "gas": "202892",
+      "gas": "252837",
       "calldataBytes": 932,
       "ok": true
     },
@@ -579,7 +579,7 @@
       "expected": "reject",
       "got": "reject",
       "reason": "decl#8: projection violation",
-      "gas": "698433",
+      "gas": "864819",
       "calldataBytes": 2724,
       "ok": true
     },
@@ -588,7 +588,7 @@
       "expected": "reject",
       "got": "reject",
       "reason": "decl#5: projection violation",
-      "gas": "789809",
+      "gas": "945957",
       "calldataBytes": 2692,
       "ok": true
     },
@@ -597,7 +597,7 @@
       "expected": "reject",
       "got": "reject",
       "reason": "decl#0: recursor rule invalid",
-      "gas": "669469",
+      "gas": "815411",
       "calldataBytes": 1988,
       "ok": true
     },
@@ -606,7 +606,7 @@
       "expected": "reject",
       "got": "reject",
       "reason": "decl#1: recursor shape",
-      "gas": "301126",
+      "gas": "403671",
       "calldataBytes": 2148,
       "ok": true
     },
@@ -615,7 +615,7 @@
       "expected": "reject",
       "got": "reject",
       "reason": "decl#0: recursor shape",
-      "gas": "523270",
+      "gas": "636047",
       "calldataBytes": 2084,
       "ok": true
     },
@@ -624,7 +624,7 @@
       "expected": "reject",
       "got": "reject",
       "reason": "decl#0: invalid K flag",
-      "gas": "358123",
+      "gas": "439127",
       "calldataBytes": 1604,
       "ok": true
     },
@@ -633,16 +633,16 @@
       "expected": "reject",
       "got": "reject",
       "reason": "decl#0: elimination universe violation",
-      "gas": "383697",
+      "gas": "476502",
       "calldataBytes": 2052,
       "ok": true
     },
     {
-      "test": "decline/068_nested",
-      "expected": "decline",
-      "got": "decline",
-      "reason": "decl#0: unsupported feature",
-      "gas": "158826",
+      "test": "bad/068_nested",
+      "expected": "reject",
+      "got": "reject",
+      "reason": "decl#0: nested inductive violation",
+      "gas": "202833",
       "calldataBytes": 740,
       "ok": true
     },
@@ -651,7 +651,7 @@
       "expected": "decline",
       "got": "decline",
       "reason": "decl#0: unsupported feature",
-      "gas": "157411",
+      "gas": "185115",
       "calldataBytes": 676,
       "ok": true
     },
@@ -660,7 +660,7 @@
       "expected": "reject",
       "got": "reject",
       "reason": "decl#11: projection violation",
-      "gas": "711259",
+      "gas": "900629",
       "calldataBytes": 3044,
       "ok": true
     },
@@ -669,7 +669,7 @@
       "expected": "reject",
       "got": "reject",
       "reason": "decl#11: projection violation",
-      "gas": "711259",
+      "gas": "900629",
       "calldataBytes": 3044,
       "ok": true
     },
@@ -678,8 +678,197 @@
       "expected": "reject",
       "got": "reject",
       "reason": "decl#11: projection violation",
-      "gas": "711259",
+      "gas": "900629",
       "calldataBytes": 3044,
+      "ok": true
+    },
+    {
+      "test": "good/078_stringLit",
+      "expected": "accept",
+      "got": "accept",
+      "reason": "",
+      "gas": "1740280",
+      "calldataBytes": 5636,
+      "ok": true
+    },
+    {
+      "test": "good/079_stringLitEmpty",
+      "expected": "accept",
+      "got": "accept",
+      "reason": "",
+      "gas": "1579077",
+      "calldataBytes": 5092,
+      "ok": true
+    },
+    {
+      "test": "good/080_stringLitUnicode",
+      "expected": "accept",
+      "got": "accept",
+      "reason": "",
+      "gas": "1741933",
+      "calldataBytes": 5636,
+      "ok": true
+    },
+    {
+      "test": "bad/081_stringLitWrong",
+      "expected": "reject",
+      "got": "reject",
+      "reason": "decl#17: value/type mismatch",
+      "gas": "5998524",
+      "calldataBytes": 5636,
+      "ok": true
+    },
+    {
+      "test": "good/082_natAdd",
+      "expected": "accept",
+      "got": "accept",
+      "reason": "",
+      "gas": "1620326",
+      "calldataBytes": 4900,
+      "ok": true
+    },
+    {
+      "test": "good/083_natMul",
+      "expected": "accept",
+      "got": "accept",
+      "reason": "",
+      "gas": "1621009",
+      "calldataBytes": 4900,
+      "ok": true
+    },
+    {
+      "test": "good/084_natSub",
+      "expected": "accept",
+      "got": "accept",
+      "reason": "",
+      "gas": "1620401",
+      "calldataBytes": 4900,
+      "ok": true
+    },
+    {
+      "test": "good/085_natDivMod",
+      "expected": "accept",
+      "got": "accept",
+      "reason": "",
+      "gas": "1621927",
+      "calldataBytes": 4900,
+      "ok": true
+    },
+    {
+      "test": "good/086_natPow",
+      "expected": "accept",
+      "got": "accept",
+      "reason": "",
+      "gas": "1622864",
+      "calldataBytes": 4900,
+      "ok": true
+    },
+    {
+      "test": "good/087_natGcd",
+      "expected": "accept",
+      "got": "accept",
+      "reason": "",
+      "gas": "1621829",
+      "calldataBytes": 4900,
+      "ok": true
+    },
+    {
+      "test": "bad/088_natAddWrong",
+      "expected": "reject",
+      "got": "reject",
+      "reason": "decl#13: value/type mismatch",
+      "gas": "1646251",
+      "calldataBytes": 4900,
+      "ok": true
+    },
+    {
+      "test": "bad/089_natDivByZero",
+      "expected": "reject",
+      "got": "reject",
+      "reason": "decl#13: value/type mismatch",
+      "gas": "1647589",
+      "calldataBytes": 4900,
+      "ok": true
+    },
+    {
+      "test": "good/090_natBeq",
+      "expected": "accept",
+      "got": "accept",
+      "reason": "",
+      "gas": "1622307",
+      "calldataBytes": 4836,
+      "ok": true
+    },
+    {
+      "test": "good/091_natBle",
+      "expected": "accept",
+      "got": "accept",
+      "reason": "",
+      "gas": "1622635",
+      "calldataBytes": 4836,
+      "ok": true
+    },
+    {
+      "test": "good/092_natBleFalse",
+      "expected": "accept",
+      "got": "accept",
+      "reason": "",
+      "gas": "1622647",
+      "calldataBytes": 4836,
+      "ok": true
+    },
+    {
+      "test": "bad/093_natBeqWrong",
+      "expected": "reject",
+      "got": "reject",
+      "reason": "decl#13: value/type mismatch",
+      "gas": "1668350",
+      "calldataBytes": 4836,
+      "ok": true
+    },
+    {
+      "test": "bad/094_nestedNegativeParam",
+      "expected": "reject",
+      "got": "reject",
+      "reason": "decl#8: positivity violation",
+      "gas": "994517",
+      "calldataBytes": 3012,
+      "ok": true
+    },
+    {
+      "test": "bad/095_nestedDefAlias",
+      "expected": "reject",
+      "got": "reject",
+      "reason": "decl#4: positivity violation",
+      "gas": "407037",
+      "calldataBytes": 1572,
+      "ok": true
+    },
+    {
+      "test": "bad/096_nestedGroupInIndex",
+      "expected": "reject",
+      "got": "reject",
+      "reason": "decl#3: positivity violation",
+      "gas": "432812",
+      "calldataBytes": 1540,
+      "ok": true
+    },
+    {
+      "test": "bad/097_nestedLocalParam",
+      "expected": "reject",
+      "got": "reject",
+      "reason": "decl#8: nested inductive violation",
+      "gas": "928609",
+      "calldataBytes": 3172,
+      "ok": true
+    },
+    {
+      "test": "bad/098_nestedIllTypedDs",
+      "expected": "reject",
+      "got": "reject",
+      "reason": "decl#11: projection violation",
+      "gas": "1104956",
+      "calldataBytes": 3620,
       "ok": true
     },
     {
@@ -687,7 +876,7 @@
       "expected": "reject",
       "got": "reject",
       "reason": "decl#23: universe count mismatch",
-      "gas": "6381225",
+      "gas": "7153544",
       "calldataBytes": 12484,
       "ok": true
     },
@@ -696,7 +885,7 @@
       "expected": "reject",
       "got": "reject",
       "reason": "decl#10: unknown constant",
-      "gas": "472096",
+      "gas": "664704",
       "calldataBytes": 3108,
       "ok": true
     },
@@ -705,7 +894,7 @@
       "expected": "reject",
       "got": "reject",
       "reason": "decl#12: value/type mismatch",
-      "gas": "989529",
+      "gas": "1271086",
       "calldataBytes": 5060,
       "ok": true
     },
@@ -714,7 +903,7 @@
       "expected": "reject",
       "got": "reject",
       "reason": "decl#12: value/type mismatch",
-      "gas": "986829",
+      "gas": "1272634",
       "calldataBytes": 5124,
       "ok": true
     },
@@ -723,8 +912,359 @@
       "expected": "reject",
       "got": "reject",
       "reason": "decl#12: recursor rule invalid",
-      "gas": "1539825",
+      "gas": "1950598",
       "calldataBytes": 6916,
+      "ok": true
+    },
+    {
+      "test": "nested/deep-list-list",
+      "expected": "accept",
+      "got": "accept",
+      "reason": "",
+      "gas": "17951752",
+      "calldataBytes": 11268,
+      "ok": true
+    },
+    {
+      "test": "nested/double-wrap",
+      "expected": "accept",
+      "got": "accept",
+      "reason": "",
+      "gas": "12471093",
+      "calldataBytes": 11716,
+      "ok": true
+    },
+    {
+      "test": "nested/function-field-param",
+      "expected": "accept",
+      "got": "accept",
+      "reason": "",
+      "gas": "12326565",
+      "calldataBytes": 10532,
+      "ok": true
+    },
+    {
+      "test": "nested/function-field",
+      "expected": "accept",
+      "got": "accept",
+      "reason": "",
+      "gas": "8439097",
+      "calldataBytes": 9476,
+      "ok": true
+    },
+    {
+      "test": "nested/indexed-target",
+      "expected": "accept",
+      "got": "accept",
+      "reason": "",
+      "gas": "5924189",
+      "calldataBytes": 8132,
+      "ok": true
+    },
+    {
+      "test": "nested/iota-through-aux",
+      "expected": "accept",
+      "got": "accept",
+      "reason": "",
+      "gas": "14824747",
+      "calldataBytes": 17668,
+      "ok": true
+    },
+    {
+      "test": "nested/list-tree",
+      "expected": "accept",
+      "got": "accept",
+      "reason": "",
+      "gas": "6376178",
+      "calldataBytes": 8100,
+      "ok": true
+    },
+    {
+      "test": "nested/mutual-member",
+      "expected": "accept",
+      "got": "accept",
+      "reason": "",
+      "gas": "13011180",
+      "calldataBytes": 11940,
+      "ok": true
+    },
+    {
+      "test": "nested/mutual-target",
+      "expected": "accept",
+      "got": "accept",
+      "reason": "",
+      "gas": "18265586",
+      "calldataBytes": 12708,
+      "ok": true
+    },
+    {
+      "test": "nested/prop-nested",
+      "expected": "accept",
+      "got": "accept",
+      "reason": "",
+      "gas": "4180201",
+      "calldataBytes": 7012,
+      "ok": true
+    },
+    {
+      "test": "nested-reject/reject-14576-unused-param",
+      "expected": "reject",
+      "got": "reject",
+      "reason": "decl#49: unknown constant",
+      "gas": "18172155",
+      "calldataBytes": 42820,
+      "ok": true
+    },
+    {
+      "test": "nested/rose-param-universe",
+      "expected": "accept",
+      "got": "accept",
+      "reason": "",
+      "gas": "9537348",
+      "calldataBytes": 8804,
+      "ok": true
+    },
+    {
+      "test": "nested/syntax-replica",
+      "expected": "accept",
+      "got": "accept",
+      "reason": "",
+      "gas": "18638494",
+      "calldataBytes": 15012,
+      "ok": true
+    },
+    {
+      "test": "nested/two-instantiations",
+      "expected": "accept",
+      "got": "accept",
+      "reason": "",
+      "gas": "19695703",
+      "calldataBytes": 11140,
+      "ok": true
+    },
+    {
+      "test": "lean/accept-lazydelta-nat-fold",
+      "expected": "accept",
+      "got": "accept",
+      "reason": "",
+      "gas": "6308894",
+      "calldataBytes": 10852,
+      "ok": true
+    },
+    {
+      "test": "lean/accept-nat-limb-width",
+      "expected": "accept",
+      "got": "accept",
+      "reason": "",
+      "gas": "6229653",
+      "calldataBytes": 10628,
+      "ok": true
+    },
+    {
+      "test": "lean/accept-nested-ds-mentions-ctor",
+      "expected": "accept",
+      "got": "accept",
+      "reason": "",
+      "gas": "4689198",
+      "calldataBytes": 5348,
+      "ok": true
+    },
+    {
+      "test": "lean/accept-recrule-nfields-control",
+      "expected": "accept",
+      "got": "accept",
+      "reason": "",
+      "gas": "1270946",
+      "calldataBytes": 3332,
+      "ok": true
+    },
+    {
+      "test": "lean/noconfusion-of-nat",
+      "expected": "accept",
+      "got": "accept",
+      "reason": "",
+      "gas": "37807714",
+      "calldataBytes": 21956,
+      "ok": true
+    },
+    {
+      "test": "lean/proj-congruence-brecon",
+      "expected": "accept",
+      "got": "accept",
+      "reason": "",
+      "gas": "21296542",
+      "calldataBytes": 19684,
+      "ok": true
+    },
+    {
+      "test": "lean/proj-congruence",
+      "expected": "accept",
+      "got": "accept",
+      "reason": "",
+      "gas": "4198723",
+      "calldataBytes": 7620,
+      "ok": true
+    },
+    {
+      "test": "lean-reject/reject-ctor-window-dup",
+      "expected": "reject",
+      "got": "reject",
+      "reason": "decl#5: inductive shape",
+      "gas": "541574",
+      "calldataBytes": 5732,
+      "ok": true
+    },
+    {
+      "test": "lean-reject/reject-ctor-window-honest",
+      "expected": "reject",
+      "got": "reject",
+      "reason": "decl#8: recursor shape",
+      "gas": "566887",
+      "calldataBytes": 3332,
+      "ok": true
+    },
+    {
+      "test": "lean-reject/reject-ctor-window-lie",
+      "expected": "reject",
+      "got": "reject",
+      "reason": "decl#5: inductive shape",
+      "gas": "425264",
+      "calldataBytes": 3300,
+      "ok": true
+    },
+    {
+      "test": "lean-reject/reject-decl-type-out-of-range",
+      "expected": "reject",
+      "got": "reject",
+      "reason": "decl#0: malformed export",
+      "gas": "184412",
+      "calldataBytes": 676,
+      "ok": true
+    },
+    {
+      "test": "lean-reject/reject-defeq-intransitive",
+      "expected": "reject",
+      "got": "reject",
+      "reason": "decl#21: application argument type mismatch",
+      "gas": "3000890",
+      "calldataBytes": 7844,
+      "ok": true
+    },
+    {
+      "test": "lean-reject/reject-eta-recursive-structure",
+      "expected": "reject",
+      "got": "reject",
+      "reason": "decl#10: value/type mismatch",
+      "gas": "1641618",
+      "calldataBytes": 4164,
+      "ok": true
+    },
+    {
+      "test": "lean-reject/reject-isrec-lie",
+      "expected": "reject",
+      "got": "reject",
+      "reason": "decl#10: value/type mismatch",
+      "gas": "2438917",
+      "calldataBytes": 4356,
+      "ok": true
+    },
+    {
+      "test": "lean-reject/reject-level-cycle",
+      "expected": "reject",
+      "got": "reject",
+      "reason": "decl#0: malformed export",
+      "gas": "468808",
+      "calldataBytes": 8100,
+      "ok": true
+    },
+    {
+      "test": "lean-reject/reject-mutual-dup-window",
+      "expected": "reject",
+      "got": "reject",
+      "reason": "decl#0: inductive shape",
+      "gas": "822110",
+      "calldataBytes": 11204,
+      "ok": true
+    },
+    {
+      "test": "lean-reject/reject-mutual-forward-ref",
+      "expected": "reject",
+      "got": "reject",
+      "reason": "decl#0: inductive shape",
+      "gas": "214142",
+      "calldataBytes": 1316,
+      "ok": true
+    },
+    {
+      "test": "lean-reject/reject-mutual-param-mismatch",
+      "expected": "reject",
+      "got": "reject",
+      "reason": "decl#0: inductive shape",
+      "gas": "257302",
+      "calldataBytes": 1444,
+      "ok": true
+    },
+    {
+      "test": "lean-reject/reject-name-prefix-forward",
+      "expected": "reject",
+      "got": "reject",
+      "reason": "decl#0: malformed export",
+      "gas": "191544",
+      "calldataBytes": 4900,
+      "ok": true
+    },
+    {
+      "test": "lean-reject/reject-natzero-level1",
+      "expected": "reject",
+      "got": "reject",
+      "reason": "decl#11: value/type mismatch",
+      "gas": "666664",
+      "calldataBytes": 3012,
+      "ok": true
+    },
+    {
+      "test": "lean-reject/reject-natzero-transport",
+      "expected": "reject",
+      "got": "reject",
+      "reason": "decl#18: value/type mismatch",
+      "gas": "4267022",
+      "calldataBytes": 8420,
+      "ok": true
+    },
+    {
+      "test": "lean-reject/reject-natzero-universe",
+      "expected": "reject",
+      "got": "reject",
+      "reason": "decl#11: value/type mismatch",
+      "gas": "666291",
+      "calldataBytes": 3012,
+      "ok": true
+    },
+    {
+      "test": "lean-reject/reject-numnested-bit-spill",
+      "expected": "reject",
+      "got": "reject",
+      "reason": "decl#5: malformed export",
+      "gas": "2136557",
+      "calldataBytes": 8100,
+      "ok": true
+    },
+    {
+      "test": "lean-reject/reject-rec-rules-reordered",
+      "expected": "reject",
+      "got": "reject",
+      "reason": "decl#0: recursor rule invalid",
+      "gas": "608338",
+      "calldataBytes": 2884,
+      "ok": true
+    },
+    {
+      "test": "lean-reject/reject-recrule-nfields-lie",
+      "expected": "reject",
+      "got": "reject",
+      "reason": "decl#0: application argument type mismatch",
+      "gas": "811461",
+      "calldataBytes": 3332,
       "ok": true
     }
   ]

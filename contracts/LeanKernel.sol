@@ -12,9 +12,9 @@ pragma solidity ^0.8.28;
 ///              irrelevance, type inference, declaration checking for
 ///              axiom/def/theorem/opaque, inductive families/recursors,
 ///              projections, quotients, and Nat literals.
-/// Declined:    nested inductives, unsafe/partial declarations, and String
-///              literal reduction — mirroring the Arena's "decline" verdict
-///              (exit code 2) for features a checker does not support.
+/// Declined:    unsafe/partial declarations — mirroring the Arena's
+///              "decline" verdict (exit code 2) for features a checker
+///              does not support.
 ///
 /// Verdicts:    0 = accept, 1 = reject, 2 = decline, 3 = resource error.
 contract LeanKernel {
@@ -63,10 +63,15 @@ contract LeanKernel {
     uint256 internal constant D_OPAQUE = 3;
     uint256 internal constant D_QUOT = 4; // word1.a = quot kind (0 type, 1 ctor, 2 lift, 3 ind)
     uint256 internal constant D_GROUP = 5; // word1: a=#types b=#ctors c=#recs
-    uint256 internal constant D_IND = 6; // word1: a=numParams b=numIndices c=ctorsPtr d=numNested
+    uint256 internal constant D_IND = 6; // word1: a=numParams b=numIndices c=ctorsPtr d=numNested, bit192=isRec
     uint256 internal constant D_CTOR = 7; // word1: a=induct b=cidx c=numParams d=numFields
     uint256 internal constant D_REC = 8; // word1: a=p b=i c=M d=m e=rulesPtr, tagbyte=k
     uint256 internal constant D_UNSUP = 9;
+
+    /// Longest string literal we will expand into cons cells. Lean expands
+    /// lazily; we build the whole spine eagerly, so a huge literal would blow
+    /// the arena. Declining is honest; a resource error would not be.
+    uint256 internal constant STR_EXPAND_MAX = 512;
 
     // verdicts
     uint8 internal constant V_ACCEPT = 0;
@@ -103,10 +108,17 @@ contract LeanKernel {
     uint16 internal constant R_REC_SHAPE = 25;
     uint16 internal constant R_REC_RULE = 26;
     uint16 internal constant R_PROJ = 27;
+    uint16 internal constant R_MALFORMED = 29;
+    uint16 internal constant R_NESTED = 30;
     uint16 internal constant R_QUOT_SHAPE = 28;
 
     uint256 internal constant MAX_STEPS = 30_000_000;
     uint256 internal constant MAX_DEPTH = 160;
+
+    /// Cap on auxiliary types from nested-inductive elimination. `numNested`
+    /// in real exports is tiny (Lean.Syntax has 2); an absurd declared value
+    /// would otherwise size our worklist arrays. Declining is honest.
+    uint256 internal constant MAX_NESTED = 256;
 
     struct M {
         // expression arena (grows: beta/inst/subst create nodes)
@@ -129,6 +141,11 @@ contract LeanKernel {
         uint256[] envOf;
         // local context: expr indices of binder types (de Bruijn)
         uint256[] ctx;
+        // parallel to ctx: the *value* of a `let`-bound local (NONE for
+        // ordinary binders). Enables zeta-delta unfolding of local lets, so
+        // _inferLet need not eagerly substitute (Lean: local_decl value /
+        // is_let_fvar, src/kernel/type_checker.cpp).
+        uint256[] ctxVal;
         uint256 ctxLen;
         // current declaration's universe parameters (window into pool)
         uint256 lpStart;
@@ -143,6 +160,16 @@ contract LeanKernel {
         uint256 natZeroIdx;
         uint256 natSuccIdx;
         uint256 stringIdx;
+        uint256 stringMkIdx;
+        uint256 stringOfListIdx;
+        uint256 listNilIdx;
+        uint256 listConsIdx;
+        uint256 charIdx;
+        uint256 charOfNatIdx;
+        uint256 boolTrueIdx;
+        uint256 boolFalseIdx;
+        // Nat.add sub mul pow gcd mod div beq ble land lor xor shiftLeft shiftRight
+        uint256[14] natOp;
         uint256 quotIdx;
     }
 
@@ -156,6 +183,19 @@ contract LeanKernel {
         uint256[] indD0; // type records (word0)
         uint256[] indD1;
         bool smallElimOnly;
+        // ---- nested-inductive elimination (Lean's elim_nested_inductive_fn).
+        // Auxiliary type k is represented in RESTORED form: the application
+        // `I_k Ds_k` of a previously declared inductive I_k to parameter
+        // arguments Ds_k. Ds_k live in the context of the group's shared
+        // parameter telescope (innermost parameter = bvar 0).
+        uint256 np; // the group's shared parameter count
+        uint256 nAux; // number of auxiliary types derived (must == numNested)
+        uint256 nCtorsAux; // total constructors across auxiliary types
+        uint256[] auxSlot; // env index (slot-1) of I_k's D_IND record
+        uint256[] auxUs; // pool window of I_k's written universe args
+        uint256[][] auxDs; // canonical Ds_k
+        uint256[] vcSlot; // per virtual ctor: env index of the ctor decl
+        uint256[] vcAux; // per virtual ctor: owning aux index k
     }
 
     // ------------------------------------------------------------------
@@ -177,6 +217,12 @@ contract LeanKernel {
         uint256[] calldata declTab
     ) external pure returns (uint8 verdict, uint64 failedDecl, uint16 reason) {
         M memory m = _init(nameTab, nameStrs, levelTab, exprTab, pool);
+        _checkTables(m, exprTab.length, levelTab.length, nameTab.length);
+        if (m.fail != 0) return (uint8(m.fail), 0, m.reason);
+        _checkLevelAcyclic(m, levelTab.length);
+        if (m.fail != 0) return (uint8(m.fail), 0, m.reason);
+        _checkDeclTable(m, declTab, exprTab.length, nameTab.length);
+        if (m.fail != 0) return (uint8(m.fail), 0, m.reason);
         uint256 nDecls = declTab.length / 2;
         uint256 i = 0;
         while (i < nDecls) {
@@ -228,7 +274,17 @@ contract LeanKernel {
             uint256 w = nameTab[i];
             uint256 tag = w >> 248;
             uint256 pre = w & F;
-            bytes32 ph = pre < i ? m.nameHash[pre] : bytes32(0);
+            // A prefix must name an already-hashed entry. Silently treating a
+            // forward or out-of-range prefix as the root would let an export
+            // manufacture any qualified name it likes — and every soundness
+            // hole found in this kernel so far came from quietly reinterpreting
+            // a malformed field instead of rejecting it.
+            if (pre >= i) {
+                m.fail = V_REJECT;
+                m.reason = R_MALFORMED;
+                return m;
+            }
+            bytes32 ph = m.nameHash[pre];
             if (tag == 0) {
                 uint256 off = (w >> 48) & F;
                 uint256 len = (w >> 96) & F;
@@ -246,6 +302,7 @@ contract LeanKernel {
         m.envDecl1 = new uint256[](256);
         m.envOf = new uint256[](nameTab.length + 1);
         m.ctx = new uint256[](256);
+        m.ctxVal = new uint256[](256);
 
         // locate well-known names (for Nat literal semantics / String typing)
         bytes32 hNat = keccak256(abi.encodePacked(bytes32(0), uint8(0), "Nat"));
@@ -253,6 +310,16 @@ contract LeanKernel {
         bytes32 hNatSucc = keccak256(abi.encodePacked(hNat, uint8(0), "succ"));
         bytes32 hString = keccak256(abi.encodePacked(bytes32(0), uint8(0), "String"));
         bytes32 hQuot = keccak256(abi.encodePacked(bytes32(0), uint8(0), "Quot"));
+        // needed by string_lit_to_constructor: String.mk (List.cons (Char.ofNat c) ...)
+        bytes32 hStringMk = keccak256(abi.encodePacked(hString, uint8(0), "mk"));
+        // Lean >= 4.26 wraps the char list with String.ofList (a def, so the
+        // result still has to be whnf'd); earlier versions used String.mk.
+        bytes32 hStringOfList = keccak256(abi.encodePacked(hString, uint8(0), "ofList"));
+        bytes32 hList = keccak256(abi.encodePacked(bytes32(0), uint8(0), "List"));
+        bytes32 hListNil = keccak256(abi.encodePacked(hList, uint8(0), "nil"));
+        bytes32 hListCons = keccak256(abi.encodePacked(hList, uint8(0), "cons"));
+        bytes32 hChar = keccak256(abi.encodePacked(bytes32(0), uint8(0), "Char"));
+        bytes32 hCharOfNat = keccak256(abi.encodePacked(hChar, uint8(0), "ofNat"));
         for (uint256 i = 1; i < nameTab.length; i++) {
             bytes32 h = m.nameHash[i];
             if (h == hNat) m.natIdx = i;
@@ -260,7 +327,233 @@ contract LeanKernel {
             else if (h == hNatSucc) m.natSuccIdx = i;
             else if (h == hString) m.stringIdx = i;
             else if (h == hQuot) m.quotIdx = i;
+            else if (h == hStringMk) m.stringMkIdx = i;
+            else if (h == hStringOfList) m.stringOfListIdx = i;
+            else if (h == hListNil) m.listNilIdx = i;
+            else if (h == hListCons) m.listConsIdx = i;
+            else if (h == hChar) m.charIdx = i;
+            else if (h == hCharOfNat) m.charOfNatIdx = i;
         }
+        _locateNatOps(m, nameTab.length, hNat);
+    }
+
+    /// Locate the constants Lean's `reduce_nat` accelerates, plus the Bool
+    /// constructors its predicates return.
+    function _locateNatOps(M memory m, uint256 nNames, bytes32 hNat) internal pure {
+        bytes32[14] memory h;
+        h[0] = keccak256(abi.encodePacked(hNat, uint8(0), "add"));
+        h[1] = keccak256(abi.encodePacked(hNat, uint8(0), "sub"));
+        h[2] = keccak256(abi.encodePacked(hNat, uint8(0), "mul"));
+        h[3] = keccak256(abi.encodePacked(hNat, uint8(0), "pow"));
+        h[4] = keccak256(abi.encodePacked(hNat, uint8(0), "gcd"));
+        h[5] = keccak256(abi.encodePacked(hNat, uint8(0), "mod"));
+        h[6] = keccak256(abi.encodePacked(hNat, uint8(0), "div"));
+        h[7] = keccak256(abi.encodePacked(hNat, uint8(0), "beq"));
+        h[8] = keccak256(abi.encodePacked(hNat, uint8(0), "ble"));
+        h[9] = keccak256(abi.encodePacked(hNat, uint8(0), "land"));
+        h[10] = keccak256(abi.encodePacked(hNat, uint8(0), "lor"));
+        h[11] = keccak256(abi.encodePacked(hNat, uint8(0), "xor"));
+        h[12] = keccak256(abi.encodePacked(hNat, uint8(0), "shiftLeft"));
+        h[13] = keccak256(abi.encodePacked(hNat, uint8(0), "shiftRight"));
+        bytes32 hBool = keccak256(abi.encodePacked(bytes32(0), uint8(0), "Bool"));
+        bytes32 hTrue = keccak256(abi.encodePacked(hBool, uint8(0), "true"));
+        bytes32 hFalse = keccak256(abi.encodePacked(hBool, uint8(0), "false"));
+        for (uint256 i = 1; i < nNames; i++) {
+            bytes32 nh = m.nameHash[i];
+            if (nh == hTrue) m.boolTrueIdx = i;
+            else if (nh == hFalse) m.boolFalseIdx = i;
+            else {
+                for (uint256 k = 0; k < 14; k++) {
+                    if (nh == h[k]) {
+                        m.natOp[k] = i;
+                        break;
+                    }
+                }
+            }
+        }
+    }
+
+    /// Structural validation of the input tables, before any judgement runs.
+    ///
+    /// Two invariants, both load-bearing for termination rather than typing:
+    ///
+    ///  * every expression node references only strictly smaller expression
+    ///    indices. lean4export always emits expressions in dependency order
+    ///    (verified across the whole Arena corpus), so this is free, and it
+    ///    rules out the cyclic graphs a malformed export would otherwise use to
+    ///    drive `_lift` / `_inst` / `_exactEq` into unbounded recursion.
+    ///  * every level and name reference is inside the table it names. The
+    ///    level and expression arenas grow during checking, so an out-of-range
+    ///    input index would silently alias a node manufactured later — and
+    ///    those can be cyclic, which hangs the level algorithms.
+    ///
+    /// Level indices are NOT required to be ordered: forward references are
+    /// legal there and the Arena exercises them.
+    function _checkTables(M memory m, uint256 nEx, uint256 nLv, uint256 nNm) internal pure {
+        for (uint256 i = 1; i < nLv; i++) {
+            uint256 t = _lt(m, i);
+            bool bad;
+            if (t == L_SUCC) bad = _la(m, i) >= nLv;
+            else if (t == L_MAX || t == L_IMAX) bad = _la(m, i) >= nLv || _lb(m, i) >= nLv;
+            else if (t == L_PARAM) bad = _la(m, i) >= nNm;
+            if (bad) {
+                _setFail(m, V_REJECT, R_MALFORMED);
+                return;
+            }
+        }
+        for (uint256 i = 0; i < nEx; i++) {
+            uint256 t = _tag(m, i);
+            bool bad;
+            if (t == E_APP || t == E_LAM || t == E_PI) {
+                bad = _a(m, i) >= i || _b(m, i) >= i;
+            } else if (t == E_LET) {
+                bad = _a(m, i) >= i || _b(m, i) >= i || _c(m, i) >= i;
+            } else if (t == E_PROJ) {
+                bad = _c(m, i) >= i || _a(m, i) >= nNm;
+            } else if (t == E_NAT) {
+                // pool window: [limbCount, limbs...]
+                uint256 p = _a(m, i);
+                if (p >= m.poolLen) bad = true;
+                else {
+                    uint256 cnt = m.pool[p];
+                    if (cnt > m.poolLen || p + 1 > m.poolLen - cnt) bad = true;
+                }
+            } else if (t == E_STRL) {
+                // pool window: [byteLen, 32-byte words...]
+                uint256 p = _a(m, i);
+                if (p >= m.poolLen) bad = true;
+                else {
+                    // ceil(n/32) WITHOUT `n + 31`: the stored byte length is
+                    // attacker controlled, and `n + 31` wraps for n near 2^256,
+                    // yielding a tiny word count that sails past the bound.
+                    uint256 n = m.pool[p];
+                    uint256 words = n / 32 + (n % 32 == 0 ? 0 : 1);
+                    if (words > m.poolLen || p + 1 > m.poolLen - words) bad = true;
+                }
+            } else if (t == E_SORT) {
+                bad = _a(m, i) >= nLv;
+            } else if (t == E_CONST) {
+                bad = _a(m, i) >= nNm;
+                uint256 s = _b(m, i);
+                uint256 k = _c(m, i);
+                if (!bad && (k > m.poolLen || s > m.poolLen - k)) bad = true;
+                for (uint256 j = 0; !bad && j < k; j++) {
+                    if (m.pool[s + j] >= nLv) bad = true;
+                }
+            }
+            if (bad) {
+                _setFail(m, V_REJECT, R_MALFORMED);
+                return;
+            }
+        }
+    }
+
+    /// The level graph must be acyclic.
+    ///
+    /// Levels may legitimately reference *forward* — the Arena has a test for
+    /// it — so unlike expressions they cannot be required to be index-ordered.
+    /// But a cycle (`succ` pointing at itself, or any loop) sends `_simp` and
+    /// `_leqCore` into unbounded recursion and blows the EVM stack, which is a
+    /// checker fault rather than a verdict. Explicit-stack DFS, three-colour.
+    function _checkLevelAcyclic(M memory m, uint256 nLv) internal pure {
+        uint8[] memory color = new uint8[](nLv);
+        uint256[] memory stk = new uint256[](2 * nLv + 4);
+        for (uint256 root = 1; root < nLv; root++) {
+            if (color[root] != 0) continue;
+            uint256 sp = 0;
+            stk[sp++] = root;
+            while (sp != 0) {
+                uint256 v = stk[sp - 1];
+                if (color[v] != 0) {
+                    if (color[v] == 1) color[v] = 2;
+                    sp--;
+                    continue;
+                }
+                color[v] = 1;
+                uint256 t = _lt(m, v);
+                // L_PARAM's payload is a NAME index, not a level: do not follow.
+                if (t != L_SUCC && t != L_MAX && t != L_IMAX) continue;
+                uint256 nKids = t == L_SUCC ? 1 : 2;
+                for (uint256 kx = 0; kx < nKids; kx++) {
+                    uint256 c = kx == 0 ? _la(m, v) : _lb(m, v);
+                    if (color[c] == 1) {
+                        _setFail(m, V_REJECT, R_MALFORMED);
+                        return;
+                    }
+                    if (color[c] == 0 && sp < stk.length) stk[sp++] = c;
+                }
+            }
+        }
+    }
+
+    /// Validate every index and pool window carried by a declaration record.
+    ///
+    /// `_checkTables` covers the level and expression tables; nothing covered
+    /// the declaration table itself, so an out-of-range `type`, `value`, name,
+    /// level-param window, constructor list or rule list addressed the arenas
+    /// unchecked. Those arenas GROW during checking, so such an index does not
+    /// read zeroes — it aliases nodes the kernel manufactures later. The same
+    /// class already produced two soundness holes (the `numNested` bit-spill
+    /// and the forward name prefix), and left ~80 inputs reverting rather than
+    /// returning a verdict, which the Arena reads as a broken checker.
+    function _checkDeclTable(M memory m, uint256[] calldata declTab, uint256 nEx, uint256 nNm)
+        internal
+        pure
+    {
+        uint256 nD = declTab.length / 2;
+        for (uint256 i = 0; i < nD; i++) {
+            uint256 d0 = declTab[2 * i];
+            uint256 kind = d0 >> 248;
+            // group headers carry counts (validated in _checkGroup against the
+            // records that follow) and no indices; UNSUP carries nothing.
+            if (kind == D_GROUP || kind == D_UNSUP) continue;
+
+            bool bad = _dName(d0) >= nNm || _dType(d0) >= nEx;
+            {
+                uint256 v = _dValue(d0);
+                if (!bad && v != NONE && v >= nEx) bad = true;
+            }
+            {
+                uint256 s = _dLpStart(d0);
+                uint256 k = _dLpLen(d0);
+                if (!bad && (k > m.poolLen || s > m.poolLen - k)) bad = true;
+                for (uint256 j = 0; !bad && j < k; j++) {
+                    if (m.pool[s + j] >= nNm) bad = true;
+                }
+            }
+            uint256 d1 = declTab[2 * i + 1];
+            if (!bad && kind == D_CTOR && (d1 & F) >= nNm) bad = true;
+            if (!bad && kind == D_IND) bad = _badNameWindow(m, (d1 >> 96) & F, nNm);
+            if (!bad && kind == D_REC) bad = _badRuleWindow(m, (d1 >> 192) & F, nEx, nNm);
+            if (bad) {
+                _setFail(m, V_REJECT, R_MALFORMED);
+                return;
+            }
+        }
+    }
+
+    /// A pool window holding a count followed by that many name indices.
+    function _badNameWindow(M memory m, uint256 p, uint256 nNm) internal pure returns (bool) {
+        if (p >= m.poolLen) return true;
+        uint256 cnt = m.pool[p];
+        if (cnt > m.poolLen || p + 1 > m.poolLen - cnt) return true;
+        for (uint256 j = 1; j <= cnt; j++) {
+            if (m.pool[p + j] >= nNm) return true;
+        }
+        return false;
+    }
+
+    /// A pool window holding a count followed by that many (ctorName, nfields,
+    /// rhs) triples.
+    function _badRuleWindow(M memory m, uint256 p, uint256 nEx, uint256 nNm) internal pure returns (bool) {
+        if (p >= m.poolLen) return true;
+        uint256 cnt = m.pool[p];
+        if (cnt > (m.poolLen / 3) + 1 || p + 1 + 3 * cnt > m.poolLen) return true;
+        for (uint256 j = 0; j < cnt; j++) {
+            if (m.pool[p + 1 + 3 * j] >= nNm) return true;
+            if (m.pool[p + 1 + 3 * j + 2] >= nEx) return true;
+        }
+        return false;
     }
 
     // ------------------------------------------------------------------
@@ -365,12 +658,24 @@ contract LeanKernel {
     }
 
     function _pushCtx(M memory m, uint256 ty) internal pure {
+        _pushCtxLet(m, ty, NONE);
+    }
+
+    /// Push a binder of type `ty`; `val` is its definition when the binder
+    /// came from a `let` (NONE otherwise).
+    function _pushCtxLet(M memory m, uint256 ty, uint256 val) internal pure {
         if (m.ctxLen == m.ctx.length) {
             uint256[] memory n = new uint256[](m.ctx.length * 2);
-            for (uint256 i = 0; i < m.ctxLen; i++) n[i] = m.ctx[i];
+            uint256[] memory nv = new uint256[](m.ctx.length * 2);
+            for (uint256 i = 0; i < m.ctxLen; i++) {
+                n[i] = m.ctx[i];
+                nv[i] = m.ctxVal[i];
+            }
             m.ctx = n;
+            m.ctxVal = nv;
         }
         m.ctx[m.ctxLen] = ty;
+        m.ctxVal[m.ctxLen] = val;
         m.ctxLen++;
     }
 
@@ -800,6 +1105,17 @@ contract LeanKernel {
             } else if (t == E_LET) {
                 e = _inst(m, _c(m, e), _b(m, e), 0);
                 continue;
+            } else if (t == E_BVAR) {
+                // zeta-delta: unfold a `let`-bound local (Lean's is_let_fvar
+                // case of whnf_core / whnf). The stored value lives in the
+                // context prefix below the binder, so lift it over the i+1
+                // binders introduced since.
+                uint256 bi = _a(m, e);
+                if (bi >= m.ctxLen) break;
+                uint256 bv = m.ctxVal[m.ctxLen - 1 - bi];
+                if (bv == NONE) break;
+                e = _lift(m, bv, bi + 1, 0);
+                continue;
             } else if (t == E_PROJ) {
                 (uint256 e2p, bool chp) = _projStep(m, e);
                 if (m.fail != 0) break;
@@ -903,11 +1219,146 @@ contract LeanKernel {
         return (_pushEx(m, _mkE(E_APP, succ, lit, 0)), true);
     }
 
+    // --- Nat literal acceleration (Lean's reduce_nat) ----------------------
+
+    /// Read a Nat literal argument. Mirrors Lean's `is_nat_lit_ext`: `Nat.zero`
+    /// counts as the literal 0. Operands wider than one 256-bit limb are
+    /// reported as unavailable, which costs completeness on astronomically
+    /// large literals but never soundness — we simply do not reduce.
+    function _natArg(M memory m, uint256 e) internal pure returns (uint256 v, bool ok) {
+        uint256 w = _whnf(m, e);
+        if (m.fail != 0) return (0, false);
+        uint256 t = _tag(m, w);
+        if (t == E_CONST) {
+            // Lean's `is_nat_lit_ext` compares against `g_nat_zero`, a Const
+            // node whose LEVEL LIST IS EMPTY, and expr equality includes that
+            // list. Matching on the name alone would read a declared
+            // `Nat.zero.{u}` as the literal 0 and fold e.g. `Nat.ble` over it —
+            // enough to prove False from an otherwise honest export.
+            if (
+                m.natZeroIdx != 0 && _c(m, w) == 0
+                    && m.nameHash[_a(m, w)] == m.nameHash[m.natZeroIdx]
+            ) return (0, true);
+            return (0, false);
+        }
+        if (t != E_NAT) return (0, false);
+        uint256 p = _a(m, w);
+        uint256 n = _natLimbs(m, p);
+        if (n == 0) return (0, true);
+        if (n > 1) return (0, false);
+        return (m.pool[p + 1], true);
+    }
+
+    /// Two-limb Nat literal (little-endian limbs), normalised to one limb when
+    /// the high word is zero so `_natEq`'s limb-count comparison stays exact.
+    function _natLit2(M memory m, uint256 hi, uint256 lo) internal pure returns (uint256) {
+        if (hi == 0) return _pushEx(m, _mkE(E_NAT, _natLitOf(m, lo), 0, 0));
+        uint256 ptr = _pushPool(m, 2);
+        _pushPool(m, lo);
+        _pushPool(m, hi);
+        return _pushEx(m, _mkE(E_NAT, ptr, 0, 0));
+    }
+
+    function _boolLit(M memory m, bool b) internal pure returns (uint256, bool) {
+        uint256 idx = b ? m.boolTrueIdx : m.boolFalseIdx;
+        if (idx == 0 || _envLookup(m, idx) == 0) return (0, false);
+        return (_pushEx(m, _mkE(E_CONST, idx, 0, 0)), true);
+    }
+
+    /// Lean's `reduce_nat`: constant-fold Nat operations on literal arguments.
+    /// Without this, `Nat.beq 2 2` only reduces by unfolding Nat.beq's
+    /// recursive definition, which real exports (Init.Prelude) rely on being
+    /// short-circuited.
+    function _reduceNat(M memory m, uint256 e) internal pure returns (uint256, bool) {
+        (uint256 h, uint256 nArgs) = _spineHead(m, e);
+        if (_tag(m, h) != E_CONST || _c(m, h) != 0) return (e, false);
+        bytes32 nh = m.nameHash[_a(m, h)];
+
+        // Lean's reduce_nat also folds `Nat.succ <lit>` into a literal. We
+        // deliberately do not: `_expandNat` walks the other way (literal ->
+        // `Nat.succ (lit n-1)`) for iota and for literal-vs-constructor defeq,
+        // and having both would oscillate. The two directions meet at the
+        // literal comparison either way.
+        if (nArgs != 2) return (e, false);
+
+        uint256 op = type(uint256).max;
+        for (uint256 k = 0; k < 14; k++) {
+            if (m.natOp[k] != 0 && nh == m.nameHash[m.natOp[k]]) {
+                op = k;
+                break;
+            }
+        }
+        if (op == type(uint256).max) return (e, false);
+
+        uint256[] memory args = _collectArgs(m, e, 2);
+        (uint256 a, bool oka) = _natArg(m, args[0]);
+        if (!oka || m.fail != 0) return (e, false);
+        (uint256 b, bool okb) = _natArg(m, args[1]);
+        if (!okb || m.fail != 0) return (e, false);
+
+        if (op == 7) return _boolLit(m, a == b); // beq
+        if (op == 8) return _boolLit(m, a <= b); // ble
+        return _natBinOp(m, op, a, b);
+    }
+
+    function _natBinOp(M memory m, uint256 op, uint256 a, uint256 b) internal pure returns (uint256, bool) {
+        unchecked {
+            if (op == 0) {
+                uint256 s = a + b;
+                return (_natLit2(m, s < a ? 1 : 0, s), true);
+            }
+            if (op == 1) return (_natLit2(m, 0, a >= b ? a - b : 0), true); // truncated
+            if (op == 2) {
+                uint256 lo = a * b;
+                uint256 mm = mulmod(a, b, type(uint256).max);
+                uint256 hi = mm - lo - (mm < lo ? 1 : 0);
+                return (_natLit2(m, hi, lo), true);
+            }
+            if (op == 3) {
+                // pow: bail out rather than reduce once the result leaves one limb
+                if (b > 256) return (0, false);
+                uint256 r = 1;
+                for (uint256 i = 0; i < b; i++) {
+                    if (a != 0 && r > type(uint256).max / a) return (0, false);
+                    r *= a;
+                }
+                return (_natLit2(m, 0, r), true);
+            }
+            if (op == 4) {
+                uint256 x = a;
+                uint256 y = b;
+                while (y != 0) {
+                    (x, y) = (y, x % y);
+                }
+                return (_natLit2(m, 0, x), true);
+            }
+            if (op == 5) return (_natLit2(m, 0, b == 0 ? a : a % b), true); // Nat.mod n 0 = n
+            if (op == 6) return (_natLit2(m, 0, b == 0 ? 0 : a / b), true); // Nat.div n 0 = 0
+            if (op == 9) return (_natLit2(m, 0, a & b), true);
+            if (op == 10) return (_natLit2(m, 0, a | b), true);
+            if (op == 11) return (_natLit2(m, 0, a ^ b), true);
+            if (op == 12) {
+                if (b >= 256 || (b != 0 && a > type(uint256).max >> b)) return (0, false);
+                return (_natLit2(m, 0, a << b), true);
+            }
+            if (op == 13) return (_natLit2(m, 0, b >= 256 ? 0 : a >> b), true);
+        }
+        return (0, false);
+    }
+
     // --- projection reduction --------------------------------------------
 
     function _projStep(M memory m, uint256 e) internal pure returns (uint256, bool) {
         uint256 s = _whnf(m, _c(m, e));
         if (m.fail != 0) return (e, false);
+        // Lean's reduce_proj_core: a string literal is first turned into its
+        // constructor form, otherwise projecting out of one is stuck forever.
+        if (_tag(m, s) == E_STRL) {
+            (uint256 sx, bool sok) = _expandString(m, s);
+            if (!sok) return (e, false);
+            s = _whnf(m, sx);
+            if (m.fail != 0) return (e, false);
+        }
         (uint256 h, uint256 nArgs) = _spineHead(m, s);
         if (_tag(m, h) == E_CONST) {
             uint256 slot = _envLookup(m, _a(m, h));
@@ -951,19 +1402,29 @@ contract LeanKernel {
         }
         if (nArgs <= majorPos) return (e, false);
         uint256[] memory args = _collectArgs(m, e, nArgs);
-        uint256 major = _whnf(m, args[majorPos]);
+
+        // Order follows Lean's inductive_reduce_rec: K-conversion on the raw
+        // major, then whnf, then literal-or-structure conversion.
+        uint256 major = args[majorPos];
+        if ((rd1 >> 248) == 1) {
+            major = _toCtorWhenK(m, slot, major);
+            if (m.fail != 0) return (e, false);
+        }
+        major = _whnf(m, major);
         if (m.fail != 0) return (e, false);
 
-        if (_tag(m, major) == E_NAT) {
+        uint256 mt = _tag(m, major);
+        if (mt == E_NAT) {
             (uint256 ex, bool ok) = _expandNat(m, major);
             if (!ok) return (e, false);
             major = ex;
-        }
-
-        // K-like reduction: replace stuck major with the unique constructor
-        // when the types agree definitionally.
-        if ((rd1 >> 248) == 1) {
-            major = _toCtorWhenK(m, slot, major);
+        } else if (mt == E_STRL) {
+            (uint256 sx, bool sok) = _expandString(m, major);
+            if (!sok) return (e, false);
+            major = _whnf(m, sx);
+            if (m.fail != 0) return (e, false);
+        } else {
+            major = _toCtorWhenStructure(m, slot, major);
             if (m.fail != 0) return (e, false);
         }
 
@@ -1002,6 +1463,12 @@ contract LeanKernel {
             }
         }
         if (rhs == NONE) return (e, false);
+        // A recursor becomes reducible as soon as it is registered, which is
+        // before pass 4 validates its rules — so `nfields` is still attacker
+        // controlled here and is about to index the constructor's argument
+        // slice. Line 1444 has already pinned `cArgs == cnp + numFields`, so
+        // this is exactly pass 4's check, applied early enough to matter.
+        if (nfields != cArgs - cnp) return (e, false);
 
         uint256 v;
         {
@@ -1047,6 +1514,165 @@ contract LeanKernel {
         return major;
     }
 
+    /// The inductive a recursor eliminates, via its first rule's constructor.
+    /// Returns 0 if it cannot be determined.
+    function _recMajorInduct(M memory m, uint256 recSlot) internal pure returns (uint256) {
+        uint256 rulesPtr = (m.envDecl1[recSlot - 1] >> 192) & F;
+        if (m.pool[rulesPtr] == 0) return 0;
+        uint256 cslot = _envLookup(m, m.pool[rulesPtr + 1]);
+        if (cslot == 0 || _dKind(m.envDecl0[cslot - 1]) != D_CTOR) return 0;
+        uint256 islot = _envLookup(m, m.envDecl1[cslot - 1] & F);
+        if (islot == 0 || _dKind(m.envDecl0[islot - 1]) != D_IND) return 0;
+        return islot;
+    }
+
+    /// Lean's `to_cnstr_when_structure`: when the major premise is stuck and its
+    /// type is a *non-recursive structure* (one constructor, no indices, not
+    /// recursive, not a Prop), eta-expand it to
+    /// `mk params (proj I 0 e) ... (proj I n-1 e)` so ι can fire. Without this a
+    /// singleton in `Type` never reduces on a variable major.
+    function _toCtorWhenStructure(M memory m, uint256 recSlot, uint256 major) internal pure returns (uint256) {
+        (uint256 h0, ) = _spineHead(m, major);
+        if (_tag(m, h0) == E_CONST) {
+            uint256 s0 = _envLookup(m, _a(m, h0));
+            if (s0 != 0 && _dKind(m.envDecl0[s0 - 1]) == D_CTOR) return major;
+        }
+        uint256 islot = _recMajorInduct(m, recSlot);
+        if (islot == 0) return major;
+        uint256 id1 = m.envDecl1[islot - 1];
+        // non-recursive structure: exactly one ctor, no indices, not recursive
+        if (m.pool[(id1 >> 96) & F] != 1 || ((id1 >> 48) & F) != 0 || ((id1 >> 192) & 1) != 0) return major;
+        uint256 cslot = _envLookup(m, m.pool[((id1 >> 96) & F) + 1]);
+        if (cslot == 0) return major;
+
+        uint256 ty = _inferSilent(m, major);
+        if (ty == NONE || m.fail != 0) return major;
+        ty = _whnf(m, ty);
+        if (m.fail != 0) return major;
+        (uint256 th, uint256 tArgs) = _spineHead(m, ty);
+        if (_tag(m, th) != E_CONST || m.nameHash[_a(m, th)] != m.envHash[islot - 1]) return major;
+        if (_indInstanceIsProp(m, islot, th) || m.fail != 0) return major;
+
+        uint256 cd1 = m.envDecl1[cslot - 1];
+        uint256 cnp = (cd1 >> 96) & F;
+        uint256 cnf = (cd1 >> 144) & F;
+        if (tArgs < cnp) return major;
+        uint256[] memory targs = _collectArgs(m, ty, tArgs);
+        uint256 r = _pushEx(m, _mkE(E_CONST, _dName(m.envDecl0[cslot - 1]), _b(m, th), _c(m, th)));
+        r = _applyRange(m, r, targs, 0, cnp);
+        for (uint256 i = 0; i < cnf; i++) {
+            r = _pushEx(m, _mkE(E_APP, r, _pushEx(m, _mkE(E_PROJ, _a(m, th), i, major)), 0));
+        }
+        return r;
+    }
+
+    /// Lean's `string_lit_to_constructor`: "abc" becomes
+    /// `String.mk (List.cons (Char.ofNat 97) (List.cons ... List.nil))`, with the
+    /// list at `Char` and each element the Unicode scalar value of a UTF-8
+    /// decoded character.
+    function _expandString(M memory m, uint256 e) internal pure returns (uint256, bool) {
+        // prefer String.ofList (Lean >= 4.26), fall back to String.mk
+        // Every Lean from 4.26 on builds the char list with `String.ofList`,
+        // unconditionally — there is no `String.mk` to fall back to. Falling
+        // back would accept a literal/constructor equation that the Lean which
+        // produced the export would reject on an unknown constant.
+        uint256 wrapIdx = m.stringOfListIdx;
+        if (
+            wrapIdx == 0 || m.listNilIdx == 0 || m.listConsIdx == 0 || m.charIdx == 0
+                || m.charOfNatIdx == 0
+        ) {
+            _setFail(m, V_DECLINE, R_UNSUPPORTED);
+            return (e, false);
+        }
+        uint256 p = _a(m, e);
+        uint256 n = m.pool[p];
+        if (n > STR_EXPAND_MAX) {
+            // expanding a long literal into cons cells would blow the arena;
+            // declining is the honest verdict rather than a resource error.
+            _setFail(m, V_DECLINE, R_UNSUPPORTED);
+            return (e, false);
+        }
+        uint256 charTy = _pushEx(m, _mkE(E_CONST, m.charIdx, 0, 0));
+        // List.nil.{0} Char   /   List.cons.{0} Char
+        uint256 nilPtr = _pushPool(m, 0);
+        uint256 r = _pushEx(m, _mkE(E_CONST, m.listNilIdx, nilPtr, 1));
+        r = _pushEx(m, _mkE(E_APP, r, charTy, 0));
+
+        uint256[] memory cps = new uint256[](n);
+        uint256 count = _utf8Decode(m, p, n, cps);
+        if (m.fail != 0) return (e, false);
+        for (uint256 k = count; k > 0; k--) {
+            uint256 consPtr = _pushPool(m, 0);
+            uint256 cons = _pushEx(m, _mkE(E_CONST, m.listConsIdx, consPtr, 1));
+            cons = _pushEx(m, _mkE(E_APP, cons, charTy, 0));
+            uint256 lit = _pushEx(m, _mkE(E_NAT, _natLitOf(m, cps[k - 1]), 0, 0));
+            uint256 ch = _pushEx(m, _mkE(E_APP, _pushEx(m, _mkE(E_CONST, m.charOfNatIdx, 0, 0)), lit, 0));
+            cons = _pushEx(m, _mkE(E_APP, cons, ch, 0));
+            r = _pushEx(m, _mkE(E_APP, cons, r, 0));
+        }
+        r = _pushEx(m, _mkE(E_APP, _pushEx(m, _mkE(E_CONST, wrapIdx, 0, 0)), r, 0));
+        return (r, true);
+    }
+
+    /// Decode the UTF-8 bytes of a string literal in the pool into Unicode
+    /// scalar values. Returns the number of code points written to `out`.
+    function _utf8Decode(M memory m, uint256 p, uint256 n, uint256[] memory out)
+        internal
+        pure
+        returns (uint256)
+    {
+        // Mirrors Lean's next_utf8 (src/runtime/utf8.cpp), including its
+        // fallback: any sequence that fails the length or range test yields the
+        // raw leading byte as the code point rather than an error.
+        uint256 count = 0;
+        uint256 i = 0;
+        while (i < n) {
+            uint256 c = _strByte(m, p, i);
+            uint256 cp;
+            uint256 width;
+            if ((c & 0x80) == 0) {
+                cp = c;
+                width = 1;
+            } else if ((c & 0xE0) == 0xC0 && i + 1 < n) {
+                cp = ((c & 0x1F) << 6) | (_strByte(m, p, i + 1) & 0x3F);
+                width = cp >= 0x80 ? 2 : 0;
+            } else if ((c & 0xF0) == 0xE0 && i + 2 < n) {
+                cp = ((c & 0x0F) << 12) | ((_strByte(m, p, i + 1) & 0x3F) << 6)
+                    | (_strByte(m, p, i + 2) & 0x3F);
+                width = (cp >= 0x800 && (cp < 0xD800 || cp > 0xDFFF)) ? 3 : 0;
+            } else if ((c & 0xF8) == 0xF0 && i + 3 < n) {
+                cp = ((c & 0x07) << 18) | ((_strByte(m, p, i + 1) & 0x3F) << 12)
+                    | ((_strByte(m, p, i + 2) & 0x3F) << 6) | (_strByte(m, p, i + 3) & 0x3F);
+                width = (cp >= 0x10000 && cp <= 0x10FFFF) ? 4 : 0;
+            } else {
+                cp = c;
+                width = 1;
+            }
+            if (width == 0) {
+                cp = c;
+                width = 1;
+            }
+            out[count++] = cp;
+            i += width;
+        }
+        return count;
+    }
+
+    /// Byte `i` of the string literal whose pool window starts at `p`.
+    function _strByte(M memory m, uint256 p, uint256 i) internal pure returns (uint256) {
+        uint256 w = m.pool[p + 1 + i / 32];
+        return (w >> (8 * (31 - (i % 32)))) & 0xFF;
+    }
+
+    /// A single-limb Nat literal pool window holding `v`. Always writes one
+    /// limb, matching the encoder (tools/lib.js) so `_natEq`'s limb-count
+    /// comparison lines up for zero.
+    function _natLitOf(M memory m, uint256 v) internal pure returns (uint256) {
+        uint256 ptr = _pushPool(m, 1);
+        _pushPool(m, v);
+        return ptr;
+    }
+
     // --- quotient reduction ------------------------------------------------
 
     function _quotStep(M memory m, uint256 e) internal pure returns (uint256, bool) {
@@ -1083,7 +1709,15 @@ contract LeanKernel {
         uint256 slot = _envLookup(m, _a(m, h));
         if (slot == 0) return (e, false);
         uint256 d0 = m.envDecl0[slot - 1];
-        if (_dKind(d0) != D_DEF) return (e, false);
+        // Lean's `is_delta` accepts any constant with a value — definitions AND
+        // theorems (`constant_info::has_value()`); only `opaque` is excluded.
+        // Theorems must unfold: a recursor whose major premise comes from a
+        // hoisted proof constant, e.g. `Acc.rec .. (foo._proof_2 h)`, is
+        // otherwise permanently stuck and the ι rule can never fire. Safe
+        // because `_checkDef` only registers a theorem after its value has been
+        // kernel-checked against its type.
+        uint256 dk = _dKind(d0);
+        if (dk != D_DEF && dk != D_THM) return (e, false);
         uint256 v = _instLevels(m, _dValue(d0), _dLpStart(d0), _dLpLen(d0), _b(m, h), _c(m, h));
         if (nArgs == 0) return (v, true);
         // re-apply spine args (collect then rebuild)
@@ -1105,6 +1739,19 @@ contract LeanKernel {
         for (;;) {
             if (m.fail != 0) return e;
             e = _whnfCore(m, e);
+            // Lean's whnf order: whnf_core, then reduce_nat, then
+            // unfold_definition (type_checker.cpp). Folding here is NOT
+            // optional — omitting it makes definitional equality intransitive,
+            // because a term reachable only through delta would compare equal
+            // to a literal in one direction and not the other, which is enough
+            // to derive False. (The earlier oscillation with `_expandNat` came
+            // from also folding `Nat.succ <lit>`; that case is gone.)
+            (uint256 en, bool natred) = _reduceNat(m, e);
+            if (m.fail != 0) return e;
+            if (natred) {
+                e = en;
+                continue;
+            }
             (uint256 e2, bool changed) = _deltaStep(m, e);
             if (!changed) return e;
             e = e2;
@@ -1148,16 +1795,28 @@ contract LeanKernel {
         return false;
     }
 
+    /// Numeric equality of two Nat literals, comparing VALUES rather than limb
+    /// counts. `_expandNat`'s decrement keeps the source width, so
+    /// `Nat.succ (2^256 - 1)` yields a two-limb representation of a value that
+    /// the encoder would have written in one limb; a count-first comparison
+    /// rejected those as unequal.
     function _natEq(M memory m, uint256 a, uint256 b) internal pure returns (bool) {
         uint256 pa = _a(m, a);
         uint256 pb = _a(m, b);
         if (pa == pb) return true;
-        uint256 n = m.pool[pa];
-        if (n != m.pool[pb]) return false;
-        for (uint256 i = 1; i <= n; i++) {
+        uint256 na = _natLimbs(m, pa);
+        if (na != _natLimbs(m, pb)) return false;
+        for (uint256 i = 1; i <= na; i++) {
             if (m.pool[pa + i] != m.pool[pb + i]) return false;
         }
         return true;
+    }
+
+    /// Significant limb count: the stored count with high zero limbs ignored.
+    function _natLimbs(M memory m, uint256 p) internal pure returns (uint256) {
+        uint256 n = m.pool[p];
+        while (n > 0 && m.pool[p + n] == 0) n--;
+        return n;
     }
 
     function _strEq(M memory m, uint256 a, uint256 b) internal pure returns (bool) {
@@ -1188,6 +1847,31 @@ contract LeanKernel {
         if (m.fail != 0) return false;
         if (_exactEq(m, a, b)) return true;
 
+        // Constant-fold Nat operations on either side before anything else
+        // looks at the literals, mirroring Lean's reduce_nat inside
+        // lazy_delta_reduction. Doing this after the literal-expansion branch
+        // below would compare `Nat.succ 4` against an unreduced `Nat.add 2 3`.
+        // Fold in place rather than recursing back through _isDefEq: a chain of
+        // Nat.succ applications would otherwise burn one recursion level per
+        // step and hit the depth guard.
+        for (bool folded = true; folded;) {
+            folded = false;
+            (uint256 an, bool ar) = _reduceNat(m, a);
+            if (m.fail != 0) return false;
+            if (ar) {
+                a = _whnfCore(m, an);
+                folded = true;
+            }
+            (uint256 bn, bool br) = _reduceNat(m, b);
+            if (m.fail != 0) return false;
+            if (br) {
+                b = _whnfCore(m, bn);
+                folded = true;
+            }
+            if (m.fail != 0) return false;
+        }
+        if (_exactEq(m, a, b)) return true;
+
         uint256 ta = _tag(m, a);
         uint256 tb = _tag(m, b);
 
@@ -1206,9 +1890,16 @@ contract LeanKernel {
         }
         if (ta == E_STRL || tb == E_STRL) {
             if (ta == E_STRL && tb == E_STRL) return _strEq(m, a, b);
-            // comparing a string literal against a constructor form is out of
-            // fragment: decline rather than risk a wrong verdict.
-            _setFail(m, V_DECLINE, R_UNSUPPORTED);
+            // literal vs constructor form: expand the literal (Lean's
+            // string_lit_to_constructor) and retry.
+            uint256 slit = ta == E_STRL ? a : b;
+            uint256 soth = ta == E_STRL ? b : a;
+            uint256 sto = _tag(m, soth);
+            if (sto == E_APP || sto == E_CONST) {
+                (uint256 sx, bool sok) = _expandString(m, slit);
+                if (!sok) return false;
+                return _isDefEq(m, sx, soth);
+            }
             return false;
         }
 
@@ -1270,6 +1961,15 @@ contract LeanKernel {
                     && _usEq(m, _b(m, a), _c(m, a), _b(m, b), _c(m, b))
             ) return true;
         }
+        // Congruence for two stuck projections (Lean's is_def_eq_proj):
+        // `s.i =?= t.i` when `s =?= t`. Required by every `Nat.brecOn`-style
+        // structural recursion, where both sides bottom out as a stuck
+        // `(Nat.rec ...).PProd#0` whose structs are definitionally but not
+        // syntactically equal. Comparing only the index matches Lean; the
+        // structure name is already pinned by `_inferProj`.
+        if (ta == E_PROJ && tb == E_PROJ && _b(m, a) == _b(m, b)) {
+            if (_isDefEq(m, _c(m, a), _c(m, b))) return true;
+        }
         if (ta == E_APP && tb == E_APP) {
             if (_isDefEq(m, _a(m, a), _a(m, b)) && _isDefEq(m, _b(m, a), _b(m, b))) return true;
         }
@@ -1299,6 +1999,7 @@ contract LeanKernel {
         if (islot == 0 || _dKind(m.envDecl0[islot - 1]) != D_IND) return false;
         uint256 id1 = m.envDecl1[islot - 1];
         if (((id1 >> 48) & F) != 0) return false; // no indices
+        if (((id1 >> 192) & 1) != 0) return false; // not recursive (is_non_rec_structure)
         uint256 ctorsPtr = (id1 >> 96) & F;
         if (m.pool[ctorsPtr] != 1) return false;
         uint256 cslot = _envLookup(m, m.pool[ctorsPtr + 1]);
@@ -1328,6 +2029,9 @@ contract LeanKernel {
         uint256 id1 = m.envDecl1[islot - 1];
         if (((id1 >> 48) & F) != 0) return false; // no indices
         if (m.pool[(id1 >> 96) & F] != 1) return false; // single ctor
+        // Lean's is_non_rec_structure also demands !is_rec: eta on a recursive
+        // structure would equate a variable with its own unfolding.
+        if (((id1 >> 192) & 1) != 0) return false;
         uint256 tX = _inferSilent(m, x);
         if (tX == NONE || m.fail != 0) return false;
         tX = _whnf(m, tX);
@@ -1336,13 +2040,24 @@ contract LeanKernel {
         if (_tag(m, th) != E_CONST || m.nameHash[_a(m, th)] != m.envHash[islot - 1] || tn != np) return false;
         if (_indInstanceIsProp(m, islot, th)) return false; // proof irrelevance handles Props
         if (m.fail != 0) return false;
-        uint256[] memory targs = _collectArgs(m, tX, tn);
-        uint256 xe = _pushEx(m, _mkE(E_CONST, _dName(m.envDecl0[cslot - 1]), _b(m, th), _c(m, th)));
-        xe = _applyRange(m, xe, targs, 0, np);
-        for (uint256 i = 0; i < nf; i++) {
-            xe = _pushEx(m, _mkE(E_APP, xe, _pushEx(m, _mkE(E_PROJ, _a(m, th), i, x)), 0));
+
+        // The two sides must be at the same instance of the structure.
+        {
+            uint256 tC = _inferSilent(m, c);
+            if (tC == NONE || m.fail != 0) return false;
+            if (!_isDefEq(m, tX, tC)) return false;
         }
-        return _isDefEq(m, xe, c);
+
+        // Compare `proj i x` against c's i-th field, field by field — Lean's
+        // try_eta_struct_core. Building `ctor (proj 0 x) ...` and handing that
+        // back to _isDefEq would re-enter this function on the freshly built
+        // term and recurse without bound whenever the fields disagree.
+        uint256[] memory cargs = _collectArgs(m, c, cn);
+        for (uint256 i = 0; i < nf; i++) {
+            uint256 pr = _pushEx(m, _mkE(E_PROJ, _a(m, th), i, x));
+            if (!_isDefEq(m, pr, cargs[np + i])) return false;
+        }
+        return true;
     }
 
     function _etaEq(M memory m, uint256 lam_, uint256 other) internal pure returns (bool) {
@@ -1376,21 +2091,84 @@ contract LeanKernel {
 
     /// Unfold definition heads until neither side is a definition application
     /// or the two sides become exactly equal.
+    /// Lean's `is_def_eq_args`: same spine length and pairwise definitionally
+    /// equal arguments. Speculative — a negative answer only means "try
+    /// harder" — so any rejection raised while probing is rolled back, since
+    /// `m.fail` is global state where Lean's is a pure return value.
+    /// Constants `_deltaStep` will unfold: definitions and theorems, not opaque.
+    function _isUnfoldable(M memory m, uint256 slot) internal pure returns (bool) {
+        uint256 k = _dKind(m.envDecl0[slot - 1]);
+        return k == D_DEF || k == D_THM;
+    }
+
+    function _isDefEqArgsSilent(M memory m, uint256 a, uint256 b) internal pure returns (bool) {
+        uint256 savedFail = m.fail;
+        uint16 savedReason = m.reason;
+        bool r = true;
+        while (_tag(m, a) == E_APP && _tag(m, b) == E_APP) {
+            if (!_isDefEq(m, _b(m, a), _b(m, b))) {
+                r = false;
+                break;
+            }
+            a = _a(m, a);
+            b = _a(m, b);
+        }
+        if (r) r = _tag(m, a) != E_APP && _tag(m, b) != E_APP;
+        if (!r && savedFail == 0) {
+            m.fail = savedFail;
+            m.reason = savedReason;
+        }
+        return r;
+    }
+
     function _lazyDelta(M memory m, uint256 a, uint256 b) internal pure returns (uint256, uint256) {
         for (;;) {
             if (m.fail != 0) return (a, b);
             if (!_step(m)) return (a, b);
+            // Lean's lazy_delta_reduction tries reduce_nat at the top of every
+            // iteration, before any unfolding. Without it a literal reachable
+            // only through delta (`def foo := Nat.add 100 100`) is unfolded
+            // into its recursive definition instead of folded, and the step
+            // budget runs out.
+            {
+                (uint256 an, bool ar) = _reduceNat(m, a);
+                if (m.fail != 0) return (a, b);
+                if (ar) {
+                    a = _whnfCore(m, an);
+                    if (m.fail != 0) return (a, b);
+                    continue;
+                }
+                (uint256 bn, bool br) = _reduceNat(m, b);
+                if (m.fail != 0) return (a, b);
+                if (br) {
+                    b = _whnfCore(m, bn);
+                    if (m.fail != 0) return (a, b);
+                    continue;
+                }
+            }
             (uint256 ha, ) = _spineHead(m, a);
             (uint256 hb, ) = _spineHead(m, b);
             uint256 sa = _tag(m, ha) == E_CONST ? _envLookup(m, _a(m, ha)) : 0;
             uint256 sb = _tag(m, hb) == E_CONST ? _envLookup(m, _a(m, hb)) : 0;
-            bool ua = sa != 0 && _dKind(m.envDecl0[sa - 1]) == D_DEF;
-            bool ub = sb != 0 && _dKind(m.envDecl0[sb - 1]) == D_DEF;
+            bool ua = sa != 0 && _isUnfoldable(m, sa);
+            bool ub = sb != 0 && _isUnfoldable(m, sb);
             if (!ua && !ub) return (a, b);
 
             if (ua && ub) {
                 // same head with same levels: try comparing args first (cheap path)
                 if (m.envHash[sa - 1] == m.envHash[sb - 1]) {
+                    // Congruence before unfolding — this is not merely an
+                    // optimisation. It is the only route by which arguments
+                    // equal for a *non-reductive* reason (proof irrelevance)
+                    // are discovered: unfolding instead sends the two sides
+                    // down reduction paths that never reconverge.
+                    if (
+                        _tag(m, a) == E_APP && _tag(m, b) == E_APP
+                            && (m.envDecl1[sa - 1] >> 248) == 0 // regular hint only
+                            && _usEq(m, _b(m, ha), _c(m, ha), _b(m, hb), _c(m, hb))
+                            && _isDefEqArgsSilent(m, a, b)
+                    ) return (a, a); // caller's next step is _exactEq(a, b)
+                    if (m.fail != 0) return (a, b);
                     // unfold both (simplest sound strategy)
                     (a, ) = _deltaStep(m, a);
                     (b, ) = _deltaStep(m, b);
@@ -1511,17 +2289,7 @@ contract LeanKernel {
             return _pushEx(m, _mkE(E_SORT, im, 0, 0));
         }
 
-        if (t == E_LET) {
-            _ensureSort(m, _a(m, e));
-            if (m.fail != 0) return NONE;
-            uint256 tv = _infer(m, _b(m, e));
-            if (m.fail != 0) return NONE;
-            if (!_isDefEq(m, tv, _a(m, e))) {
-                _setFail(m, V_REJECT, R_LET_MISMATCH);
-                return NONE;
-            }
-            return _infer(m, _inst(m, _c(m, e), _b(m, e), 0));
-        }
+        if (t == E_LET) return _inferLet(m, e);
 
         if (t == E_NAT) {
             if (m.natIdx == 0 || _envLookup(m, m.natIdx) == 0) {
@@ -1545,6 +2313,46 @@ contract LeanKernel {
 
         _setFail(m, V_DECLINE, R_UNSUPPORTED);
         return NONE;
+    }
+
+    /// Type a `let` cascade.
+    ///
+    /// Lean's `infer_let` (src/kernel/type_checker.cpp) walks the whole chain
+    /// in a loop, binding each `let` as a local *with a value*, and only ever
+    /// instantiates the small type/value subterms -- it never rewrites the
+    /// remaining chain. Substituting the value into the body instead (the
+    /// obvious de Bruijn reading) is quadratic in the chain length *and* turns
+    /// each successive value into a nested lambda tower, so term size and
+    /// inference recursion depth both grow with the chain. On the EVM the
+    /// 1024-slot stack makes that fatal at ~40 binders. Mirror Lean: iterate,
+    /// push (type, value) onto the context, infer the final body once, then
+    /// re-abstract by substituting the values back, innermost first.
+    function _inferLet(M memory m, uint256 e) internal pure returns (uint256) {
+        uint256[] memory lets = new uint256[](16);
+        uint256 n = 0;
+        uint256 cur = e;
+        while (_tag(m, cur) == E_LET) {
+            if (!_step(m)) break;
+            _ensureSort(m, _a(m, cur));
+            if (m.fail != 0) break;
+            uint256 tv = _infer(m, _b(m, cur));
+            if (m.fail != 0) break;
+            if (!_isDefEq(m, tv, _a(m, cur))) {
+                if (m.fail == 0) _setFail(m, V_REJECT, R_LET_MISMATCH);
+                break;
+            }
+            (lets, n) = _wlPush(lets, n, cur);
+            _pushCtxLet(m, _a(m, cur), _b(m, cur));
+            cur = _c(m, cur);
+        }
+        uint256 r = NONE;
+        if (m.fail == 0) r = _infer(m, cur);
+        // pop the binders and bring the result type back to the outer context
+        for (uint256 k = n; k > 0; k--) {
+            _popCtx(m);
+            if (m.fail == 0) r = _inst(m, r, _b(m, lets[k - 1]), 0);
+        }
+        return m.fail == 0 ? r : NONE;
     }
 
     /// Type a structure projection, enforcing the Prop-projection rules:
@@ -1722,54 +2530,80 @@ contract LeanKernel {
     // Well-formedness scan (context-independent checks, with memo)
     // ------------------------------------------------------------------
 
-    function _wfExpr(M memory m, uint256 e, uint256[] memory seen) internal pure {
-        if (m.fail != 0) return;
-        uint256 w = seen[e / 256];
-        if ((w >> (e % 256)) & 1 == 1) return;
-        seen[e / 256] = w | (1 << (e % 256));
+    /// Iterative worklist push (grows the array in place).
+    function _wlPush(uint256[] memory st, uint256 sp, uint256 v)
+        internal
+        pure
+        returns (uint256[] memory, uint256)
+    {
+        if (sp == st.length) {
+            uint256[] memory n = new uint256[](st.length * 2);
+            for (uint256 i = 0; i < sp; i++) n[i] = st[i];
+            st = n;
+        }
+        st[sp] = v;
+        return (st, sp + 1);
+    }
 
-        uint256 t = _tag(m, e);
-        if (t == E_UNSUP) {
-            _setFail(m, V_DECLINE, R_UNSUPPORTED);
-            return;
-        }
-        if (t == E_SORT) {
-            _wfLevel(m, _a(m, e));
-            return;
-        }
-        if (t == E_CONST) {
-            uint256 slot = _envLookup(m, _a(m, e));
-            if (slot == 0) {
-                _setFail(m, V_REJECT, R_UNKNOWN_CONST);
+    /// Well-formedness scan. Iterative (explicit worklist): the EVM stack is
+    /// 1024 slots deep, so a recursive walk overflows on a deeply nested term
+    /// (e.g. a 1000-deep `let` cascade) with no chance for a depth counter to
+    /// fire first -- the result is an EVM exception, not a verdict.
+    function _wfExpr(M memory m, uint256 root, uint256[] memory seen) internal pure {
+        uint256[] memory st = new uint256[](64);
+        uint256 sp;
+        (st, sp) = _wlPush(st, 0, root);
+        while (sp != 0) {
+            if (m.fail != 0) return;
+            sp--;
+            uint256 e = st[sp];
+            uint256 w = seen[e / 256];
+            if ((w >> (e % 256)) & 1 == 1) continue;
+            seen[e / 256] = w | (1 << (e % 256));
+
+            uint256 t = _tag(m, e);
+            if (t == E_UNSUP) {
+                _setFail(m, V_DECLINE, R_UNSUPPORTED);
                 return;
             }
-            if (_dLpLen(m.envDecl0[slot - 1]) != _c(m, e)) {
-                _setFail(m, V_REJECT, R_CONST_LEVELS);
-                return;
+            if (t == E_SORT) {
+                _wfLevel(m, _a(m, e));
+                continue;
             }
-            for (uint256 i = 0; i < _c(m, e); i++) _wfLevel(m, m.pool[_b(m, e) + i]);
-            return;
-        }
-        if (t == E_APP || t == E_LAM || t == E_PI) {
-            _wfExpr(m, _a(m, e), seen);
-            _wfExpr(m, _b(m, e), seen);
-            return;
-        }
-        if (t == E_LET) {
-            _wfExpr(m, _a(m, e), seen);
-            _wfExpr(m, _b(m, e), seen);
-            _wfExpr(m, _c(m, e), seen);
-            return;
-        }
-        if (t == E_PROJ) {
-            if (_envLookup(m, _a(m, e)) == 0) {
-                _setFail(m, V_REJECT, R_UNKNOWN_CONST);
-                return;
+            if (t == E_CONST) {
+                uint256 slot = _envLookup(m, _a(m, e));
+                if (slot == 0) {
+                    _setFail(m, V_REJECT, R_UNKNOWN_CONST);
+                    return;
+                }
+                if (_dLpLen(m.envDecl0[slot - 1]) != _c(m, e)) {
+                    _setFail(m, V_REJECT, R_CONST_LEVELS);
+                    return;
+                }
+                for (uint256 i = 0; i < _c(m, e); i++) _wfLevel(m, m.pool[_b(m, e) + i]);
+                continue;
             }
-            _wfExpr(m, _c(m, e), seen);
-            return;
+            if (t == E_APP || t == E_LAM || t == E_PI) {
+                (st, sp) = _wlPush(st, sp, _a(m, e));
+                (st, sp) = _wlPush(st, sp, _b(m, e));
+                continue;
+            }
+            if (t == E_LET) {
+                (st, sp) = _wlPush(st, sp, _a(m, e));
+                (st, sp) = _wlPush(st, sp, _b(m, e));
+                (st, sp) = _wlPush(st, sp, _c(m, e));
+                continue;
+            }
+            if (t == E_PROJ) {
+                if (_envLookup(m, _a(m, e)) == 0) {
+                    _setFail(m, V_REJECT, R_UNKNOWN_CONST);
+                    return;
+                }
+                (st, sp) = _wlPush(st, sp, _c(m, e));
+                continue;
+            }
+            // bvar/natlit/strlit: nothing here
         }
-        // bvar/natlit/strlit: nothing here
     }
 
     function _wfLevel(M memory m, uint256 l) internal pure {
@@ -2179,6 +3013,35 @@ contract LeanKernel {
     // Inductive groups
     // ------------------------------------------------------------------
 
+    /// The first `np` binder domains of two inductive types must agree
+    /// definitionally — the shared-parameter discipline of a mutual block.
+    function _paramTelescopesEq(M memory m, uint256 a, uint256 b, uint256 np) internal pure returns (bool) {
+        uint256 saved = m.ctxLen;
+        m.ctxLen = 0;
+        bool ok = true;
+        for (uint256 k = 0; k < np; k++) {
+            a = _whnf(m, a);
+            b = _whnf(m, b);
+            if (m.fail != 0) {
+                ok = false;
+                break;
+            }
+            if (_tag(m, a) != E_PI || _tag(m, b) != E_PI) {
+                ok = false;
+                break;
+            }
+            if (!_isDefEq(m, _a(m, a), _a(m, b))) {
+                ok = false;
+                break;
+            }
+            _pushCtx(m, _a(m, a));
+            a = _b(m, a);
+            b = _b(m, b);
+        }
+        m.ctxLen = saved;
+        return ok;
+    }
+
     /// Returns the number of declaration records consumed (header + members).
     function _checkGroup(M memory m, uint256[] calldata declTab, uint256 gi) internal pure returns (uint256) {
         G memory g;
@@ -2190,18 +3053,36 @@ contract LeanKernel {
         }
         g.base = gi + 1;
         uint256 total = 1 + g.nT + g.nC + g.nR;
-        if ((g.base + g.nT + g.nC + g.nR) * 2 > declTab.length || g.nT == 0) {
+        // nT bound keeps the 16-bit block-position stash in _envAdd exact
+        if ((g.base + g.nT + g.nC + g.nR) * 2 > declTab.length || g.nT == 0 || g.nT > 0xFFFF) {
             _setFail(m, V_REJECT, R_IND_SHAPE);
-            return total;
-        }
-        if (g.nT != 1) {
-            _setFail(m, V_DECLINE, R_UNSUPPORTED);
             return total;
         }
         g.indHashes = new bytes32[](g.nT);
         g.indD0 = new uint256[](g.nT);
         g.indD1 = new uint256[](g.nT);
         uint256[] memory indLevels = new uint256[](g.nT);
+
+        // Lean checks EVERY member's type in the pre-environment
+        // (check_inductive_types runs to completion before
+        // declare_inductive_types), so a member's type referring to another
+        // member is an unknown constant there. We register members as we go, so
+        // without this a later member's type could legally mention an earlier
+        // one — `{ A : Type ; B : A -> Type }` would be accepted.
+        for (uint256 t = 0; t < g.nT; t++) {
+            uint256 d0t = declTab[2 * (g.base + t)];
+            if (_dKind(d0t) != D_IND) {
+                _setFail(m, V_REJECT, R_IND_SHAPE);
+                return total;
+            }
+            g.indHashes[t] = m.nameHash[_dName(d0t)];
+        }
+        for (uint256 t = 0; t < g.nT; t++) {
+            if (_hasIndOcc(m, _dType(declTab[2 * (g.base + t)]), g.indHashes)) {
+                _setFail(m, V_REJECT, R_IND_SHAPE);
+                return total;
+            }
+        }
 
         // pass 1: validate and register the inductive types
         for (uint256 t = 0; t < g.nT; t++) {
@@ -2211,10 +3092,29 @@ contract LeanKernel {
                 _setFail(m, V_REJECT, R_IND_SHAPE);
                 return total;
             }
-            if (((d1 >> 144) & F) != 0) {
-                // nested inductives are out of fragment
-                _setFail(m, V_DECLINE, R_UNSUPPORTED);
-                return total;
+            // Every type in a mutual block shares one parameter telescope and
+            // one universe-parameter list; only the indices may differ.
+            if (t != 0) {
+                uint256 f0 = declTab[2 * g.base];
+                uint256 f1 = declTab[2 * g.base + 1];
+                if ((d1 & F) != (f1 & F)) {
+                    _setFail(m, V_REJECT, R_IND_SHAPE);
+                    return total;
+                }
+                if (!_lpWindowsEq(m, _dLpStart(d0), _dLpLen(d0), _dLpStart(f0), _dLpLen(f0))) {
+                    _setFail(m, V_REJECT, R_IND_SHAPE);
+                    return total;
+                }
+                // Matching the parameter COUNT is not enough — Lean requires
+                // each parameter's domain to be definitionally equal to the
+                // first type's ("parameters of all inductive datatypes must
+                // match", inductive.cpp check_inductive_types). Two members
+                // with telescopes `(a : Type)` and `(p : Prop)` otherwise share
+                // one parameter list that is not in fact shared.
+                if (!_paramTelescopesEq(m, _dType(f0), _dType(d0), d1 & F)) {
+                    if (m.fail == 0) _setFail(m, V_REJECT, R_IND_SHAPE);
+                    return total;
+                }
             }
             _requireFresh(m, _dName(d0));
             _requireLpsDistinct(m, _dLpStart(d0), _dLpLen(d0));
@@ -2254,12 +3154,39 @@ contract LeanKernel {
                 return total;
             }
             indLevels[t] = _a(m, cur);
+            // all members of a mutual block live in one universe
+            if (t != 0 && !(_lvlLeq(m, indLevels[t], indLevels[0]) && _lvlLeq(m, indLevels[0], indLevels[t]))) {
+                _setFail(m, V_REJECT, R_IND_SHAPE);
+                return total;
+            }
+            // Bits above `isRec` (192) must be clear on input. The record's
+            // fields are read back masked to 48 bits, so an out-of-range
+            // numNested would otherwise spill into the stash below and forge a
+            // target's mutual-sibling range.
+            if ((d1 >> 193) != 0) {
+                _setFail(m, V_REJECT, R_MALFORMED);
+                return total;
+            }
             g.indHashes[t] = m.nameHash[_dName(d0)];
             g.indD0[t] = d0;
             g.indD1[t] = d1;
-            _envAdd(m, d0, d1);
+            // Stash the member's block position/size into free bits of the env
+            // word so nested elimination can later recover a target's mutual
+            // siblings (its `all` list) — members occupy consecutive env slots.
+            _envAdd(m, d0, d1 | (t << 200) | (g.nT << 216));
         }
 
+        // phase 0 (nested inductives): rerun Lean's nested->mutual elimination
+        // to derive the auxiliary types, then verify the declared numNested.
+        g.np = g.indD1[0] & F;
+        _nestedElim(m, declTab, g);
+        if (m.fail != 0) return total;
+        for (uint256 t = 0; t < g.nT; t++) {
+            if (((g.indD1[t] >> 144) & F) != g.nAux) {
+                _setFail(m, V_REJECT, R_NESTED);
+                return total;
+            }
+        }
         // pass 2: constructors
         bool fieldsElimOk = true;
         for (uint256 c = 0; c < g.nC; c++) {
@@ -2267,12 +3194,22 @@ contract LeanKernel {
             if (m.fail != 0) return total;
             fieldsElimOk = fieldsElimOk && ok;
         }
+        _checkCtorWindows(m, declTab, g);
+        if (m.fail != 0) return total;
+        _recomputeIsRec(m, declTab, g);
+        // pass 2b: the auxiliary types' (virtual) constructors — positivity
+        // and universe bounds on the expanded group is exactly what makes
+        // `List Tree` legal and `Cont Bad` illegal; there is no separate
+        // "nested positivity rule".
+        _checkAuxCtors(m, g, indLevels);
+        if (m.fail != 0) return total;
 
-        // elimination eligibility
+        // elimination eligibility (over the whole auxiliary block: a nested
+        // inductive always has >= 2 members, so a nested Prop is small-elim)
         {
             uint256 one = _pushLv(m, _mkL(L_SUCC, 0, 0));
             bool largeOK;
-            if (g.nT == 1) {
+            if (g.nT == 1 && g.nAux == 0) {
                 largeOK = _lvlLeq(m, one, indLevels[0]) || g.nC == 0 || (g.nC == 1 && fieldsElimOk);
             } else {
                 largeOK = true;
@@ -2283,12 +3220,482 @@ contract LeanKernel {
             g.smallElimOnly = !largeOK;
         }
 
-        // pass 3: recursors
+        // pass 3: recursor declarations, then (pass 4) their reduction rules —
+        // a rule RHS may reference a sibling recursor of the same block.
         for (uint256 r = 0; r < g.nR; r++) {
             _checkGroupRec(m, declTab, g, indLevels, r);
             if (m.fail != 0) return total;
         }
+        for (uint256 r = 0; r < g.nR; r++) {
+            _checkGroupRecRules(m, declTab, g, r);
+            if (m.fail != 0) return total;
+        }
+
+        // The lean4#14577 guard: type-check each nested application `I_k Ds_k`.
+        // The `Ds` are dropped from the auxiliary declaration, so they would
+        // otherwise escape checking entirely — that is lean4#14576. Also
+        // enforces that every auxiliary type lives in the block's universe.
+        //
+        // Run LAST, exactly where PR #14577 puts it: the environment must be
+        // the RESTORED one, holding this block's types, constructors *and*
+        // recursors, because a `Ds` may legitimately mention any of them.
+        // Checking earlier makes our environment a strict subset of Lean's and
+        // false-rejects e.g. `E.mk : Box E E.base -> E`.
+        _checkNestedApps(m, g, indLevels);
+        if (m.fail != 0) return total;
         return total;
+    }
+
+    // ------------------------------------------------------------------
+    // Nested inductives (Lean's elim_nested_inductive_fn, inductive.cpp)
+    // ------------------------------------------------------------------
+
+    /// Derive the auxiliary-type table by re-running Lean's nested->mutual
+    /// elimination: a worklist over the (growing) member list, scanning every
+    /// constructor's post-parameter type for applications `I Ds is` of an
+    /// already-declared inductive whose first numParams arguments mention the
+    /// group. Purely syntactic, exactly like Lean's `replace`.
+    function _nestedElim(M memory m, uint256[] calldata declTab, G memory g) internal pure {
+        uint256 cap = (g.indD1[0] >> 144) & F;
+        if (cap > MAX_NESTED) {
+            _setFail(m, V_DECLINE, R_UNSUPPORTED);
+            return;
+        }
+        g.auxSlot = new uint256[](cap);
+        g.auxUs = new uint256[](cap);
+        g.auxDs = new uint256[][](cap);
+        for (uint256 q = 0; q < g.nT + g.nAux; q++) {
+            if (q < g.nT) {
+                // declared ctors of member q, in export order
+                for (uint256 ci = 0; ci < g.nC; ci++) {
+                    uint256 cd1 = declTab[2 * (g.base + g.nT + ci) + 1];
+                    if (m.nameHash[cd1 & F] != g.indHashes[q]) continue;
+                    uint256 cur = _dType(declTab[2 * (g.base + g.nT + ci)]);
+                    for (uint256 p = 0; p < g.np; p++) {
+                        if (_tag(m, cur) != E_PI) {
+                            _setFail(m, V_REJECT, R_CTOR_SHAPE);
+                            return;
+                        }
+                        cur = _b(m, cur);
+                    }
+                    _nestedScan(m, g, cur, 0);
+                    if (m.fail != 0) return;
+                }
+            } else {
+                _nestedScanAux(m, g, q - g.nT);
+                if (m.fail != 0) return;
+            }
+        }
+        // collect the virtual constructors (aux entries in order, ctors in order)
+        uint256 total = 0;
+        for (uint256 k = 0; k < g.nAux; k++) {
+            total += m.pool[(m.envDecl1[g.auxSlot[k]] >> 96) & F];
+        }
+        g.vcSlot = new uint256[](total);
+        g.vcAux = new uint256[](total);
+        g.nCtorsAux = total;
+        uint256 v = 0;
+        for (uint256 k = 0; k < g.nAux; k++) {
+            uint256 ptr = (m.envDecl1[g.auxSlot[k]] >> 96) & F;
+            for (uint256 j = 0; j < m.pool[ptr]; j++) {
+                g.vcSlot[v] = _envLookup(m, m.pool[ptr + 1 + j]) - 1; // validated in _nestedScanAux
+                g.vcAux[v] = k;
+                v++;
+            }
+        }
+    }
+
+    /// Scan one auxiliary entry's constructors: I_k's declared ctors with
+    /// levels := the occurrence's universe args and params := Ds_k.
+    function _nestedScanAux(M memory m, G memory g, uint256 k) internal pure {
+        uint256 islot = g.auxSlot[k];
+        uint256 ptr = (m.envDecl1[islot] >> 96) & F;
+        for (uint256 j = 0; j < m.pool[ptr]; j++) {
+            uint256 cslot = _envLookup(m, m.pool[ptr + 1 + j]);
+            if (
+                cslot == 0 || _dKind(m.envDecl0[cslot - 1]) != D_CTOR
+                    || m.nameHash[m.envDecl1[cslot - 1] & F] != m.envHash[islot]
+                    || ((m.envDecl1[cslot - 1] >> 96) & F) != g.auxDs[k].length
+            ) {
+                _setFail(m, V_REJECT, R_NESTED);
+                return;
+            }
+            uint256 cur = _instAuxCtorType(m, g, k, cslot - 1, 0);
+            if (m.fail != 0) return;
+            _nestedScan(m, g, cur, 0);
+            if (m.fail != 0) return;
+        }
+    }
+
+    /// I_k's ctor `cidx` (env index) with levels instantiated at the aux
+    /// entry's universe args and the first numParams binders instantiated at
+    /// Ds_k lifted by `liftAmt`; returns the remaining telescope.
+    function _instAuxCtorType(M memory m, G memory g, uint256 k, uint256 cidx, uint256 liftAmt)
+        internal
+        pure
+        returns (uint256 cur)
+    {
+        uint256 cd0 = m.envDecl0[cidx];
+        cur = _instLevels(
+            m, _dType(cd0), _dLpStart(cd0), _dLpLen(cd0), g.auxUs[k], _dLpLen(m.envDecl0[g.auxSlot[k]])
+        );
+        uint256[] memory ds = g.auxDs[k];
+        for (uint256 p = 0; p < ds.length; p++) {
+            if (_tag(m, cur) != E_PI) {
+                _setFail(m, V_REJECT, R_NESTED);
+                return NONE;
+            }
+            cur = _inst(m, _b(m, cur), liftAmt == 0 ? ds[p] : _lift(m, ds[p], liftAmt, 0), 0);
+        }
+    }
+
+    /// Top-down syntactic traversal; children of a matched occurrence are NOT
+    /// revisited (mirrors Lean's `replace`). `depth` = binders below the
+    /// group's parameter telescope.
+    function _nestedScan(M memory m, G memory g, uint256 e, uint256 depth) internal pure {
+        if (m.fail != 0) return;
+        if (!_step(m)) return;
+        uint256 t = _tag(m, e);
+        if (t == E_APP) {
+            if (_nestedScanApp(m, g, e, depth) || m.fail != 0) return;
+            _nestedScan(m, g, _a(m, e), depth);
+            _nestedScan(m, g, _b(m, e), depth);
+        } else if (t == E_LAM || t == E_PI) {
+            _nestedScan(m, g, _a(m, e), depth);
+            _nestedScan(m, g, _b(m, e), depth + 1);
+        } else if (t == E_LET) {
+            _nestedScan(m, g, _a(m, e), depth);
+            _nestedScan(m, g, _b(m, e), depth);
+            _nestedScan(m, g, _c(m, e), depth + 1);
+        } else if (t == E_PROJ) {
+            _nestedScan(m, g, _c(m, e), depth);
+        } else if (t == E_UNSUP) {
+            // cannot scan what we cannot represent — decline, never guess
+            _setFail(m, V_DECLINE, R_UNSUPPORTED);
+        }
+    }
+
+    /// Is `e` a nested occurrence? If so, dedup or create auxiliary entries
+    /// (one per member of the target's mutual block, in `all` order).
+    function _nestedScanApp(M memory m, G memory g, uint256 e, uint256 depth) internal pure returns (bool) {
+        (uint256 h, uint256 nArgs) = _spineHead(m, e);
+        if (_tag(m, h) != E_CONST) return false;
+        {
+            bytes32 hh = m.nameHash[_a(m, h)];
+            for (uint256 i = 0; i < g.indHashes.length; i++) {
+                if (g.indHashes[i] == hh) return false; // group member itself
+            }
+        }
+        uint256 islot = _envLookup(m, _a(m, h));
+        if (islot == 0 || _dKind(m.envDecl0[islot - 1]) != D_IND) return false;
+        uint256 npI = m.envDecl1[islot - 1] & F;
+        if (npI == 0 || nArgs < npI) return false;
+        if (_c(m, h) != _dLpLen(m.envDecl0[islot - 1])) return false; // ill-leveled; wf rejects later
+        uint256[] memory args = _collectArgs(m, e, nArgs);
+        {
+            bool mentions = false;
+            for (uint256 j = 0; j < npI && !mentions; j++) {
+                mentions = _hasIndOcc(m, args[j], g.indHashes);
+            }
+            if (!mentions) return false;
+        }
+        // "nested inductive datatypes parameters cannot contain local
+        // variables": Ds may mention the group's params but nothing deeper.
+        uint256[] memory ds = new uint256[](npI);
+        for (uint256 j = 0; j < npI; j++) {
+            ds[j] = _lowerChecked(m, args[j], depth, 0);
+            if (m.fail != 0) return true;
+        }
+        // dedup by structural equality (deliberately not defeq, as in Lean)
+        for (uint256 k = 0; k < g.nAux; k++) {
+            if (_auxEq(m, g, k, h, ds)) return true;
+        }
+        // miss: create an aux entry for every member of I's block
+        uint256 first = (islot - 1) - ((m.envDecl1[islot - 1] >> 200) & 0xFFFF);
+        uint256 size = (m.envDecl1[islot - 1] >> 216) & 0xFFFF;
+        for (uint256 jm = 0; jm < size; jm++) {
+            if (g.nAux == g.auxSlot.length) {
+                _setFail(m, V_REJECT, R_NESTED); // more aux types than declared
+                return true;
+            }
+            g.auxSlot[g.nAux] = first + jm;
+            g.auxUs[g.nAux] = _b(m, h);
+            g.auxDs[g.nAux] = ds;
+            g.nAux++;
+        }
+        return true;
+    }
+
+    /// Does aux entry k equal head `h` (name + universe args) applied to `ds`?
+    function _auxEq(M memory m, G memory g, uint256 k, uint256 h, uint256[] memory ds)
+        internal
+        pure
+        returns (bool)
+    {
+        uint256 islot = g.auxSlot[k];
+        if (m.nameHash[_a(m, h)] != m.envHash[islot]) return false;
+        uint256[] memory dk = g.auxDs[k];
+        if (dk.length != ds.length) return false;
+        uint256 usN = _dLpLen(m.envDecl0[islot]);
+        if (_c(m, h) != usN) return false;
+        for (uint256 j = 0; j < usN; j++) {
+            if (!_lvlStructEq(m, m.pool[_b(m, h) + j], m.pool[g.auxUs[k] + j])) return false;
+        }
+        for (uint256 j = 0; j < ds.length; j++) {
+            if (!_structEq(m, dk[j], ds[j], 0, 0)) return false;
+        }
+        return true;
+    }
+
+    /// If spine `e` (head `h`) is an occurrence of some aux member at binder
+    /// depth `depth` below the group's params, return its index; else max.
+    function _auxMatch(M memory m, G memory g, uint256 e, uint256 h, uint256 nArgs, uint256 depth)
+        internal
+        pure
+        returns (uint256)
+    {
+        for (uint256 k = 0; k < g.nAux; k++) {
+            uint256 islot = g.auxSlot[k];
+            if (m.nameHash[_a(m, h)] != m.envHash[islot]) continue;
+            uint256 npk = g.auxDs[k].length;
+            if (nArgs < npk) continue;
+            uint256 usN = _dLpLen(m.envDecl0[islot]);
+            if (_c(m, h) != usN) continue;
+            bool ok = true;
+            for (uint256 j = 0; j < usN && ok; j++) {
+                ok = _lvlStructEq(m, m.pool[g.auxUs[k] + j], m.pool[_b(m, h) + j]);
+            }
+            if (!ok) continue;
+            uint256[] memory args = _collectArgs(m, e, nArgs);
+            for (uint256 j = 0; j < npk && ok; j++) {
+                ok = _structEq(m, g.auxDs[k][j], args[j], depth, 0);
+            }
+            if (ok) return k;
+        }
+        return type(uint256).max;
+    }
+
+    function _auxNI(M memory m, G memory g, uint256 k) internal pure returns (uint256) {
+        return (m.envDecl1[g.auxSlot[k]] >> 48) & F;
+    }
+
+    /// The restored application `I_k Ds_k`, with Ds lifted by `liftAmt`.
+    function _auxApp(M memory m, G memory g, uint256 k, uint256 liftAmt) internal pure returns (uint256 r) {
+        uint256 islot = g.auxSlot[k];
+        r = _pushEx(m, _mkE(E_CONST, _dName(m.envDecl0[islot]), g.auxUs[k], _dLpLen(m.envDecl0[islot])));
+        uint256[] memory ds = g.auxDs[k];
+        for (uint256 j = 0; j < ds.length; j++) {
+            r = _pushEx(m, _mkE(E_APP, r, _lift(m, ds[j], liftAmt, 0), 0));
+        }
+    }
+
+    /// Copy `e` lowering loose bvars by `amt`; a bvar landing inside the gap
+    /// (a reference to a binder below the group's params) is Lean's hard error.
+    function _lowerChecked(M memory m, uint256 e, uint256 amt, uint256 cutoff) internal pure returns (uint256) {
+        if (amt == 0 || m.fail != 0) return e;
+        uint256 t = _tag(m, e);
+        if (t == E_BVAR) {
+            uint256 i = _a(m, e);
+            if (i < cutoff) return e;
+            if (i < cutoff + amt) {
+                _setFail(m, V_REJECT, R_NESTED);
+                return e;
+            }
+            return _pushEx(m, _mkE(E_BVAR, i - amt, 0, 0));
+        }
+        if (t == E_SORT || t == E_CONST || t == E_UNSUP || t == E_NAT || t == E_STRL) return e;
+        if (t == E_PROJ) {
+            uint256 s = _lowerChecked(m, _c(m, e), amt, cutoff);
+            return s == _c(m, e) ? e : _pushEx(m, _mkE(E_PROJ, _a(m, e), _b(m, e), s));
+        }
+        if (t == E_APP) {
+            uint256 f = _lowerChecked(m, _a(m, e), amt, cutoff);
+            uint256 x = _lowerChecked(m, _b(m, e), amt, cutoff);
+            if (f == _a(m, e) && x == _b(m, e)) return e;
+            return _pushEx(m, _mkE(E_APP, f, x, 0));
+        }
+        if (t == E_LAM || t == E_PI) {
+            uint256 ty = _lowerChecked(m, _a(m, e), amt, cutoff);
+            uint256 bd = _lowerChecked(m, _b(m, e), amt, cutoff + 1);
+            if (ty == _a(m, e) && bd == _b(m, e)) return e;
+            return _pushEx(m, _mkE(t, ty, bd, 0));
+        }
+        uint256 lty = _lowerChecked(m, _a(m, e), amt, cutoff);
+        uint256 lv_ = _lowerChecked(m, _b(m, e), amt, cutoff);
+        uint256 lbd = _lowerChecked(m, _c(m, e), amt, cutoff + 1);
+        if (lty == _a(m, e) && lv_ == _b(m, e) && lbd == _c(m, e)) return e;
+        return _pushEx(m, _mkE(E_LET, lty, lv_, lbd));
+    }
+
+    /// Structural equality: b == lift(a, amt, cutoff), without allocating.
+    function _structEq(M memory m, uint256 a, uint256 b, uint256 amt, uint256 cutoff)
+        internal
+        pure
+        returns (bool)
+    {
+        if (!_step(m)) return false;
+        if (amt == 0 && a == b) return true;
+        uint256 t = _tag(m, a);
+        if (t != _tag(m, b)) return false;
+        if (t == E_BVAR) {
+            uint256 i = _a(m, a);
+            return _a(m, b) == (i >= cutoff ? i + amt : i);
+        }
+        if (t == E_SORT) return _lvlStructEq(m, _a(m, a), _a(m, b));
+        if (t == E_CONST) {
+            if (m.nameHash[_a(m, a)] != m.nameHash[_a(m, b)] || _c(m, a) != _c(m, b)) return false;
+            for (uint256 i = 0; i < _c(m, a); i++) {
+                if (!_lvlStructEq(m, m.pool[_b(m, a) + i], m.pool[_b(m, b) + i])) return false;
+            }
+            return true;
+        }
+        if (t == E_APP) {
+            return _structEq(m, _a(m, a), _a(m, b), amt, cutoff) && _structEq(m, _b(m, a), _b(m, b), amt, cutoff);
+        }
+        if (t == E_LAM || t == E_PI) {
+            return _structEq(m, _a(m, a), _a(m, b), amt, cutoff)
+                && _structEq(m, _b(m, a), _b(m, b), amt, cutoff + 1);
+        }
+        if (t == E_LET) {
+            return _structEq(m, _a(m, a), _a(m, b), amt, cutoff) && _structEq(m, _b(m, a), _b(m, b), amt, cutoff)
+                && _structEq(m, _c(m, a), _c(m, b), amt, cutoff + 1);
+        }
+        if (t == E_PROJ) {
+            return m.nameHash[_a(m, a)] == m.nameHash[_a(m, b)] && _b(m, a) == _b(m, b)
+                && _structEq(m, _c(m, a), _c(m, b), amt, cutoff);
+        }
+        if (t == E_NAT || t == E_STRL) {
+            uint256 pa = _a(m, a);
+            uint256 pb = _a(m, b);
+            if (pa == pb) return true;
+            uint256 n = m.pool[pa];
+            if (m.pool[pb] != n) return false;
+            uint256 w = t == E_NAT ? n : (n + 31) / 32;
+            for (uint256 i = 1; i <= w; i++) {
+                if (m.pool[pa + i] != m.pool[pb + i]) return false;
+            }
+            return true;
+        }
+        return false; // E_UNSUP
+    }
+
+    function _lvlStructEq(M memory m, uint256 a, uint256 b) internal pure returns (bool) {
+        if (a == b) return true;
+        uint256 t = _lt(m, a);
+        if (t != _lt(m, b)) return false;
+        if (t == L_ZERO) return true;
+        if (t == L_PARAM) return m.nameHash[_la(m, a)] == m.nameHash[_la(m, b)];
+        if (t == L_SUCC) return _lvlStructEq(m, _la(m, a), _la(m, b));
+        return _lvlStructEq(m, _la(m, a), _la(m, b)) && _lvlStructEq(m, _lb(m, a), _lb(m, b));
+    }
+
+    /// Reset the context to the group's shared parameter telescope.
+    function _pushGroupParams(M memory m, G memory g) internal pure {
+        m.ctxLen = 0;
+        uint256 cur = _dType(g.indD0[0]);
+        for (uint256 p = 0; p < g.np; p++) {
+            cur = _whnf(m, cur);
+            if (m.fail != 0) return;
+            if (_tag(m, cur) != E_PI) {
+                _setFail(m, V_REJECT, R_IND_SHAPE);
+                return;
+            }
+            _pushCtx(m, _a(m, cur));
+            cur = _b(m, cur);
+        }
+    }
+
+    /// lean4#14577: type-check every nested application `I_k Ds_k` under the
+    /// group's parameters, and require it to live in the block's universe.
+    function _checkNestedApps(M memory m, G memory g, uint256[] memory indLevels) internal pure {
+        if (g.nAux == 0) return;
+        m.lpStart = _dLpStart(g.indD0[0]);
+        m.lpLen = _dLpLen(g.indD0[0]);
+        _pushGroupParams(m, g);
+        if (m.fail != 0) return;
+        for (uint256 k = 0; k < g.nAux; k++) {
+            uint256 ty = _infer(m, _auxApp(m, g, k, 0));
+            if (m.fail != 0) return;
+            for (uint256 j = 0; j < _auxNI(m, g, k); j++) {
+                ty = _whnf(m, ty);
+                if (m.fail != 0) return;
+                if (_tag(m, ty) != E_PI) {
+                    _setFail(m, V_REJECT, R_NESTED);
+                    return;
+                }
+                ty = _b(m, ty);
+            }
+            ty = _whnf(m, ty);
+            if (m.fail != 0) return;
+            if (
+                _tag(m, ty) != E_SORT
+                    || !(_lvlLeq(m, _a(m, ty), indLevels[0]) && _lvlLeq(m, indLevels[0], _a(m, ty)))
+            ) {
+                if (m.fail == 0) _setFail(m, V_REJECT, R_NESTED);
+                return;
+            }
+        }
+        m.ctxLen = 0;
+    }
+
+    /// Pass 2b: check the auxiliary types' constructors — strict positivity,
+    /// field-universe bounds, and the lean4#2125 index guard on the result.
+    function _checkAuxCtors(M memory m, G memory g, uint256[] memory indLevels) internal pure {
+        if (g.nAux == 0) return;
+        m.lpStart = _dLpStart(g.indD0[0]);
+        m.lpLen = _dLpLen(g.indD0[0]);
+        bool indIsProp = _lvlLeq(m, indLevels[0], 0);
+        for (uint256 v = 0; v < g.nCtorsAux; v++) {
+            uint256 k = g.vcAux[v];
+            _pushGroupParams(m, g);
+            if (m.fail != 0) return;
+            uint256 cur = _instAuxCtorType(m, g, k, g.vcSlot[v], 0);
+            if (m.fail != 0) return;
+            uint256 nf = (m.envDecl1[g.vcSlot[v]] >> 144) & F;
+            for (uint256 j = 0; j < nf; j++) {
+                if (_tag(m, cur) != E_PI) {
+                    _setFail(m, V_REJECT, R_NESTED);
+                    return;
+                }
+                _posCheck(m, _a(m, cur), g, j);
+                if (m.fail != 0) return;
+                uint256 fs = _sortOf(m, _a(m, cur));
+                if (m.fail != 0) return;
+                if (!indIsProp && !_lvlLeq(m, fs, indLevels[0])) {
+                    _setFail(m, V_REJECT, R_FIELD_UNIVERSE);
+                    return;
+                }
+                _pushCtx(m, _a(m, cur));
+                cur = _b(m, cur);
+            }
+            (uint256 h, uint256 nArgs) = _spineHead(m, cur);
+            if (
+                _tag(m, h) != E_CONST || m.nameHash[_a(m, h)] != m.envHash[g.auxSlot[k]]
+                    || nArgs != g.auxDs[k].length + _auxNI(m, g, k)
+            ) {
+                _setFail(m, V_REJECT, R_NESTED);
+                return;
+            }
+            uint256[] memory args = _collectArgs(m, cur, nArgs);
+            for (uint256 j = g.auxDs[k].length; j < nArgs; j++) {
+                if (_hasIndOcc(m, args[j], g.indHashes)) {
+                    _setFail(m, V_REJECT, R_CTOR_RESULT);
+                    return;
+                }
+            }
+        }
+        m.ctxLen = 0;
+    }
+
+    /// Decimal digits of v (>= 1), for the `rec_{k}` recursor-name suffix.
+    function _decSuffix(uint256 v) internal pure returns (bytes memory b) {
+        uint256 len = 0;
+        for (uint256 x = v; x > 0; x /= 10) len++;
+        b = new bytes(len);
+        for (uint256 x = v; x > 0; x /= 10) {
+            len--;
+            b[len] = bytes1(uint8(48 + (x % 10)));
+        }
     }
 
     struct CtorCtx {
@@ -2298,6 +3705,76 @@ contract LeanKernel {
         uint256 np;
         uint256 nf;
         uint256 fieldPropBits; // bit j set = field j is a proof
+    }
+
+    /// Each type's `ctors` name window must list exactly the constructors the
+    /// block declares for it — same count, same names.
+    ///
+    /// lean4export states an inductive's constructors twice: as a name list on
+    /// the type record, and as full declarations in the block's `ctors` array.
+    /// Only the latter was validated. For a plain inductive a lying window is
+    /// harmless, because minor premises are counted from the declared ctors;
+    /// but the nested machinery reads the window as the authority for an
+    /// *auxiliary* type's constructor set, so an empty window would present an
+    /// inhabited type as having no cases — and the recursor of an empty type
+    /// over an inhabited one proves False. Lean cannot express the discrepancy:
+    /// its `inductive_type` carries its constructors inline.
+    function _checkCtorWindows(M memory m, uint256[] calldata declTab, G memory g) internal pure {
+        for (uint256 t = 0; t < g.nT; t++) {
+            uint256 ptr = (g.indD1[t] >> 96) & F;
+            uint256 declared = m.pool[ptr];
+            uint256 j = 0;
+            // Walk the block's constructors in declaration order; those
+            // belonging to this type must be exactly the window, position for
+            // position. Cardinality plus membership is NOT enough: a window
+            // repeating one constructor would satisfy both while silently
+            // dropping another, which is the same soundness hole reached by a
+            // different lie. This demands a bijection.
+            for (uint256 c = 0; c < g.nC; c++) {
+                uint256 cd0 = declTab[2 * (g.base + g.nT + c)];
+                uint256 cd1 = declTab[2 * (g.base + g.nT + c) + 1];
+                if (m.nameHash[cd1 & F] != g.indHashes[t]) continue;
+                if (j >= declared || m.nameHash[m.pool[ptr + 1 + j]] != m.nameHash[_dName(cd0)]) {
+                    _setFail(m, V_REJECT, R_IND_SHAPE);
+                    return;
+                }
+                j++;
+            }
+            if (j != declared) {
+                _setFail(m, V_REJECT, R_IND_SHAPE);
+                return;
+            }
+        }
+    }
+
+    /// Lean *computes* `is_rec` (inductive.cpp:265) — a block is recursive when
+    /// some constructor has a field whose type mentions a member — and stores
+    /// one block-wide value on every type. We must not trust the exported flag:
+    /// it gates structure eta, unit eta and `_toCtorWhenStructure`, so a forged
+    /// `isRec: false` on a recursive type would let eta equate a variable with
+    /// its own unfolding. Overwrite the registered bit with the computed value.
+    function _recomputeIsRec(M memory m, uint256[] calldata declTab, G memory g) internal pure {
+        bool rec_;
+        for (uint256 c = 0; c < g.nC && !rec_; c++) {
+            uint256 cd0 = declTab[2 * (g.base + g.nT + c)];
+            uint256 cd1 = declTab[2 * (g.base + g.nT + c) + 1];
+            uint256 np = (cd1 >> 96) & F;
+            uint256 nf = (cd1 >> 144) & F;
+            uint256 cur = _dType(cd0);
+            for (uint256 k = 0; k < np && _tag(m, cur) == E_PI; k++) cur = _b(m, cur);
+            for (uint256 k = 0; k < nf && !rec_ && _tag(m, cur) == E_PI; k++) {
+                if (_hasIndOcc(m, _a(m, cur), g.indHashes)) rec_ = true;
+                cur = _b(m, cur);
+            }
+        }
+        for (uint256 t = 0; t < g.nT; t++) {
+            uint256 slot = _envLookup(m, _dName(g.indD0[t]));
+            if (slot == 0) continue;
+            uint256 w = m.envDecl1[slot - 1] & ~(uint256(1) << 192);
+            if (rec_) w |= (uint256(1) << 192);
+            m.envDecl1[slot - 1] = w;
+            g.indD1[t] = (g.indD1[t] & ~(uint256(1) << 192)) | (rec_ ? (uint256(1) << 192) : 0);
+        }
     }
 
     function _checkGroupCtor(
@@ -2394,7 +3871,7 @@ contract LeanKernel {
                 _setFail(m, V_REJECT, R_CTOR_SHAPE);
                 return cur;
             }
-            _posCheck(m, _a(m, cur), g);
+            _posCheck(m, _a(m, cur), g, j);
             if (m.fail != 0) return cur;
             uint256 fs = _sortOf(m, _a(m, cur));
             if (m.fail != 0) return cur;
@@ -2466,8 +3943,9 @@ contract LeanKernel {
         return true;
     }
 
-    /// Strict positivity for a constructor field type.
-    function _posCheck(M memory m, uint256 t, G memory g) internal pure {
+    /// Strict positivity for a constructor field type. `depth` = binders below
+    /// the group's parameter telescope (for matching aux occurrences).
+    function _posCheck(M memory m, uint256 t, G memory g, uint256 depth) internal pure {
         if (m.fail != 0) return;
         if (!_step(m)) return;
         if (!_hasIndOcc(m, t, g.indHashes)) return;
@@ -2479,7 +3957,7 @@ contract LeanKernel {
                 _setFail(m, V_REJECT, R_POSITIVITY);
                 return;
             }
-            _posCheck(m, _b(m, t), g);
+            _posCheck(m, _b(m, t), g, depth + 1);
             return;
         }
         (uint256 h, uint256 nArgs) = _spineHead(m, t);
@@ -2498,6 +3976,19 @@ contract LeanKernel {
                     return;
                 }
             }
+            // auxiliary member occurrence I_k Ds_k is: exactly I_k's index
+            // count beyond Ds, and no group occurrence in the indices
+            uint256 k2 = _auxMatch(m, g, t, h, nArgs, depth);
+            if (k2 != type(uint256).max && nArgs == g.auxDs[k2].length + _auxNI(m, g, k2)) {
+                uint256[] memory args2 = _collectArgs(m, t, nArgs);
+                for (uint256 j = g.auxDs[k2].length; j < nArgs; j++) {
+                    if (_hasIndOcc(m, args2[j], g.indHashes)) {
+                        _setFail(m, V_REJECT, R_POSITIVITY);
+                        return;
+                    }
+                }
+                return;
+            }
         }
         _setFail(m, V_REJECT, R_POSITIVITY);
     }
@@ -2510,6 +4001,7 @@ contract LeanKernel {
         uint256 recLpStart;
         uint256 extra;
         uint256 indLpLen;
+        uint256 tpos; // which type of the group this recursor eliminates
     }
 
     function _checkGroupRec(
@@ -2525,7 +4017,8 @@ contract LeanKernel {
             _setFail(m, V_REJECT, R_REC_SHAPE);
             return;
         }
-        if (!_validRecursorName(m, g, _dName(d0))) {
+        uint256 rtpos = _recursorTypePos(m, g, _dName(d0));
+        if (rtpos == type(uint256).max) {
             _setFail(m, V_REJECT, R_REC_SHAPE);
             return;
         }
@@ -2540,10 +4033,7 @@ contract LeanKernel {
         rc.mm = (d1 >> 144) & F;
         rc.recLpStart = _dLpStart(d0);
         rc.indLpLen = _dLpLen(g.indD0[0]);
-        if (g.nT != 1) {
-            _setFail(m, V_DECLINE, R_UNSUPPORTED);
-            return;
-        }
+        rc.tpos = rtpos;
         {
             uint256 recLpLen = _dLpLen(d0);
             if (recLpLen < rc.indLpLen || recLpLen - rc.indLpLen > 1) {
@@ -2558,7 +4048,14 @@ contract LeanKernel {
                 }
             }
         }
-        if (rc.p != (g.indD1[0] & F) || rc.i != ((g.indD1[0] >> 48) & F) || rc.M_ != g.nT || rc.mm != g.nC) {
+        // params are shared across the block; indices are per-type, so the
+        // recursor's index count must match the type IT eliminates. Motives =
+        // one per member of the auxiliary block, minors = one per constructor.
+        if (
+            rc.p != g.np
+                || rc.i != (rc.tpos < g.nT ? (g.indD1[rc.tpos] >> 48) & F : _auxNI(m, g, rc.tpos - g.nT))
+                || rc.M_ != g.nT + g.nAux || rc.mm != g.nC + g.nCtorsAux
+        ) {
             _setFail(m, V_REJECT, R_REC_SHAPE);
             return;
         }
@@ -2608,9 +4105,9 @@ contract LeanKernel {
         _checkRecursorMinors(m, declTab, g, rc, binders);
         if (m.fail != 0) return;
 
-        // K flag validation
+        // K flag validation (never K for a mutual or nested block)
         if ((d1 >> 248) == 1) {
-            bool okK = g.nT == 1 && _lvlLeq(m, indLevels[0], 0) && g.nC <= 1;
+            bool okK = g.nT == 1 && g.nAux == 0 && _lvlLeq(m, indLevels[0], 0) && g.nC <= 1;
             if (okK && g.nC == 1) {
                 uint256 cD1 = declTab[2 * (g.base + g.nT) + 1];
                 okK = ((cD1 >> 144) & F) == 0;
@@ -2621,45 +4118,119 @@ contract LeanKernel {
             }
         }
 
-        // register before rule validation (rule RHSs may refer to the recursor)
+        // Register now; rules are validated in a second pass. In a mutual block
+        // a rule's RHS may call a *sibling* recursor (Tree.rec's rule for
+        // Tree.node calls Forest.rec), so every recursor of the block must be in
+        // the environment before any rule is inferred.
         _envAdd(m, d0, d1);
+    }
 
-        // rules: must exist for every constructor, with independently
-        // reconstructed types (catches the Arena's nat-rec-rules attack)
+    /// Second recursor pass: reduction rules, with the whole block registered.
+    /// A recursor carries rules for exactly its own type's constructors, even
+    /// though it binds minor premises for every constructor in the block.
+    function _checkGroupRecRules(M memory m, uint256[] calldata declTab, G memory g, uint256 ri)
+        internal
+        pure
+    {
+        uint256 d0 = declTab[2 * (g.base + g.nT + g.nC + ri)];
+        uint256 d1 = declTab[2 * (g.base + g.nT + g.nC + ri) + 1];
+
+        RecCtx memory rc;
+        rc.p = d1 & F;
+        rc.i = (d1 >> 48) & F;
+        rc.M_ = (d1 >> 96) & F;
+        rc.mm = (d1 >> 144) & F;
+        rc.recLpStart = _dLpStart(d0);
+        rc.indLpLen = _dLpLen(g.indD0[0]);
+        rc.tpos = _recursorTypePos(m, g, _dName(d0));
+        rc.extra = _dLpLen(d0) - rc.indLpLen;
+
+        m.lpStart = rc.recLpStart;
+        m.lpLen = _dLpLen(d0);
+
+        uint256[] memory binders = new uint256[](rc.p + rc.M_ + rc.mm);
+        {
+            uint256 cur = _dType(d0);
+            for (uint256 k = 0; k < binders.length; k++) {
+                cur = _whnf(m, cur);
+                if (m.fail != 0) return;
+                if (_tag(m, cur) != E_PI) {
+                    _setFail(m, V_REJECT, R_REC_SHAPE);
+                    return;
+                }
+                binders[k] = _a(m, cur);
+                cur = _b(m, cur);
+            }
+        }
+
         uint256 rulesPtr = (d1 >> 192) & F;
-        if (m.pool[rulesPtr] != g.nC) {
+        uint256 ownCtors = rc.tpos < g.nT
+            ? m.pool[(g.indD1[rc.tpos] >> 96) & F]
+            : m.pool[(m.envDecl1[g.auxSlot[rc.tpos - g.nT]] >> 96) & F];
+        if (m.pool[rulesPtr] != ownCtors) {
             _setFail(m, V_REJECT, R_REC_RULE);
             return;
         }
-        for (uint256 r = 0; r < g.nC; r++) {
-            uint256 ctorName = m.pool[rulesPtr + 1 + 3 * r];
+        for (uint256 r = 0; r < ownCtors; r++) {
             uint256 nfields = m.pool[rulesPtr + 1 + 3 * r + 1];
             uint256 rhs = m.pool[rulesPtr + 1 + 3 * r + 2];
-            uint256 cslot = _envLookup(m, ctorName);
+            uint256 cslot = _envLookup(m, m.pool[rulesPtr + 1 + 3 * r]);
             if (cslot == 0 || _dKind(m.envDecl0[cslot - 1]) != D_CTOR) {
                 _setFail(m, V_REJECT, R_REC_RULE);
                 return;
             }
             uint256 cd1 = m.envDecl1[cslot - 1];
-            if (nfields != ((cd1 >> 144) & F) || ((cd1 >> 96) & F) != rc.p) {
+            if (nfields != ((cd1 >> 144) & F)) {
                 _setFail(m, V_REJECT, R_REC_RULE);
                 return;
             }
-            uint256 tpos = type(uint256).max;
+            // The rules must line up with this type's constructor window
+            // position for position. Checking only the count lets a window name
+            // one constructor twice (leaving another with no ι-rule); checking
+            // only injectivity still admits a permutation. Lean derives the
+            // rules in constructor order, and all 502 recursors in the Arena
+            // corpus agree, so demand the bijection outright.
             {
-                bytes32 ih = m.nameHash[cd1 & F];
-                for (uint256 t = 0; t < g.nT; t++) {
-                    if (g.indHashes[t] == ih) {
-                        tpos = t;
-                        break;
-                    }
+                uint256 cw = rc.tpos < g.nT
+                    ? (g.indD1[rc.tpos] >> 96) & F
+                    : (m.envDecl1[g.auxSlot[rc.tpos - g.nT]] >> 96) & F;
+                if (m.nameHash[m.pool[cw + 1 + r]] != m.nameHash[m.pool[rulesPtr + 1 + 3 * r]]) {
+                    _setFail(m, V_REJECT, R_REC_RULE);
+                    return;
                 }
             }
-            if (tpos == type(uint256).max) {
-                _setFail(m, V_REJECT, R_REC_RULE);
-                return;
+            uint256 expected;
+            if (rc.tpos < g.nT) {
+                uint256 tpos = type(uint256).max;
+                {
+                    bytes32 ih = m.nameHash[cd1 & F];
+                    for (uint256 t = 0; t < g.nT; t++) {
+                        if (g.indHashes[t] == ih) {
+                            tpos = t;
+                            break;
+                        }
+                    }
+                }
+                if (tpos != rc.tpos || ((cd1 >> 96) & F) != rc.p) {
+                    // a rule for a sibling type's constructor does not belong here
+                    _setFail(m, V_REJECT, R_REC_RULE);
+                    return;
+                }
+                expected = _ruleExpected(m, g, rc, binders, cslot, tpos);
+            } else {
+                // aux recursor: the rule ctor must belong to THIS entry's
+                // nesting target (the same head may serve several entries —
+                // the expected type below pins the entry's own Ds)
+                uint256 k = rc.tpos - g.nT;
+                if (
+                    m.nameHash[cd1 & F] != m.envHash[g.auxSlot[k]]
+                        || ((cd1 >> 96) & F) != g.auxDs[k].length
+                ) {
+                    _setFail(m, V_REJECT, R_REC_RULE);
+                    return;
+                }
+                expected = _ruleExpectedAux(m, g, rc, binders, cslot - 1, k);
             }
-            uint256 expected = _ruleExpected(m, g, rc, binders, cslot, tpos);
             if (m.fail != 0) return;
             m.ctxLen = 0;
             uint256 vt = _infer(m, rhs);
@@ -2671,18 +4242,24 @@ contract LeanKernel {
         }
     }
 
-    function _validRecursorName(M memory m, G memory g, uint256 nameIdx) internal pure returns (bool) {
+    /// Which type of the group does this recursor eliminate? Returns the type's
+    /// position, or type(uint256).max if the name is not a canonical recursor
+    /// name for any member. In a mutual block each type gets its own recursor,
+    /// so the position — not just validity — matters: it selects the motive and
+    /// the major premise's inductive.
+    function _recursorTypePos(M memory m, G memory g, uint256 nameIdx) internal pure returns (uint256) {
         bytes32 h = m.nameHash[nameIdx];
         for (uint256 t = 0; t < g.nT; t++) {
-            bytes32 parent = g.indHashes[t];
-            if (h == keccak256(abi.encodePacked(parent, uint8(0), "rec"))) return true;
-            if (g.nR > 1) {
-                if (h == keccak256(abi.encodePacked(parent, uint8(0), "rec_1"))) return true;
-                if (h == keccak256(abi.encodePacked(parent, uint8(0), "rec_2"))) return true;
-                if (h == keccak256(abi.encodePacked(parent, uint8(0), "rec_3"))) return true;
+            if (h == keccak256(abi.encodePacked(g.indHashes[t], uint8(0), "rec"))) return t;
+        }
+        // aux type k's recursor is <types[0]>.rec_{k+1} (always under the
+        // FIRST declared type's name, even in a mutual block)
+        for (uint256 k = 0; k < g.nAux; k++) {
+            if (h == keccak256(abi.encodePacked(g.indHashes[0], uint8(0), "rec_", _decSuffix(k + 1)))) {
+                return g.nT + k;
             }
         }
-        return false;
+        return type(uint256).max;
     }
 
     /// Validate the recursor declaration's tail after params/motives/minors:
@@ -2743,7 +4320,9 @@ contract LeanKernel {
             return;
         }
 
-        uint256 expectedResult = _pushEx(m, _mkE(E_BVAR, rc.i + 1 + rc.mm + (rc.M_ - 1), 0, 0));
+        // motive j sits at bvar (indices + minors + M_ - j); this recursor
+        // returns its own type's motive, not necessarily the first.
+        uint256 expectedResult = _pushEx(m, _mkE(E_BVAR, rc.i + 1 + rc.mm + (rc.M_ - 1 - rc.tpos), 0, 0));
         for (uint256 k = 0; k < rc.i; k++) {
             expectedResult = _pushEx(m, _mkE(E_APP, expectedResult, _pushEx(m, _mkE(E_BVAR, rc.i - k, 0, 0)), 0));
         }
@@ -2764,25 +4343,31 @@ contract LeanKernel {
         uint256 savedCtx = m.ctxLen;
         m.ctxLen = 0;
         for (uint256 k = 0; k < rc.p + rc.M_; k++) _pushCtx(m, binders[k]);
-        for (uint256 r = 0; r < g.nC; r++) {
-            uint256 cd0 = declTab[2 * (g.base + g.nT + r)];
-            uint256 cd1 = declTab[2 * (g.base + g.nT + r) + 1];
-            uint256 tpos = type(uint256).max;
-            {
-                bytes32 ih = m.nameHash[cd1 & F];
-                for (uint256 t = 0; t < g.nT; t++) {
-                    if (g.indHashes[t] == ih) {
-                        tpos = t;
-                        break;
+        for (uint256 r = 0; r < rc.mm; r++) {
+            uint256 expected;
+            if (r < g.nC) {
+                uint256 cd0 = declTab[2 * (g.base + g.nT + r)];
+                uint256 cd1 = declTab[2 * (g.base + g.nT + r) + 1];
+                uint256 tpos = type(uint256).max;
+                {
+                    bytes32 ih = m.nameHash[cd1 & F];
+                    for (uint256 t = 0; t < g.nT; t++) {
+                        if (g.indHashes[t] == ih) {
+                            tpos = t;
+                            break;
+                        }
                     }
                 }
+                if (tpos == type(uint256).max) {
+                    _setFail(m, V_REJECT, R_REC_SHAPE);
+                    m.ctxLen = savedCtx;
+                    return;
+                }
+                expected = _minorExpected(m, g, rc, cd0, cd1, tpos, r);
+            } else {
+                // virtual ctor of an auxiliary type
+                expected = _minorExpectedAux(m, g, rc, g.vcAux[r - g.nC], g.vcSlot[r - g.nC], r);
             }
-            if (tpos == type(uint256).max) {
-                _setFail(m, V_REJECT, R_REC_SHAPE);
-                m.ctxLen = savedCtx;
-                return;
-            }
-            uint256 expected = _minorExpected(m, g, rc, cd0, cd1, tpos, r);
             if (m.fail != 0) {
                 m.ctxLen = savedCtx;
                 return;
@@ -2878,6 +4463,105 @@ contract LeanKernel {
         return body;
     }
 
+    /// Expected minor premise for a VIRTUAL constructor (ctor `cidx` of the
+    /// nesting target, instantiated at aux entry k's levels and Ds):
+    ///   ∀ fields, ∀ IHs, motive_{nT+k} idxs (ctor Ds fields)
+    function _minorExpectedAux(
+        M memory m,
+        G memory g,
+        RecCtx memory rc,
+        uint256 k,
+        uint256 cidx,
+        uint256 priorMinors
+    ) internal pure returns (uint256) {
+        uint256 nf = (m.envDecl1[cidx] >> 144) & F;
+        uint256 cur = _instAuxCtorType(m, g, k, cidx, rc.M_ + priorMinors);
+        if (m.fail != 0) return NONE;
+
+        uint256[] memory domains = new uint256[](nf * 2 + 1);
+        uint256[] memory fieldTypes = new uint256[](nf);
+        uint256[] memory fieldPos = new uint256[](nf);
+        uint256 nBinders = 0;
+        for (uint256 j = 0; j < nf; j++) {
+            if (_tag(m, cur) != E_PI) {
+                _setFail(m, V_REJECT, R_REC_SHAPE);
+                return NONE;
+            }
+            domains[nBinders] = _a(m, cur);
+            fieldTypes[j] = _a(m, cur);
+            fieldPos[j] = nBinders;
+            nBinders++;
+            cur = _b(m, cur);
+        }
+
+        uint256 nIH = 0;
+        for (uint256 j = 0; j < nf; j++) {
+            (bool rec, uint256 ihTy) = _ihForField(
+                m,
+                g,
+                rc,
+                _lift(m, fieldTypes[j], nf - j + nIH, 0),
+                _pushEx(m, _mkE(E_BVAR, nf - 1 - j + nIH, 0, 0)),
+                priorMinors,
+                nBinders
+            );
+            if (m.fail != 0) return NONE;
+            if (rec) {
+                domains[nBinders] = ihTy;
+                nBinders++;
+                nIH++;
+                cur = _lift(m, cur, 1, 0);
+            }
+        }
+
+        (uint256 h, uint256 nArgs) = _spineHead(m, cur);
+        if (_tag(m, h) != E_CONST || m.nameHash[_a(m, h)] != m.envHash[g.auxSlot[k]]) {
+            _setFail(m, V_REJECT, R_REC_SHAPE);
+            return NONE;
+        }
+        uint256[] memory rargs = _collectArgs(m, cur, nArgs);
+        uint256 body = _pushEx(m, _mkE(E_BVAR, nBinders + priorMinors + (rc.M_ - 1 - (g.nT + k)), 0, 0));
+        {
+            uint256 npk = g.auxDs[k].length;
+            uint256 ni = _auxNI(m, g, k);
+            for (uint256 j = npk; j < npk + ni && j < nArgs; j++) {
+                body = _pushEx(m, _mkE(E_APP, body, rargs[j], 0));
+            }
+        }
+        body = _pushEx(
+            m, _mkE(E_APP, body, _auxCtorApp(m, g, k, cidx, nf, nBinders, nBinders + priorMinors + rc.M_, fieldPos), 0)
+        );
+        for (uint256 i = nBinders; i > 0; i--) {
+            body = _pushEx(m, _mkE(E_PI, domains[i - 1], body, 0));
+        }
+        return body;
+    }
+
+    /// `ctor.{us_k} Ds_k fields` for a virtual ctor. `dsLift` = binder depth
+    /// below the group's params at the application site; field j sits at bvar
+    /// nBinders - 1 - fieldPos[j].
+    function _auxCtorApp(
+        M memory m,
+        G memory g,
+        uint256 k,
+        uint256 cidx,
+        uint256 nf,
+        uint256 nBinders,
+        uint256 dsLift,
+        uint256[] memory fieldPos
+    ) internal pure returns (uint256 capp) {
+        capp = _pushEx(
+            m, _mkE(E_CONST, _dName(m.envDecl0[cidx]), g.auxUs[k], _dLpLen(m.envDecl0[g.auxSlot[k]]))
+        );
+        uint256[] memory ds = g.auxDs[k];
+        for (uint256 p = 0; p < ds.length; p++) {
+            capp = _pushEx(m, _mkE(E_APP, capp, _lift(m, ds[p], dsLift, 0), 0));
+        }
+        for (uint256 j = 0; j < nf; j++) {
+            capp = _pushEx(m, _mkE(E_APP, capp, _pushEx(m, _mkE(E_BVAR, nBinders - 1 - fieldPos[j], 0, 0)), 0));
+        }
+    }
+
     function _ihForField(
         M memory m,
         G memory g,
@@ -2915,14 +4599,25 @@ contract LeanKernel {
                 }
             }
         }
+        uint256 pskip = rc.p;
+        uint256 ni;
         if (tpos == type(uint256).max) {
-            _setFail(m, V_DECLINE, R_UNSUPPORTED);
-            return (false, NONE);
+            // an aux occurrence I_k Ds_k is: the IH uses motive_{nT+k} and the
+            // occurrence's own indices (after its np_k parameter args)
+            uint256 k2 = _auxMatch(m, g, cur, h, nArgs, rc.M_ + priorMinors + innerCount);
+            if (k2 == type(uint256).max) {
+                _setFail(m, V_DECLINE, R_UNSUPPORTED);
+                return (false, NONE);
+            }
+            tpos = g.nT + k2;
+            pskip = g.auxDs[k2].length;
+            ni = _auxNI(m, g, k2);
+        } else {
+            ni = (g.indD1[tpos] >> 48) & F;
         }
         uint256[] memory args = _collectArgs(m, cur, nArgs);
         uint256 body = _pushEx(m, _mkE(E_BVAR, innerCount + priorMinors + (rc.M_ - 1 - tpos), 0, 0));
-        uint256 ni = (g.indD1[tpos] >> 48) & F;
-        for (uint256 k = rc.p; k < rc.p + ni && k < nArgs; k++) {
+        for (uint256 k = pskip; k < pskip + ni && k < nArgs; k++) {
             body = _pushEx(m, _mkE(E_APP, body, args[k], 0));
         }
         body = _pushEx(m, _mkE(E_APP, body, fieldApp, 0));
@@ -2956,14 +4651,19 @@ contract LeanKernel {
     }
 
     function _recursorIndApp(M memory m, G memory g, RecCtx memory rc) internal pure returns (uint256 r) {
-        uint256 usS = m.poolLen;
-        for (uint256 k = 0; k < rc.indLpLen; k++) {
-            uint256 lvl = _pushLv(m, _mkL(L_PARAM, m.pool[rc.recLpStart + rc.extra + k], 0));
-            _pushPool(m, lvl);
-        }
-        r = _pushEx(m, _mkE(E_CONST, _dName(g.indD0[0]), usS, rc.indLpLen));
-        for (uint256 k = 0; k < rc.p; k++) {
-            r = _pushEx(m, _mkE(E_APP, r, _pushEx(m, _mkE(E_BVAR, m.ctxLen - 1 - k, 0, 0)), 0));
+        if (rc.tpos >= g.nT) {
+            // restored aux type: I_k Ds_k, Ds lifted past motives/minors/indices
+            r = _auxApp(m, g, rc.tpos - g.nT, m.ctxLen - rc.p);
+        } else {
+            uint256 usS = m.poolLen;
+            for (uint256 k = 0; k < rc.indLpLen; k++) {
+                uint256 lvl = _pushLv(m, _mkL(L_PARAM, m.pool[rc.recLpStart + rc.extra + k], 0));
+                _pushPool(m, lvl);
+            }
+            r = _pushEx(m, _mkE(E_CONST, _dName(g.indD0[rc.tpos]), usS, rc.indLpLen));
+            for (uint256 k = 0; k < rc.p; k++) {
+                r = _pushEx(m, _mkE(E_APP, r, _pushEx(m, _mkE(E_BVAR, m.ctxLen - 1 - k, 0, 0)), 0));
+            }
         }
         for (uint256 k = 0; k < rc.i; k++) {
             r = _pushEx(m, _mkE(E_APP, r, _pushEx(m, _mkE(E_BVAR, rc.i - 1 - k, 0, 0)), 0));
@@ -2973,7 +4673,7 @@ contract LeanKernel {
     /// The motive for type j: ∀ indices, I params indices → Sort u; extract u
     /// and enforce the elimination restriction.
     function _checkMotiveSort(M memory m, G memory g, uint256 motiveTy, uint256 j) internal pure {
-        uint256 ni = (g.indD1[j] >> 48) & F;
+        uint256 ni = j < g.nT ? (g.indD1[j] >> 48) & F : _auxNI(m, g, j - g.nT);
         uint256 cur = motiveTy;
         for (uint256 k = 0; k < ni + 1; k++) {
             cur = _whnf(m, cur);
@@ -3055,6 +4755,59 @@ contract LeanKernel {
                 capp = _pushEx(m, _mkE(E_APP, capp, _pushEx(m, _mkE(E_BVAR, nf - 1 - j, 0, 0)), 0));
             }
             body = _pushEx(m, _mkE(E_APP, body, capp, 0));
+        }
+        for (uint256 j = nf; j > 0; j--) {
+            body = _pushEx(m, _mkE(E_PI, fb[j - 1], body, 0));
+        }
+        for (uint256 r = binders.length; r > 0; r--) {
+            body = _pushEx(m, _mkE(E_PI, binders[r - 1], body, 0));
+        }
+        return body;
+    }
+
+    /// Expected rule-RHS type for an AUX recursor's rule (ctor `cidx` of the
+    /// nesting target at aux entry k's levels and Ds):
+    ///   ∀ params motives minors fields, motive_{nT+k} idxs (ctor Ds fields)
+    function _ruleExpectedAux(
+        M memory m,
+        G memory g,
+        RecCtx memory rc,
+        uint256[] memory binders,
+        uint256 cidx,
+        uint256 k
+    ) internal pure returns (uint256) {
+        uint256 nf = (m.envDecl1[cidx] >> 144) & F;
+        uint256 cur = _instAuxCtorType(m, g, k, cidx, rc.M_ + rc.mm);
+        if (m.fail != 0) return NONE;
+        uint256[] memory fb = new uint256[](nf);
+        for (uint256 j = 0; j < nf; j++) {
+            if (_tag(m, cur) != E_PI) {
+                _setFail(m, V_REJECT, R_REC_RULE);
+                return NONE;
+            }
+            fb[j] = _a(m, cur);
+            cur = _b(m, cur);
+        }
+        (uint256 h, uint256 nArgs) = _spineHead(m, cur);
+        if (_tag(m, h) != E_CONST || m.nameHash[_a(m, h)] != m.envHash[g.auxSlot[k]]) {
+            _setFail(m, V_REJECT, R_REC_RULE);
+            return NONE;
+        }
+        uint256[] memory rargs = _collectArgs(m, cur, nArgs);
+        uint256 body = _pushEx(m, _mkE(E_BVAR, nf + rc.mm + (rc.M_ - 1 - (g.nT + k)), 0, 0));
+        {
+            uint256 npk = g.auxDs[k].length;
+            uint256 ni = _auxNI(m, g, k);
+            for (uint256 j = npk; j < npk + ni && j < nArgs; j++) {
+                body = _pushEx(m, _mkE(E_APP, body, rargs[j], 0));
+            }
+        }
+        {
+            uint256[] memory fieldPos = new uint256[](nf);
+            for (uint256 j = 0; j < nf; j++) fieldPos[j] = j;
+            body = _pushEx(
+                m, _mkE(E_APP, body, _auxCtorApp(m, g, k, cidx, nf, nf, nf + rc.mm + rc.M_, fieldPos), 0)
+            );
         }
         for (uint256 j = nf; j > 0; j--) {
             body = _pushEx(m, _mkE(E_PI, fb[j - 1], body, 0));

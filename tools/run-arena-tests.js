@@ -115,15 +115,21 @@ async function verdictForFile(file, iface, vm, kernelAddr) {
   const r = await callContract(vm, kernelAddr, calldata);
   const gas = r.execResult.executionGasUsed;
   if (r.execResult.exceptionError) {
-    return { verdict: 99, failedDecl: 0n, reason: r.execResult.exceptionError.error, gas };
+    const err = String(r.execResult.exceptionError.error);
+    // Match bin/evmlean.js: exhausting our own gas or EVM stack is the Arena's
+    // "checker gave up" (decline), not a checker fault.
+    if (err === 'out of gas' || err === 'stack overflow') {
+      return { verdict: 2, failedDecl: 0n, reason: `EVM resource exhaustion (${err})`, gas };
+    }
+    return { verdict: 99, failedDecl: 0n, reason: err, gas };
   }
   const [verdict, failedDecl, reason] = iface.decodeFunctionResult('check', bytesToHex(r.execResult.returnValue));
-  return {
-    verdict: Number(verdict),
-    failedDecl,
-    reason: REASONS[Number(reason)] || String(reason),
-    gas,
-  };
+  const v = Number(verdict);
+  const why = REASONS[Number(reason)] || String(reason);
+  // Contract verdict 3 is its own step/depth budget running out; bin/evmlean.js
+  // reports that to the Arena as a decline, so score it the same way here.
+  if (v === 3) return { verdict: 2, failedDecl, reason: `resource budget exhausted (${why})`, gas };
+  return { verdict: v, failedDecl, reason: why, gas };
 }
 
 function isTutorial(rel) {

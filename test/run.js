@@ -45,14 +45,48 @@ async function main() {
       if (f.endsWith('.ndjson')) manifest.push({ group: 'arena', name: f.replace(/\.ndjson$/, '') });
     }
   }
-  const expectedOf = { good: 0n, bad: 1n, decline: 2n, arena: 1n };
+  // nested-inductive ground truth (byte-real lean4export output); files named
+  // reject-* are adversarial and must reject, the rest must accept
+  const nestedDir = path.join(ROOT, 'tests', 'nested');
+  if (fs.existsSync(nestedDir)) {
+    for (const f of fs.readdirSync(nestedDir).sort()) {
+      if (f.endsWith('.ndjson')) {
+        manifest.push({
+          group: f.startsWith('reject-') ? 'nested-reject' : 'nested',
+          name: f.replace(/\.ndjson$/, ''),
+        });
+      }
+    }
+  }
+  // byte-real lean4export fixtures for defeq/reduction corners that our
+  // hand-built vectors cannot express; same reject-* naming convention
+  const leanDir = path.join(ROOT, 'tests', 'lean');
+  if (fs.existsSync(leanDir)) {
+    for (const f of fs.readdirSync(leanDir).sort()) {
+      if (f.endsWith('.ndjson')) {
+        manifest.push({
+          group: f.startsWith('reject-') ? 'lean-reject' : 'lean',
+          name: f.replace(/\.ndjson$/, ''),
+        });
+      }
+    }
+  }
+  const expectedOf = {
+    good: 0n, bad: 1n, decline: 2n, arena: 1n,
+    nested: 0n, 'nested-reject': 1n, lean: 0n, 'lean-reject': 1n,
+  };
+  const dirOf = (g) => {
+    if (g === 'nested' || g === 'nested-reject') return 'nested';
+    if (g === 'lean' || g === 'lean-reject') return 'lean';
+    return g;
+  };
 
   let pass = 0;
   let fail = 0;
   const rows = [];
 
   for (const t of manifest) {
-    const file = path.join(ROOT, 'tests', t.group === 'arena' ? 'arena' : t.group, `${t.name}.ndjson`);
+    const file = path.join(ROOT, 'tests', dirOf(t.group), `${t.name}.ndjson`);
     const parsed = parseNdjson(fs.readFileSync(file, 'utf8'));
     const enc = encodeForChain(parsed);
     const calldata = iface.encodeFunctionData('check', [

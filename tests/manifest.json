@@ -340,9 +340,9 @@
     "note": "Large elimination from a 2-constructor Prop must be rejected"
   },
   {
-    "group": "decline",
+    "group": "bad",
     "name": "068_nested",
-    "note": "Nested inductives are out of fragment → decline"
+    "note": "numNested = 1 but no nested occurrence exists → metadata mismatch, reject"
   },
   {
     "group": "decline",
@@ -363,5 +363,110 @@
     "group": "bad",
     "name": "077_projNameNotStruct",
     "note": "Projection names a multi-constructor inductive (lean4#14576)"
+  },
+  {
+    "group": "good",
+    "name": "078_stringLit",
+    "note": "String literal reduces to String.ofList of a Char list"
+  },
+  {
+    "group": "good",
+    "name": "079_stringLitEmpty",
+    "note": "Empty string literal reduces to String.ofList (List.nil Char)"
+  },
+  {
+    "group": "good",
+    "name": "080_stringLitUnicode",
+    "note": "Multi-byte UTF-8 decodes to Unicode scalar values, not bytes"
+  },
+  {
+    "group": "bad",
+    "name": "081_stringLitWrong",
+    "note": "String literal must not equal a different Char list"
+  },
+  {
+    "group": "good",
+    "name": "082_natAdd",
+    "note": "Nat.add on literals folds to 5"
+  },
+  {
+    "group": "good",
+    "name": "083_natMul",
+    "note": "Nat.mul on literals folds to 42"
+  },
+  {
+    "group": "good",
+    "name": "084_natSub",
+    "note": "Nat.sub is truncated: 3 - 5 = 0"
+  },
+  {
+    "group": "good",
+    "name": "085_natDivMod",
+    "note": "Nat.mod on literals folds to 2"
+  },
+  {
+    "group": "good",
+    "name": "086_natPow",
+    "note": "Nat.pow on literals folds to 1024"
+  },
+  {
+    "group": "good",
+    "name": "087_natGcd",
+    "note": "Nat.gcd on literals folds to 6"
+  },
+  {
+    "group": "bad",
+    "name": "088_natAddWrong",
+    "note": "Nat.add 2 3 must not equal 6"
+  },
+  {
+    "group": "bad",
+    "name": "089_natDivByZero",
+    "note": "Nat.div n 0 = 0, not n"
+  },
+  {
+    "group": "good",
+    "name": "090_natBeq",
+    "note": "Nat.beq 7 7 folds to Bool.true"
+  },
+  {
+    "group": "good",
+    "name": "091_natBle",
+    "note": "Nat.ble 3 9 folds to Bool.true"
+  },
+  {
+    "group": "good",
+    "name": "092_natBleFalse",
+    "note": "Nat.ble 9 3 folds to Bool.false"
+  },
+  {
+    "group": "bad",
+    "name": "093_natBeqWrong",
+    "note": "Nat.beq 7 8 is Bool.false, not true"
+  },
+  {
+    "group": "bad",
+    "name": "094_nestedNegativeParam",
+    "note": "Negative occurrence through a nested target's parameter (Cont Bad) must reject"
+  },
+  {
+    "group": "bad",
+    "name": "095_nestedDefAlias",
+    "note": "Nesting behind a def alias is not nested; must reject, not accept"
+  },
+  {
+    "group": "bad",
+    "name": "096_nestedGroupInIndex",
+    "note": "Group occurrence in a nested occurrence's index arguments must reject"
+  },
+  {
+    "group": "bad",
+    "name": "097_nestedLocalParam",
+    "note": "Nested occurrence whose parameters mention a constructor field must reject"
+  },
+  {
+    "group": "bad",
+    "name": "098_nestedIllTypedDs",
+    "note": "Ill-typed projection inside a nested occurrence's Ds (lean4#14576/#14577) must reject"
   }
 ]

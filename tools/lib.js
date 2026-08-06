@@ -233,7 +233,8 @@ function encodeForChain(parsed) {
         const ctorsPtr = pushWindow(t.ctors || []);
         declTab.push(
           word0(D.IND, t.name, t.type, NONE, t.levelParams),
-          BigInt(t.numParams) | (BigInt(t.numIndices) << 48n) | (ctorsPtr << 96n) | (BigInt(t.numNested || 0) << 144n)
+          BigInt(t.numParams) | (BigInt(t.numIndices) << 48n) | (ctorsPtr << 96n) | (BigInt(t.numNested || 0) << 144n) |
+            (t.isRec ? 1n << 192n : 0n)
         );
       }
       for (const c of d.ctors) {
@@ -285,6 +286,7 @@ const REASONS = [
   'constructor result type', 'constructor result levels', 'field universe too large',
   'elimination universe violation', 'invalid K flag', 'recursor shape',
   'recursor rule invalid', 'projection violation', 'quotient shape',
+  'malformed export', 'nested inductive violation',
 ];
 
 // ---------------------------------------------------------------------------

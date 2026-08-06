@@ -8,6 +8,7 @@
     "gen": "node tools/gen_tests.js",
     "test": "node test/run.js",
     "test:arena": "node tools/run-arena-tests.js",
+    "fuzz": "node tools/fuzz.js",
     "size": "node tools/build.js",
     "deploy": "node scripts/deploy.js",
     "check": "node scripts/check-onchain.js"

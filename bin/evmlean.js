@@ -54,9 +54,20 @@ async function main() {
   const calldata = iface.encodeFunctionData('check', [
     enc.nameTab, enc.nameStrs, enc.levelTab, enc.exprTab, enc.pool, enc.declTab,
   ]);
-  const r = await callContract(vm, kernelAddr, calldata);
+  const gasLimit = process.env.EVMLEAN_GAS ? BigInt(process.env.EVMLEAN_GAS) : undefined;
+  const r = gasLimit === undefined
+    ? await callContract(vm, kernelAddr, calldata)
+    : await callContract(vm, kernelAddr, calldata, gasLimit);
   if (r.execResult.exceptionError) {
-    console.error('evmlean: EVM exception:', r.execResult.exceptionError.error);
+    const err = String(r.execResult.exceptionError.error);
+    // Running out of our own gas or EVM stack is resource exhaustion — the
+    // Arena's "checker gave up", which is a decline. Only a genuine fault
+    // (revert, bad opcode) is a checker bug worth exit 3.
+    if (err === 'out of gas' || err === 'stack overflow') {
+      console.error(`evmlean: EVM resource exhaustion (${err}); declining`);
+      process.exit(2);
+    }
+    console.error('evmlean: EVM exception:', err);
     process.exit(3);
   }
   const [verdict, failedDecl, reason] = iface.decodeFunctionResult('check', bytesToHex(r.execResult.returnValue));
