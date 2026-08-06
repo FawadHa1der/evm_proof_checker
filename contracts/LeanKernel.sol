@@ -1847,6 +1847,16 @@ contract LeanKernel {
         if (m.fail != 0) return false;
         if (_exactEq(m, a, b)) return true;
 
+        // Proof irrelevance goes HERE, right after whnf_core and before lazy
+        // delta — where Lean puts it (is_def_eq_proof_irrel, tc.cpp:1087).
+        // Two proofs of the same Prop should be settled by their types in O(1);
+        // running this last instead meant unfolding both sides and recursing
+        // into their arguments first, and if that exhausted the step budget
+        // `_inferSilent` would then return NONE and proof irrelevance could
+        // never fire at all.
+        if (_proofIrrelEq(m, a, b)) return true;
+        if (m.fail != 0) return false;
+
         // Constant-fold Nat operations on either side before anything else
         // looks at the literals, mirroring Lean's reduce_nat inside
         // lazy_delta_reduction. Doing this after the literal-expansion branch

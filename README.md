@@ -42,7 +42,7 @@ declarations, and Arena exports above the single-transaction checker size guard.
 The corpus contains no unsafe/partial declarations at all, and for a *proof*
 checker declining them is the conservative reading.
 
-**Headline results** (measured; `gas-report.json`): **128/128 local tests** plus
+**Headline results** (measured; `gas-report.json`): **138/138 local tests** plus
 **zero failures on the full downloadable Arena corpus** — 158 exact
 accept/reject plus 3 honest resource-exhaustion declines on multi-megabyte
 exports, up from 153 exact + 1 decline + 7 failures (of which five were false
@@ -52,11 +52,11 @@ each rejected at exactly the poisoned declaration after accepting all legitimate
 prelude-style material around it (`Eq.symm`, `false_ne_true`, `Eq.casesOn`,
 K-recursors, …). One of those attacks (`level-imax-leq`, which broke nanoda
 once) caught a live bug in this kernel during development — fixed and now a
-regression test. Kernel size: **58.0KB deployed** — within the EIP-7907
+regression test. Kernel size: **60.9KB deployed** — within the EIP-7907
 (Glamsterdam) budget this project targets; over today's EIP-170, so on-chain
-deployment currently needs a devnet/L2 with a raised limit. 119 of the 128 tests
-fit a single post-Fusaka mainnet transaction (≤14.4M gas vs the 16.77M EIP-7825
-cap). The seven that do not are the byte-real `lean4export` fixtures (17.5–40.4M):
+deployment currently needs a devnet/L2 with a raised limit. 131 of the 138 tests
+fit a single post-Fusaka mainnet transaction (≤16.1M gas vs the 16.77M EIP-7825
+cap). The seven that do not are the byte-real `lean4export` fixtures (18.0–47.5M):
 real Lean declarations pull in `brecOn`, `PProd` and the auxiliary types of
 nested inductives, which makes them by far the most expensive things the kernel
 checks. They need an L2 or the multi-transaction architecture in PLAN.md §6B.
@@ -71,7 +71,7 @@ or your own `lean4export` output).
 ```bash
 npm install
 npm run gen          # generate the tutorial-parity test vectors
-npm test             # compile, install into in-process EVM, run all 128 tests + gas report
+npm test             # compile, install into in-process EVM, run all 138 tests + gas report
 npm run size         # report deployed/initcode size against EIP-170/EIP-7907
 node scripts/demo-local.js                       # kernel+registry, real submit tx, on-chain record
 node bin/evmlean.js tests/arena/nat-rec-rules.ndjson ; echo $?   # Arena checker contract: exit 1 (reject)
@@ -96,7 +96,8 @@ tools/lib.js                   NDJSON parser, chain encoder, HOAS test builder
 tools/gen_tests.js             generates tests/ (good/bad/decline + manifest)
 tools/fetch-arena-tests.sh     re-downloads the Arena's static adversarial tests
 tools/run-arena-tests.js       run a downloaded Arena tarball/directory
-tools/fuzz.js                  seeded mutation fuzzer (no-crash / no-false-accept)
+tools/fuzz.js                  seeded mutation fuzzer (random)
+tools/audit-fields.js          exhaustive field-level trust audit (systematic)
 tests/nested/ tests/lean/      byte-real fixtures + adversarial soundness regressions
 tools/build.js | tools/evm.js  solc artifact cache | in-process EVM harness
 test/run.js                    full suite + gas report
