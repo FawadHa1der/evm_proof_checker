@@ -37,7 +37,7 @@ description: |
 version: "0.3.0"
 url: https://github.com/FawadHa1der/evm_proof_checker
 ref: main
-rev: 2fde4df73fb50caf0062f6a25247fbfa460aa595
+rev: 47368a1541bb96dc8ed10059ed82fbfb55e52d7b
 build: npm install --no-audit --no-fund && node tools/build.js
 run: node bin/evmlean.js $IN
 # Module-scale exports exceed the per-run gas budget by orders of magnitude —
