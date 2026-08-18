@@ -887,10 +887,25 @@ contract LeanKernel {
             return s == _c(m, e) ? e : _pushEx(m, _mkE(E_PROJ, _a(m, e), _b(m, e), s));
         }
         if (t == E_APP) {
-            uint256 f = _lift(m, _a(m, e), amt, cutoff);
-            uint256 x = _lift(m, _b(m, e), amt, cutoff);
-            if (f == _a(m, e) && x == _b(m, e)) return e;
-            return _pushEx(m, _mkE(E_APP, f, x, 0));
+            // Walk the spine iteratively. Recursing on the function part makes
+            // the recursion depth equal to the argument count, which overflows
+            // the EVM stack on long applications; Lean collects the spine
+            // iteratively for the same reason (get_app_rev_args).
+            (uint256 h, uint256 n) = _spineHead(m, e);
+            uint256[] memory nodes = _spineNodes(m, e, n);
+            uint256 acc = _lift(m, h, amt, cutoff);
+            bool ch = acc != h;
+            for (uint256 i = 0; i < n; i++) {
+                uint256 arg = _b(m, nodes[i]);
+                uint256 na = _lift(m, arg, amt, cutoff);
+                if (!ch && na == arg) {
+                    acc = nodes[i]; // unchanged prefix stays shared with `e`
+                    continue;
+                }
+                ch = true;
+                acc = _pushEx(m, _mkE(E_APP, acc, na, 0));
+            }
+            return ch ? acc : e;
         }
         if (t == E_LAM || t == E_PI) {
             uint256 ty = _lift(m, _a(m, e), amt, cutoff);
@@ -921,10 +936,22 @@ contract LeanKernel {
             return s == _c(m, e) ? e : _pushEx(m, _mkE(E_PROJ, _a(m, e), _b(m, e), s));
         }
         if (t == E_APP) {
-            uint256 f = _inst(m, _a(m, e), v, depth);
-            uint256 x = _inst(m, _b(m, e), v, depth);
-            if (f == _a(m, e) && x == _b(m, e)) return e;
-            return _pushEx(m, _mkE(E_APP, f, x, 0));
+            // Iterative spine walk; see the matching case in `_lift`.
+            (uint256 h, uint256 n) = _spineHead(m, e);
+            uint256[] memory nodes = _spineNodes(m, e, n);
+            uint256 acc = _inst(m, h, v, depth);
+            bool ch = acc != h;
+            for (uint256 i = 0; i < n; i++) {
+                uint256 arg = _b(m, nodes[i]);
+                uint256 na = _inst(m, arg, v, depth);
+                if (!ch && na == arg) {
+                    acc = nodes[i];
+                    continue;
+                }
+                ch = true;
+                acc = _pushEx(m, _mkE(E_APP, acc, na, 0));
+            }
+            return ch ? acc : e;
         }
         if (t == E_LAM || t == E_PI) {
             uint256 ty = _inst(m, _a(m, e), v, depth);
@@ -1094,13 +1121,28 @@ contract LeanKernel {
         for (;;) {
             uint256 t = _tag(m, e);
             if (t == E_APP) {
-                uint256 f = _whnfCore(m, _a(m, e));
+                // whnf the bare spine head, not the function part: the latter
+                // recurses once per argument and overflows the EVM stack. This
+                // is Lean's shape too — whnf_core's App case collects the spine
+                // with get_app_rev_args, whnfs the head, then beta-reduces the
+                // arguments together. `_iotaStep` and `_quotStep` already
+                // reapply arguments past their arity (`_applyRange` to
+                // `args.length`), so an over-applied recursor still reduces.
+                (uint256 h, uint256 n) = _spineHead(m, e);
+                uint256 f = _whnfCore(m, h);
                 if (m.fail != 0) break;
-                if (_tag(m, f) == E_LAM) {
-                    e = _inst(m, _b(m, f), _b(m, e), 0);
-                    continue;
+                if (_tag(m, f) == E_LAM || f != h) {
+                    uint256[] memory args = _collectArgs(m, e, n);
+                    uint256 i = 0;
+                    while (i < n && _tag(m, f) == E_LAM) {
+                        f = _inst(m, _b(m, f), args[i], 0);
+                        if (m.fail != 0) break;
+                        i++;
+                    }
+                    if (m.fail != 0) break;
+                    e = _applyRange(m, f, args, i, n);
+                    if (i > 0) continue; // beta fired; re-run from the top
                 }
-                if (f != _a(m, e)) e = _pushEx(m, _mkE(E_APP, f, _b(m, e), 0));
                 // fall through to iota/quot attempts below
             } else if (t == E_LET) {
                 e = _inst(m, _c(m, e), _b(m, e), 0);
@@ -1152,6 +1194,18 @@ contract LeanKernel {
         while (_tag(m, h) == E_APP) {
             nArgs++;
             h = _a(m, h);
+        }
+    }
+
+    /// The App nodes of a spine, in application order, so `nodes[nArgs - 1]`
+    /// is `e` itself. Callers walk this instead of recursing on the function
+    /// part, and can reuse a node whose subterms came back unchanged.
+    function _spineNodes(M memory m, uint256 e, uint256 nArgs) internal pure returns (uint256[] memory nodes) {
+        nodes = new uint256[](nArgs);
+        uint256 cur = e;
+        for (uint256 i = nArgs; i > 0; i--) {
+            nodes[i - 1] = cur;
+            cur = _a(m, cur);
         }
     }
 
@@ -1778,7 +1832,22 @@ contract LeanKernel {
             }
             return true;
         }
-        if (t == E_APP) return _exactEq(m, _a(m, a), _a(m, b)) && _exactEq(m, _b(m, a), _b(m, b));
+        if (t == E_APP) {
+            // Descend both spines together rather than recursing on the
+            // function part, whose depth is the argument count. A conjunction
+            // is order independent, so no argument array is needed.
+            uint256 ca = a;
+            uint256 cb = b;
+            while (_tag(m, ca) == E_APP && _tag(m, cb) == E_APP) {
+                if (ca == cb) return true; // shared tail
+                if (!_exactEq(m, _b(m, ca), _b(m, cb))) return false;
+                ca = _a(m, ca);
+                cb = _a(m, cb);
+            }
+            // Unequal spine lengths leave one side an App and the other not,
+            // so the tag check inside the recursive call rejects them.
+            return _exactEq(m, ca, cb);
+        }
         if (t == E_LAM || t == E_PI) {
             return _exactEq(m, _a(m, a), _a(m, b)) && _exactEq(m, _b(m, a), _b(m, b));
         }

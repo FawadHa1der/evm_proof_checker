@@ -22,7 +22,7 @@ async function main() {
   }
   const maxBytes = process.env.EVMLEAN_MAX_BYTES === '0'
     ? 0
-    : Number(process.env.EVMLEAN_MAX_BYTES || 128000);
+    : Number(process.env.EVMLEAN_MAX_BYTES || 512000);
   const stat = fs.statSync(file);
   if (maxBytes > 0 && stat.size > maxBytes) {
     console.error(`evmlean: export is ${stat.size} bytes, above EVMLEAN_MAX_BYTES=${maxBytes}; declining`);

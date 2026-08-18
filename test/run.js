@@ -38,11 +38,23 @@ async function main() {
   const iface = new ethers.Interface(KERNEL_ABI);
 
   const manifest = JSON.parse(fs.readFileSync(path.join(ROOT, 'tests', 'manifest.json'), 'utf8'));
-  // real Lean Kernel Arena test files (all adversarial, expected: reject)
+  // Real Lean Kernel Arena test files. The expected verdict is the Arena's
+  // own `outcome:` from the companion .yaml, not an assumption on our part —
+  // the static tests are mostly adversarial but not all of them are
+  // (level-index-out-of-order and sparse-name-index must accept).
   const arenaDir = path.join(ROOT, 'tests', 'arena');
   if (fs.existsSync(arenaDir)) {
     for (const f of fs.readdirSync(arenaDir).sort()) {
-      if (f.endsWith('.ndjson')) manifest.push({ group: 'arena', name: f.replace(/\.ndjson$/, '') });
+      if (!f.endsWith('.ndjson')) continue;
+      const name = f.replace(/\.ndjson$/, '');
+      const yml = path.join(arenaDir, `${name}.yaml`);
+      if (!fs.existsSync(yml)) {
+        throw new Error(`tests/arena/${name}.ndjson has no ${name}.yaml declaring its outcome; `
+          + 're-run tools/fetch-arena-tests.sh');
+      }
+      const mm = /^outcome:\s*(\w+)/m.exec(fs.readFileSync(yml, 'utf8'));
+      if (!mm) throw new Error(`tests/arena/${name}.yaml has no outcome: field`);
+      manifest.push({ group: mm[1] === 'accept' ? 'arena-accept' : 'arena', name });
     }
   }
   // nested-inductive ground truth (byte-real lean4export output); files named
@@ -72,12 +84,13 @@ async function main() {
     }
   }
   const expectedOf = {
-    good: 0n, bad: 1n, decline: 2n, arena: 1n,
+    good: 0n, bad: 1n, decline: 2n, arena: 1n, 'arena-accept': 0n,
     nested: 0n, 'nested-reject': 1n, lean: 0n, 'lean-reject': 1n,
   };
   const dirOf = (g) => {
     if (g === 'nested' || g === 'nested-reject') return 'nested';
     if (g === 'lean' || g === 'lean-reject') return 'lean';
+    if (g === 'arena-accept') return 'arena';
     return g;
   };
 

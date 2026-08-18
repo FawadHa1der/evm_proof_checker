@@ -8,8 +8,11 @@ set -euo pipefail
 cd "$(dirname "$0")/.."
 mkdir -p tests/arena
 BASE="https://raw.githubusercontent.com/leanprover/lean-kernel-arena/master/tests"
-for t in constlevels level-imax-leq level-imax-normalization nat-rec-rules large-elim-param; do
+for t in constlevels level-imax-leq level-imax-normalization nat-rec-rules large-elim-param \
+         extra-rec level-index-out-of-order nat-rec-k-lie rec-missing-ih sparse-name-index; do
   echo "fetching $t.ndjson"
   curl -fsSL "$BASE/$t.ndjson" -o "tests/arena/$t.ndjson"
+  # the .yaml carries the Arena's own expected outcome; test/run.js reads it
+  curl -fsSL "$BASE/$t.yaml"   -o "tests/arena/$t.yaml"
 done
 echo "done. run them with: npm test   (or: node bin/evmlean.js tests/arena/<name>.ndjson)"
