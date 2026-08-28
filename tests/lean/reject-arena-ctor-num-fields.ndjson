@@ -1,0 +1,13 @@
+{"meta":{"exporter":{"name":"evmlean-gen","version":"0.1.0"},"lean":{"githash":"0000000000000000000000000000000000000000","version":"4.27.0-rc1"},"format":{"version":"3.1.0"}}}
+{"str":{"pre":0,"str":"Bool"},"in":1}
+{"str":{"pre":1,"str":"false"},"in":2}
+{"str":{"pre":1,"str":"true"},"in":3}
+{"str":{"pre":0,"str":"S"},"in":4}
+{"str":{"pre":4,"str":"mk"},"in":5}
+{"succ":0,"il":1}
+{"sort":1,"ie":0}
+{"const":{"name":1,"us":[]},"ie":1}
+{"const":{"name":4,"us":[]},"ie":2}
+{"forallE":{"name":0,"type":1,"body":2,"binderInfo":"default"},"ie":3}
+{"inductive":{"types":[{"numNested":0,"isRec":false,"isUnsafe":false,"isReflexive":false,"name":1,"levelParams":[],"type":0,"numParams":0,"numIndices":0,"ctors":[2,3],"all":[1]}],"ctors":[{"isUnsafe":false,"name":2,"levelParams":[],"type":1,"induct":1,"cidx":0,"numParams":0,"numFields":0},{"isUnsafe":false,"name":3,"levelParams":[],"type":1,"induct":1,"cidx":1,"numParams":0,"numFields":0}],"recs":[]}}
+{"inductive":{"types":[{"numNested":0,"isRec":false,"isUnsafe":false,"isReflexive":false,"name":4,"levelParams":[],"type":0,"numParams":0,"numIndices":0,"ctors":[5],"all":[4]}],"ctors":[{"isUnsafe":false,"name":5,"levelParams":[],"type":3,"induct":4,"cidx":0,"numParams":0,"numFields":0}],"recs":[]}}
