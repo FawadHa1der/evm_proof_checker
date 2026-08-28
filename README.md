@@ -42,19 +42,19 @@ declarations, and Arena exports above the single-transaction checker size guard.
 The corpus contains no unsafe/partial declarations at all, and for a *proof*
 checker declining them is the conservative reading.
 
-**Headline results** (measured; `gas-report.json`): **143/143 local tests** plus
-**zero failures on the full downloadable Arena corpus** (182 exports: 116
-good, 66 bad) — 166 exact accept/reject plus 16 honest resource declines, up
+**Headline results** (measured; `gas-report.json`): **161/161 local tests** plus
+**zero failures on the full downloadable Arena corpus** (193 exports: 120
+good, 73 bad) — 175 exact accept/reject plus 18 honest resource declines, up
 from 153 exact + 1 decline + 7 failures (of which five were false rejects on
 valid proofs and two were crashes) —
-including the Arena's eight adversarial static exports —
+including all twelve of the Arena's static tests (ten adversarial, two valid) —
 each rejected at exactly the poisoned declaration after accepting all legitimate
 prelude-style material around it (`Eq.symm`, `false_ne_true`, `Eq.casesOn`,
 K-recursors, …). One of those attacks (`level-imax-leq`, which broke nanoda
 once) caught a live bug in this kernel during development — fixed and now a
-regression test. Kernel size: **61.5KB deployed** — within the EIP-7907
+regression test. Kernel size: **61.6KB deployed** — within the EIP-7907
 (Glamsterdam) budget this project targets; over today's EIP-170, so on-chain
-deployment currently needs a devnet/L2 with a raised limit. 134 of the 143 tests
+deployment currently needs a devnet/L2 with a raised limit. 152 of the 161 tests
 fit a single post-Fusaka mainnet transaction (≤16.1M gas vs the 16.77M EIP-7825
 cap). The seven that do not are the byte-real `lean4export` fixtures (18.0–47.5M):
 real Lean declarations pull in `brecOn`, `PProd` and the auxiliary types of
@@ -71,7 +71,7 @@ or your own `lean4export` output).
 ```bash
 npm install
 npm run gen          # generate the tutorial-parity test vectors
-npm test             # compile, install into in-process EVM, run all 143 tests + gas report
+npm test             # compile, install into in-process EVM, run all 161 tests + gas report
 npm run size         # report deployed/initcode size against EIP-170/EIP-7907
 node scripts/demo-local.js                       # kernel+registry, real submit tx, on-chain record
 node bin/evmlean.js tests/arena/nat-rec-rules.ndjson ; echo $?   # Arena checker contract: exit 1 (reject)

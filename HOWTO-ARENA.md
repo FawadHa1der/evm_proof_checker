@@ -20,7 +20,7 @@ hand-crafted adversarial soundness tests (real files from the
 ```bash
 npm install
 npm run gen     # regenerate tests/good|bad|decline
-npm test        # compile + run all 143 in a local EVM, with gas report
+npm test        # compile + run all 161 in a local EVM, with gas report
 ```
 
 Run any single export through the Arena-style entry point:
@@ -45,7 +45,7 @@ toolchain. Two options:
 
 **B1. Download the test tarball.** The Arena website offers
 `lean-arena-tests.tar.gz` for generated exports under 10 MB; as of
-2026-08-18 it contains 116 good and 66 bad files. Then run the byte-real
+2026-08-28 it contains 120 good and 73 bad files. Then run the byte-real
 exports through the single-VM harness:
 
 ```bash
@@ -112,7 +112,7 @@ versions it doesn't recognize.)
 | Test class | Expected result |
 |---|---|
 | Arena static adversarial 5 (constlevels, level-imax-leq, level-imax-normalization, nat-rec-rules, large-elim-param) | **reject — all pass, at exactly the poisoned declaration** |
-| Tutorial-ladder material: defs/theorems, universe algebra, δβζ, defeq, lets, Church-numeral Peano, inductives, recursors+ι, rule K, projections, structure/unit eta, proof irrelevance, function eta, Nat literals, quotients | accept/reject correctly (143/143 bundled; see README for the full-corpus figure) |
+| Tutorial-ladder material: defs/theorems, universe algebra, δβζ, defeq, lets, Church-numeral Peano, inductives, recursors+ι, rule K, projections, structure/unit eta, proof irrelevance, function eta, Nat literals, quotients | accept/reject correctly (161/161 bundled; see README for the full-corpus figure) |
 | Nested inductives (`numNested > 0`), multi-type mutual blocks, String-literal *reduction*, Nat-literal arithmetic | **checked** — accept/reject on the merits |
 | unsafe/partial declarations | decline (exit 2) — a deliberate reading for a proof checker |
 | Large perf/init/std/mathlib exports | `bin/evmlean.js` declines files above `EVMLEAN_MAX_BYTES` (default 512000). That's the expected placement for this checker — see PLAN.md §6/§7 for the multi-tx and zkVM routes to scale |
@@ -120,7 +120,7 @@ versions it doesn't recognize.)
 Gas intuition from the bundled runs: ~160k gas for a trivial def, 3.0M for
 Church-numeral arithmetic, 6.3M for all 24 prelude-style declarations of
 `constlevels` (False/True/Bool/Eq + Eq.symm + false_ne_true + casesOn), 6.8M
-for the quotient test — 134 of the 143 tests fit within one post-Fusaka mainnet
+for the quotient test — 152 of the 161 tests fit within one post-Fusaka mainnet
 transaction (16.77M cap); the seven byte-real lean4export fixtures (18.0–47.5M) do not.
 
 ## On-chain variants
@@ -128,7 +128,7 @@ transaction (16.77M cap); the seven byte-real lean4export fixtures (18.0–47.5M
 Anything the local runner does can be replayed against a deployed kernel:
 
 ```bash
-# local node with a raised code-size limit (kernel is 61.5KB — Glamsterdam-class):
+# local node with a raised code-size limit (kernel is 61.6KB — Glamsterdam-class):
 anvil --code-size-limit 65536
 ALLOW_EIP7907=1 RPC_URL=http://127.0.0.1:8545 PRIVATE_KEY=<anvil key> node scripts/deploy.js
 KERNEL=0x... node scripts/check-onchain.js tests/arena/level-imax-leq.ndjson

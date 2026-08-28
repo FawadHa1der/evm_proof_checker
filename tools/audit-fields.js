@@ -154,7 +154,14 @@ async function main() {
       }
     }
   }
-  for (let i = 1; i < base.levelTab.length; i++) {
+  // Level index 0 is INCLUDED. It is the zero level by convention, and nine
+  // sites in the contract use the literal index 0 to mean "Prop" (_lvlIsZero,
+  // proof irrelevance, the theorem-is-a-Prop check, elimination restrictions,
+  // K eligibility). That convention is an *unvalidated invariant* of the
+  // calldata, so it has to be swept like any other field. This loop used to
+  // start at 1 — it shared the contract's own blind spot and could not have
+  // found a violation of it.
+  for (let i = 0; i < base.levelTab.length; i++) {
     for (const [nm, shift] of [['a', 0n], ['b', 48n]]) {
       const cur = (base.levelTab[i] >> shift) & F;
       for (const val of LADDER(cur)) {
@@ -163,6 +170,24 @@ async function main() {
         const res = await run(enc);
         n++;
         const label = `level#${i}.${nm} = ${val}`;
+        if (res.v === 'FAULT') faults.push(`${label}  -> FAULT ${res.reason}`);
+        else if (res.v === 'accept') accepts.push(`${label}  -> accept`);
+      }
+    }
+  }
+
+  // Tag sweep. The 8-bit tag at bit 248 selects the node KIND; nothing above
+  // swept it, so a well-formed payload under a lying tag was never tried.
+  for (const [tabName, nTags] of [['levelTab', 6], ['exprTab', 12]]) {
+    for (let i = 0; i < base[tabName].length; i++) {
+      const cur = base[tabName][i] >> 248n;
+      for (let t = 0; t < nTags; t++) {
+        if (BigInt(t) === cur) continue;
+        const enc = cloneEnc(base);
+        enc[tabName][i] = (enc[tabName][i] & ((1n << 248n) - 1n)) | (BigInt(t) << 248n);
+        const res = await run(enc);
+        n++;
+        const label = `${tabName}#${i}.tag = ${t}`;
         if (res.v === 'FAULT') faults.push(`${label}  -> FAULT ${res.reason}`);
         else if (res.v === 'accept') accepts.push(`${label}  -> accept`);
       }

@@ -390,6 +390,22 @@ contract LeanKernel {
     /// Level indices are NOT required to be ordered: forward references are
     /// legal there and the Arena exercises them.
     function _checkTables(M memory m, uint256 nEx, uint256 nLv, uint256 nNm) internal pure {
+        // Level index 0 MUST be the zero level. Nothing in the calldata states
+        // that; it is a convention of the encoder (tools/lib.js seeds
+        // levelTab[0] = 0 and starts its loop at 1), yet nine sites read the
+        // literal index 0 as "Prop": _lvlIsZero, proof irrelevance, the
+        // theorem-must-be-a-Prop check, both elimination restrictions, the
+        // inductive/field Prop bits and K eligibility. The contract is meant to
+        // stand alone on-chain, not only behind bin/evmlean.js, so a caller
+        // reaching `check` directly can set lv[0] to `succ` of a param and
+        // change what every one of those sites means. Measured without this
+        // pin, lv[0] := succ(lv1) makes the checker die with an EVM stack
+        // overflow — an exit-3 "checker is broken" verdict, the worst category
+        // the Arena scores. Pin the convention.
+        if (nLv == 0 || m.lv[0] != 0) {
+            _setFail(m, V_REJECT, R_MALFORMED);
+            return;
+        }
         for (uint256 i = 1; i < nLv; i++) {
             uint256 t = _lt(m, i);
             bool bad;
@@ -1894,7 +1910,12 @@ contract LeanKernel {
         if (pa == pb) return true;
         uint256 n = m.pool[pa]; // byte length
         if (n != m.pool[pb]) return false;
-        uint256 words = (n + 31) / 32;
+        // ceil(n/32) without `n + 31`, which wraps for n near 2^256. Today
+        // _checkTables bounds n by 32*poolLen so it cannot wrap here, but this
+        // exact idiom has already been a live bug in this file once; keep every
+        // spelling overflow-free rather than depending on a bound enforced
+        // several hundred lines away.
+        uint256 words = n / 32 + (n % 32 == 0 ? 0 : 1);
         for (uint256 i = 1; i <= words; i++) {
             if (m.pool[pa + i] != m.pool[pb + i]) return false;
         }
@@ -3649,7 +3670,8 @@ contract LeanKernel {
             if (pa == pb) return true;
             uint256 n = m.pool[pa];
             if (m.pool[pb] != n) return false;
-            uint256 w = t == E_NAT ? n : (n + 31) / 32;
+            uint256 w = n; // E_NAT stores a limb count directly
+            if (t != E_NAT) w = n / 32 + (n % 32 == 0 ? 0 : 1);
             for (uint256 i = 1; i <= w; i++) {
                 if (m.pool[pa + i] != m.pool[pb + i]) return false;
             }
