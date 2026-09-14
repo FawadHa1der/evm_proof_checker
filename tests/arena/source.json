@@ -1,0 +1,66 @@
+{
+  "repository": "https://github.com/leanprover/lean-kernel-arena",
+  "revision": "93fdefa10bc7967f475290346005b44de63bfcee",
+  "files": [
+    {
+      "file": "constlevels.ndjson",
+      "outcome": "reject"
+    },
+    {
+      "file": "corner-cases/positivity-whnf.ndjson",
+      "outcome": "either"
+    },
+    {
+      "file": "corner-cases/proof-param-ok.ndjson",
+      "outcome": "accept"
+    },
+    {
+      "file": "corner-cases/proof-param-swap.ndjson",
+      "outcome": "either"
+    },
+    {
+      "file": "extra-rec.ndjson",
+      "outcome": "reject"
+    },
+    {
+      "file": "large-elim-param.ndjson",
+      "outcome": "reject"
+    },
+    {
+      "file": "level-imax-leq.ndjson",
+      "outcome": "reject"
+    },
+    {
+      "file": "level-imax-normalization.ndjson",
+      "outcome": "reject"
+    },
+    {
+      "file": "level-index-out-of-order.ndjson",
+      "outcome": "accept"
+    },
+    {
+      "file": "nat-rec-k-lie.ndjson",
+      "outcome": "reject"
+    },
+    {
+      "file": "nat-rec-rules.ndjson",
+      "outcome": "reject"
+    },
+    {
+      "file": "orphan-ctor.ndjson",
+      "outcome": "reject"
+    },
+    {
+      "file": "orphan-rec.ndjson",
+      "outcome": "reject"
+    },
+    {
+      "file": "rec-missing-ih.ndjson",
+      "outcome": "reject"
+    },
+    {
+      "file": "sparse-name-index.ndjson",
+      "outcome": "accept"
+    }
+  ]
+}

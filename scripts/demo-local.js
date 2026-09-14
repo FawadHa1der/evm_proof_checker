@@ -1,7 +1,8 @@
-// End-to-end local deployment demo (no external node needed):
+// End-to-end local EVM state demo (no external node needed):
 // installs LeanKernel + deploys TheoremRegistry in an in-process EVM,
-// submits an export through the registry as a real transaction, and shows
-// the resulting on-chain record. Default export: 048_eqRuleK (Eq + Bool +
+// executes a registry submit call and inspects the resulting local VM state.
+// This does not construct a signed transaction or test a fork's tx envelope.
+// Default export: 048_eqRuleK (Eq + Bool +
 // K-style recursor reduction).
 'use strict';
 
@@ -17,7 +18,7 @@ async function main() {
   const vm = await makeVm();
   const kernelAddr = await installKernel(vm, a);
   console.log(`LeanKernel       installed at ${kernelAddr}  (${a.LeanKernel.deployedSize} bytes` +
-    (a.LeanKernel.deployedSize > 24576 ? ', EIP-7907/L2-class size' : '') + ')');
+    (a.LeanKernel.deployedSize > 24576 ? ', EIP-7954-size target; state-injected, not deployed' : '') + ')');
   const ctor = new ethers.AbiCoder().encode(['address'], [kernelAddr.toString()]);
   const regAddr = await deployContract(vm, a.TheoremRegistry.bytecode, ctor);
   console.log(`TheoremRegistry  deployed at  ${regAddr}  (${a.TheoremRegistry.deployedSize} bytes)`);
@@ -37,7 +38,7 @@ async function main() {
   const cq = await callContract(vm, regAddr, iface.encodeFunctionData('isChecked', [hash]));
   const [checked] = iface.decodeFunctionResult('isChecked', bytesToHex(cq.execResult.returnValue));
   console.log(`exportHash ${hash}`);
-  console.log(`isChecked  ${checked}  ← permanent on-chain record that this export type-checked`);
+  console.log(`isChecked  ${checked}  (record in this in-process VM; not a broadcast transaction)`);
 }
 
 main().catch((e) => { console.error(e); process.exit(1); });

@@ -2,16 +2,15 @@
 //
 //   RPC_URL=http://127.0.0.1:8545 PRIVATE_KEY=0x... node scripts/deploy.js
 //
-// Works with a local anvil/hardhat node, Sepolia, Base Sepolia, or any L2.
-// (Sepolia RPC endpoints: https://ethereum-sepolia-rpc.publicnode.com,
-//  Base Sepolia: https://sepolia.base.org — bring a funded key.)
+// Requires a chain whose code and initcode limits admit this kernel.
+// Raising a local code-size limit does not simulate the full Glamsterdam fork.
 'use strict';
 
 const { ethers } = require('ethers');
 const { build } = require('../tools/build');
+const { CODE_SIZE_LIMIT, INITCODE_SIZE_LIMIT } = require('../tools/budgets');
 
 const EIP170_CODE_SIZE = 24576;
-const EIP7907_TARGET_CODE_SIZE = 65536;
 
 async function main() {
   const rpc = process.env.RPC_URL || 'http://127.0.0.1:8545';
@@ -28,15 +27,17 @@ async function main() {
   const a = build();
   console.log(
     `LeanKernel deployed bytecode: ${a.LeanKernel.deployedSize} bytes ` +
-    `(EIP-170 ${EIP170_CODE_SIZE}; EIP-7907 target ${EIP7907_TARGET_CODE_SIZE})`
+    `(EIP-170 ${EIP170_CODE_SIZE}; EIP-7954 target ${CODE_SIZE_LIMIT})`
   );
-  if (a.LeanKernel.deployedSize > EIP7907_TARGET_CODE_SIZE) {
-    throw new Error('LeanKernel exceeds the EIP-7907 target budget');
+  if (a.LeanKernel.deployedSize > CODE_SIZE_LIMIT || a.LeanKernel.initcodeSize > INITCODE_SIZE_LIMIT) {
+    throw new Error('LeanKernel exceeds the EIP-7954 code/initcode target');
   }
-  if (a.LeanKernel.deployedSize > EIP170_CODE_SIZE && process.env.ALLOW_EIP7907 !== '1') {
+  // Retain the old opt-in as an alias for existing local deployment commands.
+  const allowRaisedLimit = process.env.ALLOW_EIP7954 === '1' || process.env.ALLOW_EIP7907 === '1';
+  if (a.LeanKernel.deployedSize > EIP170_CODE_SIZE && !allowRaisedLimit) {
     throw new Error(
-      'LeanKernel exceeds today\'s EIP-170 code-size limit. ' +
-      'Set ALLOW_EIP7907=1 only when deploying to an EIP-7907/L2/devnet environment with a raised limit.'
+      'LeanKernel exceeds the EIP-170 code-size limit. ' +
+      'Set ALLOW_EIP7954=1 only after confirming the target chain has sufficient code and initcode limits.'
     );
   }
 

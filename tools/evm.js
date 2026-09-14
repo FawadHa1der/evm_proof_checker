@@ -1,6 +1,7 @@
 // Shared in-process EVM harness. Installs the kernel via state injection when
-// it exceeds EIP-170, simulating a post-EIP-7907 (Glamsterdam) chain or an L2
-// without the 24KB limit.
+// it exceeds EIP-170. This bypasses deployment limits for logical testing;
+// Cancun opcode execution is NOT a full Glamsterdam simulation. Transaction
+// envelope estimates for the draft fork are separate in budgets.js.
 'use strict';
 
 const { VM } = require('@ethereumjs/vm');

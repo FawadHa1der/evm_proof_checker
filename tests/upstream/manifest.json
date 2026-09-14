@@ -1,0 +1,1941 @@
+{
+  "provenance": {
+    "repository": "https://github.com/leanprover/lean-kernel-arena",
+    "revision": "93fdefa10bc7967f475290346005b44de63bfcee",
+    "publishedResults": {
+      "timestamp": "2026-09-10 13:53:59 UTC",
+      "git_revision": "8b23eec0a8050e29648d1d591a6c4af62c6c74f7",
+      "git_revision_short": "8b23eec0",
+      "github_url": "https://github.com/leanprover/lean-kernel-arena/commit/8b23eec0a8050e29648d1d591a6c4af62c6c74f7",
+      "github_action_url": "https://github.com/leanprover/lean-kernel-arena/actions/runs/34472083104",
+      "round": null,
+      "doi": null,
+      "zenodo_deposition": null,
+      "github_run_id": "34472083104"
+    },
+    "tarball": "https://arena.lean-lang.org/lean-arena-tests.tar.gz",
+    "note": "Tarball retrieved 2026-09-11; its publisher does not embed a revision. Published results identify the contemporaneous website snapshot.",
+    "generated": [
+      {
+        "file": "either/corner-cases/alg-conv-trans-acc-left.ndjson",
+        "sha256": "323a6140d9acc906193ddc22fa4f3391a3f259357853427c2f82382c71a1e051",
+        "source": "https://github.com/leanprover/lean-kernel-arena/blob/93fdefa10bc7967f475290346005b44de63bfcee/tests/corner-cases/alg-conv.lean",
+        "declaration": "https://github.com/leanprover/lean-kernel-arena/blob/93fdefa10bc7967f475290346005b44de63bfcee/tests/corner-cases/alg-conv-trans-acc-left.yaml",
+        "leanVersion": "4.29.1"
+      },
+      {
+        "file": "either/corner-cases/alg-conv-trans-acc-right.ndjson",
+        "sha256": "ffe25858f02f0dc022bca04e6f8e6fb62f8342e8dc6ee1376af987c611360e43",
+        "source": "https://github.com/leanprover/lean-kernel-arena/blob/93fdefa10bc7967f475290346005b44de63bfcee/tests/corner-cases/alg-conv.lean",
+        "declaration": "https://github.com/leanprover/lean-kernel-arena/blob/93fdefa10bc7967f475290346005b44de63bfcee/tests/corner-cases/alg-conv-trans-acc-right.yaml",
+        "leanVersion": "4.29.1"
+      },
+      {
+        "file": "either/corner-cases/alg-conv-trans-acc.ndjson",
+        "sha256": "cadf40e15ac167941069ac47b3e2052231e706cb671ff416fb08ffaa384387e8",
+        "source": "https://github.com/leanprover/lean-kernel-arena/blob/93fdefa10bc7967f475290346005b44de63bfcee/tests/corner-cases/alg-conv.lean",
+        "declaration": "https://github.com/leanprover/lean-kernel-arena/blob/93fdefa10bc7967f475290346005b44de63bfcee/tests/corner-cases/alg-conv-trans-acc.yaml",
+        "leanVersion": "4.29.1"
+      },
+      {
+        "file": "either/corner-cases/alg-conv-trans-quot-left-def.ndjson",
+        "sha256": "e3bc56ce77489c523e9d1cadc766196d05640c225aeb3ce34b3e249c1b1346a9",
+        "source": "https://github.com/leanprover/lean-kernel-arena/blob/93fdefa10bc7967f475290346005b44de63bfcee/tests/corner-cases/alg-conv-trans-quot.lean",
+        "declaration": "https://github.com/leanprover/lean-kernel-arena/blob/93fdefa10bc7967f475290346005b44de63bfcee/tests/corner-cases/alg-conv-trans-quot-left-def.yaml",
+        "leanVersion": "4.29.1"
+      },
+      {
+        "file": "either/corner-cases/alg-conv-trans-quot-left.ndjson",
+        "sha256": "12d602755c20afa8de8afb93a0ce1aa461e5d63b48447e8798e1ccdcb3db6e3f",
+        "source": "https://github.com/leanprover/lean-kernel-arena/blob/93fdefa10bc7967f475290346005b44de63bfcee/tests/corner-cases/alg-conv-trans-quot.lean",
+        "declaration": "https://github.com/leanprover/lean-kernel-arena/blob/93fdefa10bc7967f475290346005b44de63bfcee/tests/corner-cases/alg-conv-trans-quot-left.yaml",
+        "leanVersion": "4.29.1"
+      },
+      {
+        "file": "either/corner-cases/alg-conv-trans-quot-right.ndjson",
+        "sha256": "cb4605c2faee666f767eaa0c7dd24991f9973614cee22cd700ec94aa8341e853",
+        "source": "https://github.com/leanprover/lean-kernel-arena/blob/93fdefa10bc7967f475290346005b44de63bfcee/tests/corner-cases/alg-conv-trans-quot.lean",
+        "declaration": "https://github.com/leanprover/lean-kernel-arena/blob/93fdefa10bc7967f475290346005b44de63bfcee/tests/corner-cases/alg-conv-trans-quot-right.yaml",
+        "leanVersion": "4.29.1"
+      },
+      {
+        "file": "either/corner-cases/alg-conv-trans-quot.ndjson",
+        "sha256": "e4c6d7e6536e6cad2338f079efcb41b9889a988b753661ee8ac90eb7bf798551",
+        "source": "https://github.com/leanprover/lean-kernel-arena/blob/93fdefa10bc7967f475290346005b44de63bfcee/tests/corner-cases/alg-conv-trans-quot.lean",
+        "declaration": "https://github.com/leanprover/lean-kernel-arena/blob/93fdefa10bc7967f475290346005b44de63bfcee/tests/corner-cases/alg-conv-trans-quot.yaml",
+        "leanVersion": "4.29.1"
+      },
+      {
+        "file": "either/corner-cases/imax-right-successor.ndjson",
+        "sha256": "f367b7901ba740dfb574578713f694a1836aef72d0439a520f94a72292d90fd7",
+        "source": "https://github.com/leanprover/lean-kernel-arena/blob/93fdefa10bc7967f475290346005b44de63bfcee/tests/corner-cases/imax-right-successor.lean",
+        "declaration": "https://github.com/leanprover/lean-kernel-arena/blob/93fdefa10bc7967f475290346005b44de63bfcee/tests/corner-cases/imax-right-successor.yaml",
+        "leanVersion": "4.29.1"
+      },
+      {
+        "file": "either/corner-cases/positivity-whnf.ndjson",
+        "sha256": "5e1c3ea262e5d57f0ffef2cbb7009a5a9020a977b648f109c0b0ab51ef3fa664",
+        "source": null,
+        "declaration": "https://github.com/leanprover/lean-kernel-arena/blob/93fdefa10bc7967f475290346005b44de63bfcee/tests/corner-cases/positivity-whnf.yaml",
+        "leanVersion": "4.29.1"
+      },
+      {
+        "file": "either/corner-cases/proj-maybe-prop-past.ndjson",
+        "sha256": "f5293856199b9b3eb82b3abb4bcb06121807cf9c828a049cfcc9c2f022002e38",
+        "source": "https://github.com/leanprover/lean-kernel-arena/blob/93fdefa10bc7967f475290346005b44de63bfcee/tests/corner-cases/proj-maybe-prop.lean",
+        "declaration": "https://github.com/leanprover/lean-kernel-arena/blob/93fdefa10bc7967f475290346005b44de63bfcee/tests/corner-cases/proj-maybe-prop-past.yaml",
+        "leanVersion": "4.29.1"
+      },
+      {
+        "file": "either/corner-cases/proj-maybe-prop.ndjson",
+        "sha256": "b454eb79be1a89d37eea09a670a8fc38d30fd0b3215c57d130ab4c984d531894",
+        "source": "https://github.com/leanprover/lean-kernel-arena/blob/93fdefa10bc7967f475290346005b44de63bfcee/tests/corner-cases/proj-maybe-prop.lean",
+        "declaration": "https://github.com/leanprover/lean-kernel-arena/blob/93fdefa10bc7967f475290346005b44de63bfcee/tests/corner-cases/proj-maybe-prop.yaml",
+        "leanVersion": "4.29.1"
+      },
+      {
+        "file": "good/corner-cases/proof-param-ok.ndjson",
+        "sha256": "7f9b3c07a64b441f8dd0f7dd2912274241fdb17118953fb089f796fdd1590af4",
+        "source": null,
+        "declaration": "https://github.com/leanprover/lean-kernel-arena/blob/93fdefa10bc7967f475290346005b44de63bfcee/tests/corner-cases/proof-param-ok.yaml",
+        "leanVersion": "4.29.1"
+      },
+      {
+        "file": "either/corner-cases/proof-param-swap.ndjson",
+        "sha256": "25cfb47d4c80ebe1ec61931898df8e6bd8d06793aebf3ee8b2a7cd00beca1abc",
+        "source": null,
+        "declaration": "https://github.com/leanprover/lean-kernel-arena/blob/93fdefa10bc7967f475290346005b44de63bfcee/tests/corner-cases/proof-param-swap.yaml",
+        "leanVersion": "4.29.1"
+      },
+      {
+        "file": "either/corner-cases/subject-reduction-redex.ndjson",
+        "sha256": "00c6d1b7a742c440fcbc7a7f1688635a1b90263dfc6d73717eab9e4693c2dbe1",
+        "source": "https://github.com/leanprover/lean-kernel-arena/blob/93fdefa10bc7967f475290346005b44de63bfcee/tests/corner-cases/alg-conv.lean",
+        "declaration": "https://github.com/leanprover/lean-kernel-arena/blob/93fdefa10bc7967f475290346005b44de63bfcee/tests/corner-cases/subject-reduction-redex.yaml",
+        "leanVersion": "4.29.1"
+      },
+      {
+        "file": "either/corner-cases/subject-reduction-reduct.ndjson",
+        "sha256": "0668cf5376e96ae938b5ba87e65a9e8ad92a6c9aa7030cdbdc284adb3ac76fcb",
+        "source": "https://github.com/leanprover/lean-kernel-arena/blob/93fdefa10bc7967f475290346005b44de63bfcee/tests/corner-cases/alg-conv.lean",
+        "declaration": "https://github.com/leanprover/lean-kernel-arena/blob/93fdefa10bc7967f475290346005b44de63bfcee/tests/corner-cases/subject-reduction-reduct.yaml",
+        "leanVersion": "4.29.1"
+      },
+      {
+        "file": "either/nested-nonuniform-param.ndjson",
+        "sha256": "aaab3a45abbef89db7b24cef96e7ca6a6901e87a38baeec56118846c64a75c56",
+        "source": "https://github.com/leanprover/lean-kernel-arena/blob/93fdefa10bc7967f475290346005b44de63bfcee/tests/nested-nonuniform-param.lean",
+        "declaration": "https://github.com/leanprover/lean-kernel-arena/blob/93fdefa10bc7967f475290346005b44de63bfcee/tests/nested-nonuniform-param.yaml",
+        "leanVersion": "4.29.1"
+      },
+      {
+        "file": "good/perf/magma-list-deep-n21.ndjson",
+        "sha256": "2283048c8f82883fd5a7a59a20601b58256568c82561dff3304f38ad4d57fc75",
+        "source": "https://github.com/leanprover/lean-kernel-arena/blob/93fdefa10bc7967f475290346005b44de63bfcee/tests/perf/magma-list-deep-n21.lean",
+        "declaration": "https://github.com/leanprover/lean-kernel-arena/blob/93fdefa10bc7967f475290346005b44de63bfcee/tests/perf/magma-list-deep-n21.yaml",
+        "leanVersion": "4.29.1"
+      },
+      {
+        "file": "good/perf/magma-list-deep-n36.ndjson",
+        "sha256": "8adb6a65960f41fd8fdc8447b70b942075448ecd5155c1c3ed0b7adb954da34f",
+        "source": "https://github.com/leanprover/lean-kernel-arena/blob/93fdefa10bc7967f475290346005b44de63bfcee/tests/perf/magma-list-deep-n36.lean",
+        "declaration": "https://github.com/leanprover/lean-kernel-arena/blob/93fdefa10bc7967f475290346005b44de63bfcee/tests/perf/magma-list-deep-n36.yaml",
+        "leanVersion": "4.29.1"
+      },
+      {
+        "file": "good/perf/magma-list-pair-n21.ndjson",
+        "sha256": "9536b3bb1529418dd3ff735dc3d288641c20cf6a71a01716647f62088e0ba0e2",
+        "source": "https://github.com/leanprover/lean-kernel-arena/blob/93fdefa10bc7967f475290346005b44de63bfcee/tests/perf/magma-list-pair-n21.lean",
+        "declaration": "https://github.com/leanprover/lean-kernel-arena/blob/93fdefa10bc7967f475290346005b44de63bfcee/tests/perf/magma-list-pair-n21.yaml",
+        "leanVersion": "4.29.1"
+      },
+      {
+        "file": "good/perf/magma-list-pair-n7.ndjson",
+        "sha256": "c3894b9ba91947cd23c7e6263813868a31dc8092123bbc5962379732ef99e906",
+        "source": "https://github.com/leanprover/lean-kernel-arena/blob/93fdefa10bc7967f475290346005b44de63bfcee/tests/perf/magma-list-pair-n7.lean",
+        "declaration": "https://github.com/leanprover/lean-kernel-arena/blob/93fdefa10bc7967f475290346005b44de63bfcee/tests/perf/magma-list-pair-n7.yaml",
+        "leanVersion": "4.29.1"
+      },
+      {
+        "file": "good/perf/magma-string-n4.ndjson",
+        "sha256": "e6f1f83c80c670c5bbd7b532e228e8624941e7d6de4b9bb25f71bdc9282f07dd",
+        "source": "https://github.com/leanprover/lean-kernel-arena/blob/93fdefa10bc7967f475290346005b44de63bfcee/tests/perf/magma-string-n4.lean",
+        "declaration": "https://github.com/leanprover/lean-kernel-arena/blob/93fdefa10bc7967f475290346005b44de63bfcee/tests/perf/magma-string-n4.yaml",
+        "leanVersion": "4.29.1"
+      },
+      {
+        "file": "good/perf/magma-string-pair-n9.ndjson",
+        "sha256": "b10875abef30d9b71126537270f481fd855149a563ff35d6d5b047d6d5072cd7",
+        "source": "https://github.com/leanprover/lean-kernel-arena/blob/93fdefa10bc7967f475290346005b44de63bfcee/tests/perf/magma-string-pair-n9.lean",
+        "declaration": "https://github.com/leanprover/lean-kernel-arena/blob/93fdefa10bc7967f475290346005b44de63bfcee/tests/perf/magma-string-pair-n9.yaml",
+        "leanVersion": "4.29.1"
+      }
+    ]
+  },
+  "budgetModel": "glamsterdam-draft-2026-09-11-direct-kernel",
+  "sourceHash": "af940dbae8965f2cf36eeca91cc85c02aeec9e05d253c6094950b1346b05cf97",
+  "compiler": {
+    "version": "0.8.28+commit.7893614a.Emscripten.clang",
+    "evmVersion": "cancun",
+    "viaIR": true,
+    "optimizerRuns": 1
+  },
+  "measuredAt": "2026-09-11T18:57:15.887Z",
+  "tests": [
+    {
+      "name": "bad/bogus1",
+      "outcome": "reject",
+      "sha256": "83801e7b8b2f2f24f40aa1dc7d0b0162c931e2aaec3b226acb170e3884cad307",
+      "bytes": 11641,
+      "measuredGas": "5379486",
+      "estimatedTransactionGas": "5444478",
+      "requireTransactionFit": true
+    },
+    {
+      "name": "bad/ctor-num-fields",
+      "outcome": "reject",
+      "sha256": "8a6aa0949892f59986fde474bfdc2a1887416b370e1148cd27e608a40f2eb94b",
+      "bytes": 34913,
+      "measuredGas": "7786304",
+      "estimatedTransactionGas": "7941712",
+      "requireTransactionFit": true
+    },
+    {
+      "name": "bad/k-rec-conv",
+      "outcome": "reject",
+      "sha256": "32570fea94f7a2655de489427200c35f2e1ffa7ec9d46b82c531195eaacd5ef3",
+      "bytes": 13314,
+      "measuredGas": "10423423",
+      "estimatedTransactionGas": "10494915",
+      "requireTransactionFit": true
+    },
+    {
+      "name": "bad/large-elim-prop-bool",
+      "outcome": "reject",
+      "sha256": "2ba29719a2a300ff80e72920b66355785764ac53500719eec7bf459d174262cf",
+      "bytes": 23126,
+      "measuredGas": "15663151",
+      "estimatedTransactionGas": "15775323",
+      "requireTransactionFit": true
+    },
+    {
+      "name": "bad/proj-non-structure",
+      "outcome": "reject",
+      "sha256": "d67fc8c67eb839ec41b5caa7744ba38c0866872a1e5a3e3cad55700e403340cf",
+      "bytes": 5071,
+      "measuredGas": "1257516",
+      "estimatedTransactionGas": "1294440",
+      "requireTransactionFit": true
+    },
+    {
+      "name": "bad/proj-of-imax-prop",
+      "outcome": "reject",
+      "sha256": "964f1ed8642fbb87eea5f9ce1b17c2fbf9489be344d33ca479a9bc4ec4a770c9",
+      "bytes": 19772,
+      "measuredGas": "7023412",
+      "estimatedTransactionGas": "7119468",
+      "requireTransactionFit": true
+    },
+    {
+      "name": "bad/proj-of-prop",
+      "outcome": "reject",
+      "sha256": "7ec1cb24885cae045ccb842f1fc786869ed708a19fa289f92b410297a299f5d5",
+      "bytes": 3967,
+      "measuredGas": "1029857",
+      "estimatedTransactionGas": "1062621",
+      "requireTransactionFit": true
+    },
+    {
+      "name": "bad/rec-k-lie",
+      "outcome": "reject",
+      "sha256": "baf41fbd040f172ad06afa78f9994b4501ebcd91e46c4a13e79227ccd246a188",
+      "bytes": 5434,
+      "measuredGas": "731747",
+      "estimatedTransactionGas": "771571",
+      "requireTransactionFit": true
+    },
+    {
+      "name": "bad/tutorial/002_badDef",
+      "outcome": "reject",
+      "sha256": "d1342aceb5741fc040523d3b4bd5e1ae3160dc17213d1dc0f6d766559a93a227",
+      "bytes": 365,
+      "measuredGas": "219215",
+      "estimatedTransactionGas": "237339",
+      "requireTransactionFit": true
+    },
+    {
+      "name": "bad/tutorial/009_forallSortBad",
+      "outcome": "reject",
+      "sha256": "36eef2fa43e86af2d031a9cb9ec8fbd452dd7e50d3444997fe71003cc7295051",
+      "bytes": 1273,
+      "measuredGas": "356750",
+      "estimatedTransactionGas": "378622",
+      "requireTransactionFit": true
+    },
+    {
+      "name": "bad/tutorial/010_nonTypeType",
+      "outcome": "reject",
+      "sha256": "18cba14f24723f0325721cdd1a5699e45b61bcce7ed94f2bded0f42c848ba4c4",
+      "bytes": 1094,
+      "measuredGas": "294901",
+      "estimatedTransactionGas": "315993",
+      "requireTransactionFit": true
+    },
+    {
+      "name": "bad/tutorial/011_nonTypeAxiom",
+      "outcome": "reject",
+      "sha256": "687a8966b2727b26143b3340e8bead862b9057e5b4ec1ee7fc51a2a6e7211dc6",
+      "bytes": 1043,
+      "measuredGas": "290624",
+      "estimatedTransactionGas": "311624",
+      "requireTransactionFit": true
+    },
+    {
+      "name": "bad/tutorial/012_nonPropThm",
+      "outcome": "reject",
+      "sha256": "07c030b1e9ee321bb537f4f82f5238087cbed199f5e4f8673650c3190e54a33a",
+      "bytes": 424,
+      "measuredGas": "201935",
+      "estimatedTransactionGas": "220247",
+      "requireTransactionFit": true
+    },
+    {
+      "name": "bad/tutorial/014_selfProof",
+      "outcome": "reject",
+      "sha256": "f39b1bba5099649997a6c7cd49c870f91dfc86432979eafae58692d236142499",
+      "bytes": 459,
+      "measuredGas": "198324",
+      "estimatedTransactionGas": "216788",
+      "requireTransactionFit": true
+    },
+    {
+      "name": "bad/tutorial/019_tut06_bad01",
+      "outcome": "reject",
+      "sha256": "9c5c0329065ef0b470c7b43a365c30a0098697dbeb8d69f2c2bea2e345ab9533",
+      "bytes": 427,
+      "measuredGas": "194581",
+      "estimatedTransactionGas": "213373",
+      "requireTransactionFit": true
+    },
+    {
+      "name": "bad/tutorial/046_inductBadNonSort",
+      "outcome": "reject",
+      "sha256": "372f6a167433b45749fa38f14ad3a2e8ca4e0dae8762812c0b9f288e9f68499f",
+      "bytes": 1182,
+      "measuredGas": "297880",
+      "estimatedTransactionGas": "319384",
+      "requireTransactionFit": true
+    },
+    {
+      "name": "bad/tutorial/047_inductBadNonSort2",
+      "outcome": "reject",
+      "sha256": "95836e7bee5fbd00d1d16d88cea2defa8dfb2387fc0e400d200b59715716a0d9",
+      "bytes": 598,
+      "measuredGas": "220234",
+      "estimatedTransactionGas": "239546",
+      "requireTransactionFit": true
+    },
+    {
+      "name": "bad/tutorial/048_inductLevelParam",
+      "outcome": "reject",
+      "sha256": "732e2fc946ab308a819366bc5395865a69235098e1a401ec1a059d05d89ef06e",
+      "bytes": 515,
+      "measuredGas": "200934",
+      "estimatedTransactionGas": "220114",
+      "requireTransactionFit": true
+    },
+    {
+      "name": "bad/tutorial/049_inductTooFewParams",
+      "outcome": "reject",
+      "sha256": "5d54c2cc017f35b26744f8b5ca4438bdddd8f254f3023948a542b70e5da72827",
+      "bytes": 548,
+      "measuredGas": "216799",
+      "estimatedTransactionGas": "235583",
+      "requireTransactionFit": true
+    },
+    {
+      "name": "bad/tutorial/050_inductWrongCtorParams",
+      "outcome": "reject",
+      "sha256": "20214ec1a31221884548d3e91b689b9569fd7588af2fb0e219754b683041ac10",
+      "bytes": 1182,
+      "measuredGas": "316758",
+      "estimatedTransactionGas": "338534",
+      "requireTransactionFit": true
+    },
+    {
+      "name": "bad/tutorial/051_inductWrongCtorResParams",
+      "outcome": "reject",
+      "sha256": "5506566449cc2f3c83f417007bf15a7a0101c458c450d77a23cfd4c2423910c4",
+      "bytes": 1293,
+      "measuredGas": "351699",
+      "estimatedTransactionGas": "373695",
+      "requireTransactionFit": true
+    },
+    {
+      "name": "bad/tutorial/052_inductWrongCtorResLevel",
+      "outcome": "reject",
+      "sha256": "3f29bd3a753caa056cc45c20cd8aeb734bc44cfc6b3828a6c6ec855737f596f3",
+      "bytes": 1411,
+      "measuredGas": "377205",
+      "estimatedTransactionGas": "400861",
+      "requireTransactionFit": true
+    },
+    {
+      "name": "bad/tutorial/053_inductInIndex",
+      "outcome": "reject",
+      "sha256": "8dc9a9997862a5f25b76520f5d69a146664ad9f0364dd350732a7f76e4190763",
+      "bytes": 1099,
+      "measuredGas": "286868",
+      "estimatedTransactionGas": "308220",
+      "requireTransactionFit": true
+    },
+    {
+      "name": "bad/tutorial/054_indNeg",
+      "outcome": "reject",
+      "sha256": "89592d2e05e7ea518cf550eb18b99d1172b63b96b90abf1454b7102300eda843",
+      "bytes": 996,
+      "measuredGas": "267743",
+      "estimatedTransactionGas": "288471",
+      "requireTransactionFit": true
+    },
+    {
+      "name": "bad/tutorial/056_reduceCtorType.mk",
+      "outcome": "reject",
+      "sha256": "bd087620c8685a48789b4bf46c373f4c81475b6d1c3b6081cf16d83a4a216a26",
+      "bytes": 1549,
+      "measuredGas": "350245",
+      "estimatedTransactionGas": "373749",
+      "requireTransactionFit": true
+    },
+    {
+      "name": "bad/tutorial/057_indNegReducible",
+      "outcome": "reject",
+      "sha256": "c573634d126fe5c386474f89e2993cc97888af3ce0efcab176887751ea36643f",
+      "bytes": 1918,
+      "measuredGas": "411033",
+      "estimatedTransactionGas": "435645",
+      "requireTransactionFit": true
+    },
+    {
+      "name": "bad/tutorial/061_typeWithTooHighTypeField.mk",
+      "outcome": "reject",
+      "sha256": "d2ab0a56844b0739dd5b75d35894eca8766a7c41b8097873ba018d341622c70d",
+      "bytes": 943,
+      "measuredGas": "269883",
+      "estimatedTransactionGas": "290651",
+      "requireTransactionFit": true
+    },
+    {
+      "name": "bad/tutorial/073_BogusRecursor",
+      "outcome": "reject",
+      "sha256": "7f166e26d8b79ca496b066644bbe199faefa4c5fb3c6ded01e35ff4ec628a309",
+      "bytes": 1865,
+      "measuredGas": "415704",
+      "estimatedTransactionGas": "440796",
+      "requireTransactionFit": true
+    },
+    {
+      "name": "bad/tutorial/087_projOutOfRange",
+      "outcome": "reject",
+      "sha256": "5db4d2e7e00fe46443daade14664b6227b8e55e8dca58791d7d551242caf5b86",
+      "bytes": 3875,
+      "measuredGas": "1432825",
+      "estimatedTransactionGas": "1463593",
+      "requireTransactionFit": true
+    },
+    {
+      "name": "bad/tutorial/088_projNotStruct",
+      "outcome": "reject",
+      "sha256": "2ddb5f53a6f8b459b7dd6c2daa9bb794613295dccec07999573b2c99cc9cb076",
+      "bytes": 3557,
+      "measuredGas": "1069657",
+      "estimatedTransactionGas": "1101581",
+      "requireTransactionFit": true
+    },
+    {
+      "name": "bad/tutorial/090_projProp2",
+      "outcome": "reject",
+      "sha256": "44b31dd5644566e41670210e8584792b2819f9b64bb8d356948cdee674e82906",
+      "bytes": 8390,
+      "measuredGas": "4385304",
+      "estimatedTransactionGas": "4438264",
+      "requireTransactionFit": true
+    },
+    {
+      "name": "bad/tutorial/092_projProp4",
+      "outcome": "reject",
+      "sha256": "1dbc013754ba41dae8c0449252708027e7f59fd8523d0896f2c8aae65d942b29",
+      "bytes": 8390,
+      "measuredGas": "4424462",
+      "estimatedTransactionGas": "4477422",
+      "requireTransactionFit": true
+    },
+    {
+      "name": "bad/tutorial/093_projProp5",
+      "outcome": "reject",
+      "sha256": "9ca0433a35a24516035c5be845c2f0c0fbc78231b1e2625797ee01da9271b2d0",
+      "bytes": 8596,
+      "measuredGas": "4445876",
+      "estimatedTransactionGas": "4499808",
+      "requireTransactionFit": true
+    },
+    {
+      "name": "bad/tutorial/094_projProp6",
+      "outcome": "reject",
+      "sha256": "38567094775dea24a0742cc4fceec671ef17a3825574326d1290bafa02166f84",
+      "bytes": 8390,
+      "measuredGas": "4425970",
+      "estimatedTransactionGas": "4478918",
+      "requireTransactionFit": true
+    },
+    {
+      "name": "bad/tutorial/096_projIndexData",
+      "outcome": "reject",
+      "sha256": "96d23422f47630509730fc9fee4c87a79bd300d3edb15626e68c1604f7e6798e",
+      "bytes": 6995,
+      "measuredGas": "1921744",
+      "estimatedTransactionGas": "1966824",
+      "requireTransactionFit": true
+    },
+    {
+      "name": "bad/tutorial/097_projIndexData2",
+      "outcome": "reject",
+      "sha256": "0536b5c0a55c24e69dbcd5734c31404de3e5d28c8469a72e2d593694fb10ffcf",
+      "bytes": 6997,
+      "measuredGas": "1922949",
+      "estimatedTransactionGas": "1968053",
+      "requireTransactionFit": true
+    },
+    {
+      "name": "bad/tutorial/100_ruleKbad",
+      "outcome": "reject",
+      "sha256": "cf80eb3fa8d1cffc0a17c46730b20166688ea8346e299b19e3036cfc6462c4cf",
+      "bytes": 6628,
+      "measuredGas": "4338238",
+      "estimatedTransactionGas": "4383342",
+      "requireTransactionFit": true
+    },
+    {
+      "name": "bad/tutorial/101_ruleKAcc",
+      "outcome": "reject",
+      "sha256": "0a053ed771c6f0c171d231137f8000efe5f48f8d5d30cfd9863fe44e55a1d4d2",
+      "bytes": 13122,
+      "measuredGas": "14349122",
+      "estimatedTransactionGas": "14417046",
+      "requireTransactionFit": true
+    },
+    {
+      "name": "bad/tutorial/105_proofIrrelevanceBad",
+      "outcome": "reject",
+      "sha256": "9423911316ad18c0ec158f1f004f9e79c3a0f9580bb6a1a0f798cf04066e5a27",
+      "bytes": 4851,
+      "measuredGas": "3223575",
+      "estimatedTransactionGas": "3260659",
+      "requireTransactionFit": true
+    },
+    {
+      "name": "bad/tutorial/110_indexedUnitEta",
+      "outcome": "reject",
+      "sha256": "f1b07164d2f71bbeb2de6af4e9163c4b1bcceb4751e89b4b0dc2e0faa40c5d1d",
+      "bytes": 7372,
+      "measuredGas": "4172310",
+      "estimatedTransactionGas": "4219394",
+      "requireTransactionFit": true
+    },
+    {
+      "name": "bad/tutorial/112_indexedStructEta",
+      "outcome": "reject",
+      "sha256": "0962411896c8365fc85581c7e64f3f4ece34399be025be408b43003d71a0400d",
+      "bytes": 8713,
+      "measuredGas": "4688305",
+      "estimatedTransactionGas": "4740761",
+      "requireTransactionFit": true
+    },
+    {
+      "name": "bad/tutorial/115_funEtaBad",
+      "outcome": "reject",
+      "sha256": "55235f26d78f88177dcfd394ea5fcba4ff213cb5b1a515b8eb3fbba2c87bacce",
+      "bytes": 4979,
+      "measuredGas": "4067560",
+      "estimatedTransactionGas": "4104812",
+      "requireTransactionFit": true
+    },
+    {
+      "name": "bad/tutorial/116_etaRuleK",
+      "outcome": "reject",
+      "sha256": "19c222eee927950779cfe70b2c4145d76723efb61abb174dfdf68d96fb33513b",
+      "bytes": 6625,
+      "measuredGas": "4912716",
+      "estimatedTransactionGas": "4957832",
+      "requireTransactionFit": true
+    },
+    {
+      "name": "bad/tutorial/117_etaCtor",
+      "outcome": "reject",
+      "sha256": "36d8dd6ecfdc7cc5edea65e8087edab7c9fbc86113cc8550df87addb546eba76",
+      "bytes": 9229,
+      "measuredGas": "4740110",
+      "estimatedTransactionGas": "4794226",
+      "requireTransactionFit": true
+    },
+    {
+      "name": "bad/tutorial/118_reflOccLeft",
+      "outcome": "reject",
+      "sha256": "d26c150c31cc883d135ab9de30f06ad8ff3e1f7f6cba86035585eacd829afefc",
+      "bytes": 3826,
+      "measuredGas": "1095432",
+      "estimatedTransactionGas": "1127960",
+      "requireTransactionFit": true
+    },
+    {
+      "name": "bad/tutorial/119_reflOccInIndex",
+      "outcome": "reject",
+      "sha256": "4bb99bd31dd9c65f772e5e0e10124f8c1e4c228d103b1c03f1dd04b2767c4ff5",
+      "bytes": 4044,
+      "measuredGas": "1136212",
+      "estimatedTransactionGas": "1169608",
+      "requireTransactionFit": true
+    },
+    {
+      "name": "bad/tutorial/126_accRecNoEta",
+      "outcome": "reject",
+      "sha256": "29935bfbbb964aaaaf8fc4b0e88544dfdd1cac36418570d0e20f963b11e2d09e",
+      "bytes": 13351,
+      "measuredGas": "14198698",
+      "estimatedTransactionGas": "14267666",
+      "requireTransactionFit": true
+    },
+    {
+      "name": "bad/tutorial/133_dup_defs",
+      "outcome": "reject",
+      "sha256": "0d69ddde24113c345588219b0053ca8a0370e18ba18872ce59803f4895463a03",
+      "bytes": 475,
+      "measuredGas": "202215",
+      "estimatedTransactionGas": "220667",
+      "requireTransactionFit": true
+    },
+    {
+      "name": "bad/tutorial/134_dup_ind_def",
+      "outcome": "reject",
+      "sha256": "24ef675eb2b35eafac11730c3c0b76b349e6104966490909da70e6673f07a8d6",
+      "bytes": 1712,
+      "measuredGas": "270827",
+      "estimatedTransactionGas": "295335",
+      "requireTransactionFit": true
+    },
+    {
+      "name": "bad/tutorial/135_dup_ctor_def",
+      "outcome": "reject",
+      "sha256": "dff7c8164ca15c5cd7cf784219a7b281cf0405db9f23f362bbeee9b0f14560d3",
+      "bytes": 1713,
+      "measuredGas": "287362",
+      "estimatedTransactionGas": "311882",
+      "requireTransactionFit": true
+    },
+    {
+      "name": "bad/tutorial/136_dup_rec_def",
+      "outcome": "reject",
+      "sha256": "880f65f624c66018509b6153a165d08c252bda2033242a81f76f346dcee835d2",
+      "bytes": 1712,
+      "measuredGas": "311654",
+      "estimatedTransactionGas": "336162",
+      "requireTransactionFit": true
+    },
+    {
+      "name": "bad/tutorial/137_misnamed_rec_user",
+      "outcome": "reject",
+      "sha256": "c8c5e111f5b41c34237cafb1ead3d43fae8e51d72d4a62eb61a8c0e71a09a048",
+      "bytes": 2020,
+      "measuredGas": "315826",
+      "estimatedTransactionGas": "342026",
+      "requireTransactionFit": true
+    },
+    {
+      "name": "bad/tutorial/138_dup_rec_def2",
+      "outcome": "reject",
+      "sha256": "d45f500e2a803ec48ea904f9b82e8eee77e2abaca64b2ddd06d29c39bb481033",
+      "bytes": 1757,
+      "measuredGas": "317062",
+      "estimatedTransactionGas": "341958",
+      "requireTransactionFit": true
+    },
+    {
+      "name": "bad/tutorial/139_dup_ctor_rec",
+      "outcome": "reject",
+      "sha256": "5709aea1eabc2b3ba1a78b091966b018dcae2aa1c439ed0f1832d142cdd630df",
+      "bytes": 1548,
+      "measuredGas": "286085",
+      "estimatedTransactionGas": "309833",
+      "requireTransactionFit": true
+    },
+    {
+      "name": "bad/tutorial/140_DupConCon",
+      "outcome": "reject",
+      "sha256": "e847fd8d2d6062ef6fa2d84ebe10474174689d9f074c2ac2b208ad08ddebadcb",
+      "bytes": 2255,
+      "measuredGas": "304963",
+      "estimatedTransactionGas": "331747",
+      "requireTransactionFit": true
+    },
+    {
+      "name": "either/corner-cases/alg-conv-trans-quot-left-def",
+      "outcome": "either",
+      "sha256": "e3bc56ce77489c523e9d1cadc766196d05640c225aeb3ce34b3e249c1b1346a9",
+      "bytes": 10774,
+      "measuredGas": "15886282",
+      "estimatedTransactionGas": "15945854",
+      "requireTransactionFit": true
+    },
+    {
+      "name": "either/corner-cases/alg-conv-trans-quot-right",
+      "outcome": "either",
+      "sha256": "cb4605c2faee666f767eaa0c7dd24991f9973614cee22cd700ec94aa8341e853",
+      "bytes": 9254,
+      "measuredGas": "12813513",
+      "estimatedTransactionGas": "12867277",
+      "requireTransactionFit": true
+    },
+    {
+      "name": "either/corner-cases/imax-right-successor",
+      "outcome": "either",
+      "sha256": "f367b7901ba740dfb574578713f694a1836aef72d0439a520f94a72292d90fd7",
+      "bytes": 806,
+      "measuredGas": "377937",
+      "estimatedTransactionGas": "399285",
+      "requireTransactionFit": true
+    },
+    {
+      "name": "either/corner-cases/proj-maybe-prop-past",
+      "outcome": "either",
+      "sha256": "f5293856199b9b3eb82b3abb4bcb06121807cf9c828a049cfcc9c2f022002e38",
+      "bytes": 8313,
+      "measuredGas": "4129482",
+      "estimatedTransactionGas": "4181246",
+      "requireTransactionFit": true
+    },
+    {
+      "name": "either/corner-cases/proj-maybe-prop",
+      "outcome": "either",
+      "sha256": "b454eb79be1a89d37eea09a670a8fc38d30fd0b3215c57d130ab4c984d531894",
+      "bytes": 8308,
+      "measuredGas": "4115656",
+      "estimatedTransactionGas": "4167360",
+      "requireTransactionFit": true
+    },
+    {
+      "name": "either/nested-nonuniform-param",
+      "outcome": "either",
+      "sha256": "aaab3a45abbef89db7b24cef96e7ca6a6901e87a38baeec56118846c64a75c56",
+      "bytes": 9415,
+      "measuredGas": "5594886",
+      "estimatedTransactionGas": "5647390",
+      "requireTransactionFit": true
+    },
+    {
+      "name": "good/perf/identical-nesting",
+      "outcome": "accept",
+      "sha256": "38da6395264b5761687f5a3e7c2444b96eb59b095d7dc0ba368f39415ebf8b69",
+      "bytes": 8949,
+      "measuredGas": "4253459",
+      "estimatedTransactionGas": "4307595",
+      "requireTransactionFit": true
+    },
+    {
+      "name": "good/proof-irrel",
+      "outcome": "accept",
+      "sha256": "962cfb1378bc2f73e327fd88e526a0b9b7108f4ad1a1df55766d7d1156ad8d76",
+      "bytes": 1777,
+      "measuredGas": "551225",
+      "estimatedTransactionGas": "575761",
+      "requireTransactionFit": true
+    },
+    {
+      "name": "good/tutorial/001_basicDef",
+      "outcome": "accept",
+      "sha256": "82023f63efe0d75e9966621bfc69033ccd1333e8d0d989b3d54a79859e9da0ce",
+      "bytes": 367,
+      "measuredGas": "200214",
+      "estimatedTransactionGas": "218362",
+      "requireTransactionFit": true
+    },
+    {
+      "name": "good/tutorial/003_arrowType",
+      "outcome": "accept",
+      "sha256": "5c89ad23548a25281adaaaa705193f3d3846902f93e0a6740e3b95566706ae52",
+      "bytes": 622,
+      "measuredGas": "234997",
+      "estimatedTransactionGas": "254285",
+      "requireTransactionFit": true
+    },
+    {
+      "name": "good/tutorial/004_dependentType",
+      "outcome": "accept",
+      "sha256": "9c1601d4a39c4393a31cb6372c6d78dc245db79e385e359a80573b5bbfb09f83",
+      "bytes": 460,
+      "measuredGas": "211383",
+      "estimatedTransactionGas": "229743",
+      "requireTransactionFit": true
+    },
+    {
+      "name": "good/tutorial/005_constType",
+      "outcome": "accept",
+      "sha256": "b193eee0eb8419ffdf4287c220b346d6f7f90460d8e32bef631309551626d042",
+      "bytes": 897,
+      "measuredGas": "272517",
+      "estimatedTransactionGas": "292589",
+      "requireTransactionFit": true
+    },
+    {
+      "name": "good/tutorial/006_betaReduction",
+      "outcome": "accept",
+      "sha256": "3320f6f67cd55b2bae9112ea9b0d002f231e88ec4fb3c3f3c8fd4e750b13ce78",
+      "bytes": 1363,
+      "measuredGas": "383470",
+      "estimatedTransactionGas": "405534",
+      "requireTransactionFit": true
+    },
+    {
+      "name": "good/tutorial/007_betaReduction2",
+      "outcome": "accept",
+      "sha256": "fb85e6eb84319dce9fed8acacb08cab2c5a54b67960112bc9de3eac22fc5a909",
+      "bytes": 1434,
+      "measuredGas": "417966",
+      "estimatedTransactionGas": "440194",
+      "requireTransactionFit": true
+    },
+    {
+      "name": "good/tutorial/008_forallSortWhnf",
+      "outcome": "accept",
+      "sha256": "b4af42800421f4ac5ec7e699a706bdd82f9f1324a5d2d49769fb340bf36e6a48",
+      "bytes": 1201,
+      "measuredGas": "385379",
+      "estimatedTransactionGas": "407099",
+      "requireTransactionFit": true
+    },
+    {
+      "name": "good/tutorial/013_thmProof",
+      "outcome": "accept",
+      "sha256": "5e4664a6d4f05afbeff4e0af19681e88b2817c48787a9a281c4ba95d80483333",
+      "bytes": 1345,
+      "measuredGas": "367192",
+      "estimatedTransactionGas": "389044",
+      "requireTransactionFit": true
+    },
+    {
+      "name": "good/tutorial/015_levelComp1",
+      "outcome": "accept",
+      "sha256": "2e6b6016ac241c9e1dd01ee86782f21adabd928bca24880b60619de453bec0c3",
+      "bytes": 391,
+      "measuredGas": "235711",
+      "estimatedTransactionGas": "254047",
+      "requireTransactionFit": true
+    },
+    {
+      "name": "good/tutorial/016_levelComp2",
+      "outcome": "accept",
+      "sha256": "aa971f4ba7603e183ebcf90a8ac92241f5fa2a96fbc6659e45380f52de3ffd6e",
+      "bytes": 409,
+      "measuredGas": "245838",
+      "estimatedTransactionGas": "264314",
+      "requireTransactionFit": true
+    },
+    {
+      "name": "good/tutorial/017_levelComp3",
+      "outcome": "accept",
+      "sha256": "e11ecbb09540778e2d2d0084d7759ce1c1483ca7f02168b87e1ec8bd1bf2c5cd",
+      "bytes": 427,
+      "measuredGas": "265281",
+      "estimatedTransactionGas": "283933",
+      "requireTransactionFit": true
+    },
+    {
+      "name": "good/tutorial/018_levelParams",
+      "outcome": "accept",
+      "sha256": "d78d458ea81bb210c80d3915976a03536f1b267879207f3604745b777014a167",
+      "bytes": 1429,
+      "measuredGas": "399835",
+      "estimatedTransactionGas": "422579",
+      "requireTransactionFit": true
+    },
+    {
+      "name": "good/tutorial/020_levelComp4",
+      "outcome": "accept",
+      "sha256": "39dced2925dcce7f66539f47f408d276b48d57638b4bfefc47860eed2f710a58",
+      "bytes": 424,
+      "measuredGas": "207713",
+      "estimatedTransactionGas": "226353",
+      "requireTransactionFit": true
+    },
+    {
+      "name": "good/tutorial/021_levelComp5",
+      "outcome": "accept",
+      "sha256": "31910166228cf46f68dbaa876d1c155734475b0f3f7a15c2a82f5535e8c150f8",
+      "bytes": 424,
+      "measuredGas": "207578",
+      "estimatedTransactionGas": "226242",
+      "requireTransactionFit": true
+    },
+    {
+      "name": "good/tutorial/022_imax1",
+      "outcome": "accept",
+      "sha256": "8fe3d41b913c8717847bc4a544e6b947bb5a1b616d80dbe19859d465ff225d57",
+      "bytes": 809,
+      "measuredGas": "258272",
+      "estimatedTransactionGas": "278144",
+      "requireTransactionFit": true
+    },
+    {
+      "name": "good/tutorial/023_imax2",
+      "outcome": "accept",
+      "sha256": "9d7fdab95e9ac1f87e19055e3133b98173f90d94c641870dc49cff6db2d1061f",
+      "bytes": 828,
+      "measuredGas": "352378",
+      "estimatedTransactionGas": "372426",
+      "requireTransactionFit": true
+    },
+    {
+      "name": "good/tutorial/024_levelMaxComm",
+      "outcome": "accept",
+      "sha256": "8a2ed8095cf9f69fcebb1e8b695944599cd524b42334cd6ff3051a5deebe7134",
+      "bytes": 524,
+      "measuredGas": "279722",
+      "estimatedTransactionGas": "299206",
+      "requireTransactionFit": true
+    },
+    {
+      "name": "good/tutorial/025_levelMaxAssoc",
+      "outcome": "accept",
+      "sha256": "2e97e820cfffa0f890ea70f7c3ea7f7e1636568196f3fc738868249644f9f229",
+      "bytes": 623,
+      "measuredGas": "322755",
+      "estimatedTransactionGas": "343023",
+      "requireTransactionFit": true
+    },
+    {
+      "name": "good/tutorial/026_levelMaxIdem",
+      "outcome": "accept",
+      "sha256": "1ee0d884c19ef76feb4ba77f5448507da2f8d983a688f4e8711d61784f50e571",
+      "bytes": 447,
+      "measuredGas": "242988",
+      "estimatedTransactionGas": "261852",
+      "requireTransactionFit": true
+    },
+    {
+      "name": "good/tutorial/027_levelMaxAbsorb",
+      "outcome": "accept",
+      "sha256": "87fab97e0b524a64e21ebe2adbadb407b381d1bee45cd2060e4a24055d554b11",
+      "bytes": 526,
+      "measuredGas": "291765",
+      "estimatedTransactionGas": "311273",
+      "requireTransactionFit": true
+    },
+    {
+      "name": "good/tutorial/028_inferVar",
+      "outcome": "accept",
+      "sha256": "2ed39c087f88481185d28085d7d2ba2f2985426da70062bfe4e6dd987af46110",
+      "bytes": 713,
+      "measuredGas": "242746",
+      "estimatedTransactionGas": "261830",
+      "requireTransactionFit": true
+    },
+    {
+      "name": "good/tutorial/029_defEqLambda",
+      "outcome": "accept",
+      "sha256": "7a28d11e2a035c2d0d97c75d5cb0bb12e16be1c5502b9975aa08775e1928ba92",
+      "bytes": 1391,
+      "measuredGas": "433711",
+      "estimatedTransactionGas": "455283",
+      "requireTransactionFit": true
+    },
+    {
+      "name": "good/tutorial/030_peano1",
+      "outcome": "accept",
+      "sha256": "fe92f67341850f0c222c43cd99e9f17904cdb003654f394890f49df431ceaf7d",
+      "bytes": 3692,
+      "measuredGas": "1072480",
+      "estimatedTransactionGas": "1105156",
+      "requireTransactionFit": true
+    },
+    {
+      "name": "good/tutorial/031_peano2",
+      "outcome": "accept",
+      "sha256": "63c8aec3c8457d2f4e76476b1d503647fb58d998b0dc2176cacc5efd814586e0",
+      "bytes": 4566,
+      "measuredGas": "3121023",
+      "estimatedTransactionGas": "3157119",
+      "requireTransactionFit": true
+    },
+    {
+      "name": "good/tutorial/032_peano3",
+      "outcome": "accept",
+      "sha256": "e731f91828d3bb6186205233ba8ba94dd54bdf21e7b9a06e020f789be70ad55d",
+      "bytes": 5006,
+      "measuredGas": "4762211",
+      "estimatedTransactionGas": "4800767",
+      "requireTransactionFit": true
+    },
+    {
+      "name": "good/tutorial/033_letType",
+      "outcome": "accept",
+      "sha256": "1222e60968ee37505bbb4952811a9645af2307f2a85e7f3d2d6fa2a7f1d5e667",
+      "bytes": 489,
+      "measuredGas": "217321",
+      "estimatedTransactionGas": "235913",
+      "requireTransactionFit": true
+    },
+    {
+      "name": "good/tutorial/034_letTypeDep",
+      "outcome": "accept",
+      "sha256": "eca16eea9573a481f232edfd0ff84a02ae208c1f379d967a56aec75f86fc7ca1",
+      "bytes": 1238,
+      "measuredGas": "339582",
+      "estimatedTransactionGas": "361814",
+      "requireTransactionFit": true
+    },
+    {
+      "name": "good/tutorial/035_letRed",
+      "outcome": "accept",
+      "sha256": "b3d5e6f1f6e45721973e4e7167fbe0a92abbdcd69f039112eac70ab25c028acc",
+      "bytes": 627,
+      "measuredGas": "237202",
+      "estimatedTransactionGas": "256486",
+      "requireTransactionFit": true
+    },
+    {
+      "name": "good/tutorial/036_empty",
+      "outcome": "accept",
+      "sha256": "030852937308e66cb90de3b8de7cd336f3d825e81c87c5be5cc1fe33c6d54356",
+      "bytes": 1228,
+      "measuredGas": "367508",
+      "estimatedTransactionGas": "389300",
+      "requireTransactionFit": true
+    },
+    {
+      "name": "good/tutorial/037_boolType",
+      "outcome": "accept",
+      "sha256": "02053d077abf5a63594d1025f9ef2f90dfff65f331503aa3b7486bbbb997b3e8",
+      "bytes": 2377,
+      "measuredGas": "734492",
+      "estimatedTransactionGas": "761300",
+      "requireTransactionFit": true
+    },
+    {
+      "name": "good/tutorial/038_twoBool",
+      "outcome": "accept",
+      "sha256": "91a1f7379e22ebbec710ce6b43b7e0750be258ace8fc22d0b889fb76b57010de",
+      "bytes": 4266,
+      "measuredGas": "1254655",
+      "estimatedTransactionGas": "1288483",
+      "requireTransactionFit": true
+    },
+    {
+      "name": "good/tutorial/039_andType",
+      "outcome": "accept",
+      "sha256": "d81009480e131d451da9e625fe9a90fff92fbee08d324aefd6fde3c3b89979e1",
+      "bytes": 3273,
+      "measuredGas": "1275769",
+      "estimatedTransactionGas": "1304849",
+      "requireTransactionFit": true
+    },
+    {
+      "name": "good/tutorial/040_prodType",
+      "outcome": "accept",
+      "sha256": "a74e83890dce34014ef7dc8f1f6e7baf56d481df2a776d886462c789c529741d",
+      "bytes": 3919,
+      "measuredGas": "3537234",
+      "estimatedTransactionGas": "3571266",
+      "requireTransactionFit": true
+    },
+    {
+      "name": "good/tutorial/041_pprodType",
+      "outcome": "accept",
+      "sha256": "9f2f275784ba923bc3a050c5f1856ad0d18c83d31ff107a5cd663d4cceaec98a",
+      "bytes": 3906,
+      "measuredGas": "3789038",
+      "estimatedTransactionGas": "3822978",
+      "requireTransactionFit": true
+    },
+    {
+      "name": "good/tutorial/042_pUnitType",
+      "outcome": "accept",
+      "sha256": "acc7a70c97888e02e2b92e583b370803db0bdac1ddc38f9ff036831459d3a891",
+      "bytes": 1843,
+      "measuredGas": "556045",
+      "estimatedTransactionGas": "581809",
+      "requireTransactionFit": true
+    },
+    {
+      "name": "good/tutorial/043_eqType",
+      "outcome": "accept",
+      "sha256": "d45ed54cc74be3d7d92aae6bacc040420ba33f23fa034b4497edb389e089afdc",
+      "bytes": 3324,
+      "measuredGas": "2613547",
+      "estimatedTransactionGas": "2644491",
+      "requireTransactionFit": true
+    },
+    {
+      "name": "good/tutorial/044_natDef",
+      "outcome": "accept",
+      "sha256": "95d33f871f126e234740e05d9291a1cedcc6a2d01522aedc3122b25aab17ab95",
+      "bytes": 3392,
+      "measuredGas": "1040032",
+      "estimatedTransactionGas": "1071356",
+      "requireTransactionFit": true
+    },
+    {
+      "name": "good/tutorial/055_reduceCtorParam.mk",
+      "outcome": "accept",
+      "sha256": "16d146c5ef39743b6a95f21043a43b890e22d72792fd9436e37396765124a7a2",
+      "bytes": 4179,
+      "measuredGas": "2212958",
+      "estimatedTransactionGas": "2246882",
+      "requireTransactionFit": true
+    },
+    {
+      "name": "good/tutorial/058_predWithTypeField",
+      "outcome": "accept",
+      "sha256": "5af1ed8df583ce1857bc0852679e04f6024b8de4f1eb2ceba91cc7ed5b6ecb6c",
+      "bytes": 2023,
+      "measuredGas": "547719",
+      "estimatedTransactionGas": "572751",
+      "requireTransactionFit": true
+    },
+    {
+      "name": "good/tutorial/059_typeWithTypeField",
+      "outcome": "accept",
+      "sha256": "5c2c36c26f88438688db304bc33d039eb8ce78522e6d3fa53e54a2ae1b14426c",
+      "bytes": 2116,
+      "measuredGas": "615110",
+      "estimatedTransactionGas": "640950",
+      "requireTransactionFit": true
+    },
+    {
+      "name": "good/tutorial/060_typeWithTypeFieldPoly",
+      "outcome": "accept",
+      "sha256": "a1bb69e5739372ba607b2ed8766cda7373c71a4286788e87ccb07c0749c257be",
+      "bytes": 2190,
+      "measuredGas": "669637",
+      "estimatedTransactionGas": "696849",
+      "requireTransactionFit": true
+    },
+    {
+      "name": "good/tutorial/062_emptyRec",
+      "outcome": "accept",
+      "sha256": "13190ea3d49b78a7ab755381e7867862262bae35f54c9f8e9f588b495957d7ff",
+      "bytes": 1269,
+      "measuredGas": "448410",
+      "estimatedTransactionGas": "470718",
+      "requireTransactionFit": true
+    },
+    {
+      "name": "good/tutorial/063_boolRec",
+      "outcome": "accept",
+      "sha256": "2e760d8bfe1ccbb4e0d5139bb26ad0fed2fab02ea7612a2b246fec201f58d4a1",
+      "bytes": 3092,
+      "measuredGas": "1131596",
+      "estimatedTransactionGas": "1161584",
+      "requireTransactionFit": true
+    },
+    {
+      "name": "good/tutorial/064_twoBoolRec",
+      "outcome": "accept",
+      "sha256": "db0e10d735a9a2438ee353c095f8b0d53847d78e5910adee5218925048c8e2e6",
+      "bytes": 4866,
+      "measuredGas": "1602643",
+      "estimatedTransactionGas": "1639383",
+      "requireTransactionFit": true
+    },
+    {
+      "name": "good/tutorial/065_andRec",
+      "outcome": "accept",
+      "sha256": "0cbe7714825cbf646d860e051ab8744174230b6d8c65120bee8683927926c02c",
+      "bytes": 3313,
+      "measuredGas": "1750143",
+      "estimatedTransactionGas": "1779679",
+      "requireTransactionFit": true
+    },
+    {
+      "name": "good/tutorial/066_prodRec",
+      "outcome": "accept",
+      "sha256": "0b53e85fe97b23530b00b05ba89c1c860bf4519a0ef41f314e84114dd5df2cea",
+      "bytes": 4111,
+      "measuredGas": "5142254",
+      "estimatedTransactionGas": "5177350",
+      "requireTransactionFit": true
+    },
+    {
+      "name": "good/tutorial/067_pprodRec",
+      "outcome": "accept",
+      "sha256": "894d4388fcf6a58cad8c4047493abde7edbfd04facb8aeffbbc9673604a2e13e",
+      "bytes": 4096,
+      "measuredGas": "5233770",
+      "estimatedTransactionGas": "5268726",
+      "requireTransactionFit": true
+    },
+    {
+      "name": "good/tutorial/068_punitRec",
+      "outcome": "accept",
+      "sha256": "331c4d8a6de6accecf264219290e102544368dffd5eec64e3587716e3b4880ea",
+      "bytes": 2227,
+      "measuredGas": "735797",
+      "estimatedTransactionGas": "763485",
+      "requireTransactionFit": true
+    },
+    {
+      "name": "good/tutorial/069_eqRec",
+      "outcome": "accept",
+      "sha256": "693007cd24f0763cc6c7776840bdc05539645a0e35897af2688bde984f2551e2",
+      "bytes": 3369,
+      "measuredGas": "4288663",
+      "estimatedTransactionGas": "4320191",
+      "requireTransactionFit": true
+    },
+    {
+      "name": "good/tutorial/070_nRec",
+      "outcome": "accept",
+      "sha256": "2cd9396449787ce0aec6ed6348b9a0c1eeb21262b72181e3872cf19ed7c67a45",
+      "bytes": 3394,
+      "measuredGas": "1254253",
+      "estimatedTransactionGas": "1285717",
+      "requireTransactionFit": true
+    },
+    {
+      "name": "good/tutorial/072_boolPropRec",
+      "outcome": "accept",
+      "sha256": "25b41ff38e681eab9d6bc8f0bc7565378d8a54bc5b135ef3bf95d80eccea5b04",
+      "bytes": 2313,
+      "measuredGas": "657332",
+      "estimatedTransactionGas": "683436",
+      "requireTransactionFit": true
+    },
+    {
+      "name": "good/tutorial/074_existsRec",
+      "outcome": "accept",
+      "sha256": "f50c9cc865f06f98bcbf39a55d6e149e9ee0a87f374b686f0d734dab6b9d22b8",
+      "bytes": 3665,
+      "measuredGas": "1638876",
+      "estimatedTransactionGas": "1670584",
+      "requireTransactionFit": true
+    },
+    {
+      "name": "good/tutorial/075_typeSingletonRecReduction",
+      "outcome": "accept",
+      "sha256": "7407a2ceb9d10d9ea28583eaa808b54b3f4fdd2c5cc8d5568424e32f27571d65",
+      "bytes": 8095,
+      "measuredGas": "4235322",
+      "estimatedTransactionGas": "4286562",
+      "requireTransactionFit": true
+    },
+    {
+      "name": "good/tutorial/076_sortElimPropRec",
+      "outcome": "accept",
+      "sha256": "36ee61d2cc67052078e756bc7457b5cfaaebd85da1a96c232946e183a479a522",
+      "bytes": 5773,
+      "measuredGas": "4619711",
+      "estimatedTransactionGas": "4659591",
+      "requireTransactionFit": true
+    },
+    {
+      "name": "good/tutorial/077_sortElimProp2Rec",
+      "outcome": "accept",
+      "sha256": "a70294fd3579d1cc5dabaa0a47579820a6e6dbd83e165e9f60362112abf2ebbe",
+      "bytes": 6794,
+      "measuredGas": "4025655",
+      "estimatedTransactionGas": "4068359",
+      "requireTransactionFit": true
+    },
+    {
+      "name": "good/tutorial/078_boolRecEqns",
+      "outcome": "accept",
+      "sha256": "77cb6eab3518ba916595ef8e1a58daaad404e25a293a409b01fa18d5252fc814",
+      "bytes": 11058,
+      "measuredGas": "9750800",
+      "estimatedTransactionGas": "9812624",
+      "requireTransactionFit": true
+    },
+    {
+      "name": "good/tutorial/083_And.right",
+      "outcome": "accept",
+      "sha256": "efa843e3b8cc007a0933fd2d89df28a6c5765b167e9ffbb441f4ec8143008212",
+      "bytes": 4353,
+      "measuredGas": "1585045",
+      "estimatedTransactionGas": "1617041",
+      "requireTransactionFit": true
+    },
+    {
+      "name": "good/tutorial/084_Prod.snd",
+      "outcome": "accept",
+      "sha256": "7c9951ed92178b60820ebaac2a1deb69ae650aa1f7bbbf84e05b32238af7557a",
+      "bytes": 4646,
+      "measuredGas": "4330684",
+      "estimatedTransactionGas": "4366212",
+      "requireTransactionFit": true
+    },
+    {
+      "name": "good/tutorial/085_PProd.snd",
+      "outcome": "accept",
+      "sha256": "206132d26ab0a1f34d2dce5a7e1881e745a113e59faf5bdfcf74d308aa462256",
+      "bytes": 4650,
+      "measuredGas": "4260915",
+      "estimatedTransactionGas": "4296455",
+      "requireTransactionFit": true
+    },
+    {
+      "name": "good/tutorial/086_PSigma.snd",
+      "outcome": "accept",
+      "sha256": "915270c38f148d3de02b357e8cad6913b3ab1ab7ac611a53e45a649aaac5544e",
+      "bytes": 5177,
+      "measuredGas": "6042501",
+      "estimatedTransactionGas": "6080633",
+      "requireTransactionFit": true
+    },
+    {
+      "name": "good/tutorial/089_projProp1",
+      "outcome": "accept",
+      "sha256": "9102fd7c60e2796c11b8ecaa208363c3095ac324d3cf3f3c29ec82c67bfa401e",
+      "bytes": 8390,
+      "measuredGas": "4363504",
+      "estimatedTransactionGas": "4416440",
+      "requireTransactionFit": true
+    },
+    {
+      "name": "good/tutorial/091_projProp3",
+      "outcome": "accept",
+      "sha256": "e32c2399717e657b1f24296ee1a5e78a9592d8f90ca84a6a6a104395ef06ddf1",
+      "bytes": 8390,
+      "measuredGas": "4407518",
+      "estimatedTransactionGas": "4460466",
+      "requireTransactionFit": true
+    },
+    {
+      "name": "good/tutorial/095_projDataIndexRec",
+      "outcome": "accept",
+      "sha256": "b416173b8862d956e302ece51bdf2ed5dbf1e519ac3c709f2d1d2b5400d88b80",
+      "bytes": 6921,
+      "measuredGas": "2152229",
+      "estimatedTransactionGas": "2197389",
+      "requireTransactionFit": true
+    },
+    {
+      "name": "good/tutorial/098_projRed",
+      "outcome": "accept",
+      "sha256": "ee406aec30851a1bd7f8a491c13ccb54712f198f2951ed518b47de95cbf42d70",
+      "bytes": 10151,
+      "measuredGas": "7729939",
+      "estimatedTransactionGas": "7789267",
+      "requireTransactionFit": true
+    },
+    {
+      "name": "good/tutorial/099_ruleK",
+      "outcome": "accept",
+      "sha256": "9c06a9ca2b5d6dadc1575796a858d5285695d4401cceaaf77d9c26fbc426f1da",
+      "bytes": 6624,
+      "measuredGas": "4094810",
+      "estimatedTransactionGas": "4139726",
+      "requireTransactionFit": true
+    },
+    {
+      "name": "good/tutorial/102_aNatLit",
+      "outcome": "accept",
+      "sha256": "d275cb43710dcb6df9e08de59e66e84cb4fc1eb71382c8f33308b838056e87be",
+      "bytes": 3101,
+      "measuredGas": "1005610",
+      "estimatedTransactionGas": "1035626",
+      "requireTransactionFit": true
+    },
+    {
+      "name": "good/tutorial/103_natLitEq",
+      "outcome": "accept",
+      "sha256": "749491a9044aa7df27cbc7afa32d08dc4d5feaea1eb19c28cd98790d7db8adf8",
+      "bytes": 6274,
+      "measuredGas": "3684158",
+      "estimatedTransactionGas": "3727850",
+      "requireTransactionFit": true
+    },
+    {
+      "name": "good/tutorial/104_proofIrrelevance",
+      "outcome": "accept",
+      "sha256": "f98c56cc9577ce1e3bac4dd0b6a49593924d5953f45dd2d25c44a84971d3bcea",
+      "bytes": 5154,
+      "measuredGas": "3162002",
+      "estimatedTransactionGas": "3200498",
+      "requireTransactionFit": true
+    },
+    {
+      "name": "good/tutorial/106_proofIrrelevanceWhnf",
+      "outcome": "accept",
+      "sha256": "724ea566fd355aa187a5fe00efddff4b41df00951e7e4363f323f11853888d71",
+      "bytes": 5757,
+      "measuredGas": "3919100",
+      "estimatedTransactionGas": "3960044",
+      "requireTransactionFit": true
+    },
+    {
+      "name": "good/tutorial/107_unitEta1",
+      "outcome": "accept",
+      "sha256": "eb25dbed39c8c19e6c1ea7b7c0332941e0249c96154bff155f8805d04151da78",
+      "bytes": 6395,
+      "measuredGas": "3451924",
+      "estimatedTransactionGas": "3496512",
+      "requireTransactionFit": true
+    },
+    {
+      "name": "good/tutorial/108_unitEta2",
+      "outcome": "accept",
+      "sha256": "0102ea0fac3148dfcd800dcccd53237b3dd196186659a3d811761da4bedbc91f",
+      "bytes": 6092,
+      "measuredGas": "3403224",
+      "estimatedTransactionGas": "3446336",
+      "requireTransactionFit": true
+    },
+    {
+      "name": "good/tutorial/109_unitEta3",
+      "outcome": "accept",
+      "sha256": "22a713f36ca06b000c93140a92e9a5e2c85abb769924764b3f1e764cb199be0b",
+      "bytes": 6173,
+      "measuredGas": "3395796",
+      "estimatedTransactionGas": "3439340",
+      "requireTransactionFit": true
+    },
+    {
+      "name": "good/tutorial/111_structEta",
+      "outcome": "accept",
+      "sha256": "e47bd6975be97f3218b31e85071af1e0cec4279f5a6478abb12e3e1c574c35c2",
+      "bytes": 12836,
+      "measuredGas": "12384023",
+      "estimatedTransactionGas": "12452835",
+      "requireTransactionFit": true
+    },
+    {
+      "name": "good/tutorial/113_funEta",
+      "outcome": "accept",
+      "sha256": "f4e38147fd95133f0ce4bf66dbb9c433704df341f4732012ca1b7d26e1246225",
+      "bytes": 5335,
+      "measuredGas": "3474332",
+      "estimatedTransactionGas": "3513340",
+      "requireTransactionFit": true
+    },
+    {
+      "name": "good/tutorial/114_funEtaDep",
+      "outcome": "accept",
+      "sha256": "28a07e484e8720dfc991c1074a3881d1c16ead16b75c9a8743c1cd46a21bec5d",
+      "bytes": 5443,
+      "measuredGas": "3741123",
+      "estimatedTransactionGas": "3780495",
+      "requireTransactionFit": true
+    },
+    {
+      "name": "good/tutorial/120_reduceCtorParamRefl.mk",
+      "outcome": "accept",
+      "sha256": "0289b5264d284c7c2b61033465d39461ddce70a0cdd909ee658d85bf10f544ee",
+      "bytes": 4642,
+      "measuredGas": "2870384",
+      "estimatedTransactionGas": "2905644",
+      "requireTransactionFit": true
+    },
+    {
+      "name": "good/tutorial/121_reduceCtorParamRefl2.mk",
+      "outcome": "accept",
+      "sha256": "8997c0d3a515185fb3518393dbe78e44471455f622ac7bf9e82c68bff51bb2cd",
+      "bytes": 4642,
+      "measuredGas": "2777515",
+      "estimatedTransactionGas": "2812787",
+      "requireTransactionFit": true
+    },
+    {
+      "name": "good/tutorial/122_rTreeRec",
+      "outcome": "accept",
+      "sha256": "6207d2f2f68b24ff37fba20c4ac3849571deb8d3105bc9cefd37ba4f28dc2d7f",
+      "bytes": 5639,
+      "measuredGas": "2669920",
+      "estimatedTransactionGas": "2710128",
+      "requireTransactionFit": true
+    },
+    {
+      "name": "good/tutorial/123_rtreeRecReduction",
+      "outcome": "accept",
+      "sha256": "1d4eacdbbdbe3edc8ea1faf3526eef09beadbbd2843b5dba67262f405b781330",
+      "bytes": 11099,
+      "measuredGas": "7177035",
+      "estimatedTransactionGas": "7239247",
+      "requireTransactionFit": true
+    },
+    {
+      "name": "good/tutorial/124_accRecType",
+      "outcome": "accept",
+      "sha256": "d94022372034a2e572249b9704b812beb90a5437a660bda59fd7439d61d55da7",
+      "bytes": 7649,
+      "measuredGas": "13686651",
+      "estimatedTransactionGas": "13733407",
+      "requireTransactionFit": true
+    },
+    {
+      "name": "good/tutorial/127_quotMkType",
+      "outcome": "accept",
+      "sha256": "b160ff5b97509ad3029f1895bfe1153f9e03f1a33c99ec50ee1bb87d3406f69d",
+      "bytes": 6450,
+      "measuredGas": "5706449",
+      "estimatedTransactionGas": "5749805",
+      "requireTransactionFit": true
+    },
+    {
+      "name": "good/tutorial/128_quotIndType",
+      "outcome": "accept",
+      "sha256": "997935987ef6b1920cc0065465ccb50eb1668bf69159eebbd58dd88b6dc2e2fb",
+      "bytes": 6490,
+      "measuredGas": "5885001",
+      "estimatedTransactionGas": "5928685",
+      "requireTransactionFit": true
+    },
+    {
+      "name": "good/tutorial/129_quotLiftType",
+      "outcome": "accept",
+      "sha256": "317a04eff4dabf9edf601736e243d2788aeaa2d7972099dff4bb777b4f51fc3f",
+      "bytes": 6496,
+      "measuredGas": "7763151",
+      "estimatedTransactionGas": "7807127",
+      "requireTransactionFit": true
+    },
+    {
+      "name": "good/tutorial/130_quotSoundType",
+      "outcome": "accept",
+      "sha256": "38c9bdfaaf1e3cd494a7725a4eb9bc231d5ce61f097a5b98e38c469799f7400f",
+      "bytes": 7332,
+      "measuredGas": "6288649",
+      "estimatedTransactionGas": "6335709",
+      "requireTransactionFit": true
+    },
+    {
+      "name": "good/tutorial/131_quotLiftReduction",
+      "outcome": "accept",
+      "sha256": "ae980cf502f90c84131b1705850c1acf18a969fdc1fe511b9b8eb769adbd79c8",
+      "bytes": 7957,
+      "measuredGas": "12531488",
+      "estimatedTransactionGas": "12580396",
+      "requireTransactionFit": true
+    },
+    {
+      "name": "good/tutorial/132_quotIndReduction",
+      "outcome": "accept",
+      "sha256": "0053779f82af2dfc35cd6c866a66be4496008589b11c22e6b80e91835957bedd",
+      "bytes": 7817,
+      "measuredGas": "11738008",
+      "estimatedTransactionGas": "11786436",
+      "requireTransactionFit": true
+    }
+  ],
+  "aliases": [
+    {
+      "name": "bad/constlevels",
+      "outcome": "reject",
+      "sha256": "2fa6a967f15f76cfdcea3ef1992ff31a4cc4aa647b0f8fabf0ff61eedb3afbf1",
+      "bytes": 15670,
+      "measuredGas": "8181952",
+      "estimatedTransactionGas": "8262320",
+      "requireTransactionFit": true,
+      "coveredBy": "tests/arena/constlevels.ndjson"
+    },
+    {
+      "name": "bad/extra-rec",
+      "outcome": "reject",
+      "sha256": "eab650028a71177bd4d9fcb6a84b4e92dd91cf4e7af67023af458d18729be0e2",
+      "bytes": 1402,
+      "measuredGas": "251814",
+      "estimatedTransactionGas": "274546",
+      "requireTransactionFit": true,
+      "coveredBy": "tests/arena/extra-rec.ndjson"
+    },
+    {
+      "name": "bad/large-elim-param",
+      "outcome": "reject",
+      "sha256": "df7d23ff199c4956620f3b1b4d17976c6bbe99ec6c1b5a4e803a7f9f415e331f",
+      "bytes": 6351,
+      "measuredGas": "1038365",
+      "estimatedTransactionGas": "1079453",
+      "requireTransactionFit": true,
+      "coveredBy": "tests/arena/large-elim-param.ndjson"
+    },
+    {
+      "name": "bad/level-imax-leq",
+      "outcome": "reject",
+      "sha256": "497eaa80a214386c679356c33a72c8beab5019c4938494b1608e3772a2756191",
+      "bytes": 5708,
+      "measuredGas": "1330438",
+      "estimatedTransactionGas": "1371354",
+      "requireTransactionFit": true,
+      "coveredBy": "tests/arena/level-imax-leq.ndjson"
+    },
+    {
+      "name": "bad/level-imax-normalization",
+      "outcome": "reject",
+      "sha256": "d368d5569321b717b7ec95bd1f4fa5bbd7d6e1f8d6ebdf1a0644dc8bc76bc2ec",
+      "bytes": 5897,
+      "measuredGas": "1329309",
+      "estimatedTransactionGas": "1370613",
+      "requireTransactionFit": true,
+      "coveredBy": "tests/arena/level-imax-normalization.ndjson"
+    },
+    {
+      "name": "bad/nat-rec-k-lie",
+      "outcome": "reject",
+      "sha256": "5a49d132bb0c7dca091baa481333f5e97e390fde72c8ec18c6124a690ec47d7c",
+      "bytes": 6413,
+      "measuredGas": "888512",
+      "estimatedTransactionGas": "931764",
+      "requireTransactionFit": true,
+      "coveredBy": "tests/arena/nat-rec-k-lie.ndjson"
+    },
+    {
+      "name": "bad/nat-rec-rules",
+      "outcome": "reject",
+      "sha256": "934e59fdc4f2a978605c4a44e90b94b57e9940f3828620c0db337b7125cdd169",
+      "bytes": 8345,
+      "measuredGas": "2397705",
+      "estimatedTransactionGas": "2448337",
+      "requireTransactionFit": true,
+      "coveredBy": "tests/arena/nat-rec-rules.ndjson"
+    },
+    {
+      "name": "bad/orphan-ctor",
+      "outcome": "reject",
+      "sha256": "2c9b12979ea3da11272d6eca4b0a39523a863d6fb501daf61c4edb8996a97daa",
+      "bytes": 1400,
+      "measuredGas": "252467",
+      "estimatedTransactionGas": "275307",
+      "requireTransactionFit": true,
+      "coveredBy": "tests/arena/orphan-ctor.ndjson"
+    },
+    {
+      "name": "bad/orphan-rec",
+      "outcome": "reject",
+      "sha256": "738f28bc1175d70faf09f4b45ae7ca92e8b8d397f6c5d0183240cd695f6d7bc4",
+      "bytes": 1401,
+      "measuredGas": "251814",
+      "estimatedTransactionGas": "274546",
+      "requireTransactionFit": true,
+      "coveredBy": "tests/arena/orphan-rec.ndjson"
+    },
+    {
+      "name": "either/corner-cases/positivity-whnf",
+      "outcome": "either",
+      "sha256": "5e1c3ea262e5d57f0ffef2cbb7009a5a9020a977b648f109c0b0ab51ef3fa664",
+      "bytes": 4808,
+      "measuredGas": "813518",
+      "estimatedTransactionGas": "850762",
+      "requireTransactionFit": true,
+      "coveredBy": "tests/arena/corner-cases/positivity-whnf.ndjson"
+    },
+    {
+      "name": "either/corner-cases/proof-param-swap",
+      "outcome": "either",
+      "sha256": "25cfb47d4c80ebe1ec61931898df8e6bd8d06793aebf3ee8b2a7cd00beca1abc",
+      "bytes": 2961,
+      "measuredGas": "427650",
+      "estimatedTransactionGas": "455898",
+      "requireTransactionFit": true,
+      "coveredBy": "tests/arena/corner-cases/proof-param-swap.ndjson"
+    },
+    {
+      "name": "good/corner-cases/proof-param-ok",
+      "outcome": "accept",
+      "sha256": "7f9b3c07a64b441f8dd0f7dd2912274241fdb17118953fb089f796fdd1590af4",
+      "bytes": 2961,
+      "measuredGas": "2046034",
+      "estimatedTransactionGas": "2074282",
+      "requireTransactionFit": true,
+      "coveredBy": "tests/arena/corner-cases/proof-param-ok.ndjson"
+    },
+    {
+      "name": "good/level-index-out-of-order",
+      "outcome": "accept",
+      "sha256": "7db8148079e2e8160a1a4c71258ad11b17ce18edfa84ab1e12eae937ec9538d1",
+      "bytes": 328,
+      "measuredGas": "194615",
+      "estimatedTransactionGas": "212751",
+      "requireTransactionFit": true,
+      "coveredBy": "tests/arena/level-index-out-of-order.ndjson"
+    },
+    {
+      "name": "good/sparse-name-index",
+      "outcome": "accept",
+      "sha256": "3279c9c8ae24d5b3a8433ddee5d4a421c4e15e3cd84117fb4873d1284112b96d",
+      "bytes": 292,
+      "measuredGas": "194328",
+      "estimatedTransactionGas": "212860",
+      "requireTransactionFit": true,
+      "coveredBy": "tests/arena/sparse-name-index.ndjson"
+    }
+  ],
+  "excluded": [
+    {
+      "file": "bad/nested-unused-param.ndjson",
+      "outcome": "reject",
+      "category": "evm-resource",
+      "reason": "EVM out of gas"
+    },
+    {
+      "file": "bad/perf/refute-cheap-first.ndjson",
+      "outcome": "reject",
+      "category": "evm-resource",
+      "reason": "EVM stack overflow"
+    },
+    {
+      "file": "bad/perf/refute-cheap-last.ndjson",
+      "outcome": "reject",
+      "category": "evm-resource",
+      "reason": "EVM stack overflow"
+    },
+    {
+      "file": "bad/proj-of-stuck-prop.ndjson",
+      "outcome": "reject",
+      "category": "evm-resource",
+      "reason": "EVM out of gas"
+    },
+    {
+      "file": "bad/proj-of-subst-prop.ndjson",
+      "outcome": "reject",
+      "category": "evm-resource",
+      "reason": "EVM out of gas"
+    },
+    {
+      "file": "bad/rec-missing-ih.ndjson",
+      "outcome": "reject",
+      "category": "evm-resource",
+      "reason": "EVM out of gas"
+    },
+    {
+      "file": "bad/rec-of-subst-prop.ndjson",
+      "outcome": "reject",
+      "category": "evm-resource",
+      "reason": "EVM out of gas"
+    },
+    {
+      "file": "bad/tutorial/141_falseFromUnsafe.ndjson",
+      "outcome": "reject",
+      "category": "unsupported",
+      "reason": "unsupported feature"
+    },
+    {
+      "file": "bad/tutorial/142_falseFromPartial.ndjson",
+      "outcome": "reject",
+      "category": "unsupported",
+      "reason": "unsupported feature"
+    },
+    {
+      "file": "either/corner-cases/alg-conv-trans-acc-left.ndjson",
+      "outcome": "either",
+      "category": "evm-resource",
+      "reason": "EVM out of gas"
+    },
+    {
+      "file": "either/corner-cases/alg-conv-trans-acc-right.ndjson",
+      "outcome": "either",
+      "category": "evm-resource",
+      "reason": "EVM out of gas"
+    },
+    {
+      "file": "either/corner-cases/alg-conv-trans-acc.ndjson",
+      "outcome": "either",
+      "category": "evm-resource",
+      "reason": "EVM out of gas"
+    },
+    {
+      "file": "either/corner-cases/alg-conv-trans-quot-left.ndjson",
+      "outcome": "either",
+      "category": "evm-resource",
+      "reason": "EVM out of gas"
+    },
+    {
+      "file": "either/corner-cases/alg-conv-trans-quot.ndjson",
+      "outcome": "either",
+      "category": "evm-resource",
+      "reason": "EVM out of gas"
+    },
+    {
+      "file": "either/corner-cases/subject-reduction-redex.ndjson",
+      "outcome": "either",
+      "category": "evm-resource",
+      "reason": "EVM out of gas"
+    },
+    {
+      "file": "either/corner-cases/subject-reduction-reduct.ndjson",
+      "outcome": "either",
+      "category": "evm-resource",
+      "reason": "EVM out of gas"
+    },
+    {
+      "file": "good/init-prelude.ndjson",
+      "outcome": "accept",
+      "category": "size",
+      "reason": "entrypoint size guard (3714854 > 512000 bytes)"
+    },
+    {
+      "file": "good/perf/app-lam.ndjson",
+      "outcome": "accept",
+      "category": "size",
+      "reason": "entrypoint size guard (1276513 > 512000 bytes)"
+    },
+    {
+      "file": "good/perf/args-before-unfold.ndjson",
+      "outcome": "accept",
+      "category": "evm-resource",
+      "reason": "EVM stack overflow"
+    },
+    {
+      "file": "good/perf/beta-ladder.ndjson",
+      "outcome": "accept",
+      "category": "calldata",
+      "reason": "calldata floor/intrinsic gas exceeds execution cap"
+    },
+    {
+      "file": "good/perf/church-numerals.ndjson",
+      "outcome": "accept",
+      "category": "evm-resource",
+      "reason": "EVM out of gas"
+    },
+    {
+      "file": "good/perf/discarded-argument-match.ndjson",
+      "outcome": "accept",
+      "category": "evm-resource",
+      "reason": "EVM out of gas"
+    },
+    {
+      "file": "good/perf/discarded-argument.ndjson",
+      "outcome": "accept",
+      "category": "evm-resource",
+      "reason": "EVM stack overflow"
+    },
+    {
+      "file": "good/perf/folded-constant-first.ndjson",
+      "outcome": "accept",
+      "category": "evm-resource",
+      "reason": "EVM stack overflow"
+    },
+    {
+      "file": "good/perf/folded-constant-last.ndjson",
+      "outcome": "accept",
+      "category": "evm-resource",
+      "reason": "EVM stack overflow"
+    },
+    {
+      "file": "good/perf/grind-ring-5.ndjson",
+      "outcome": "accept",
+      "category": "size",
+      "reason": "entrypoint size guard (10184724 > 512000 bytes)"
+    },
+    {
+      "file": "good/perf/irrelevance-before-evaluation.ndjson",
+      "outcome": "accept",
+      "category": "evm-resource",
+      "reason": "EVM stack overflow"
+    },
+    {
+      "file": "good/perf/let-ladder.ndjson",
+      "outcome": "accept",
+      "category": "calldata",
+      "reason": "calldata floor/intrinsic gas exceeds execution cap"
+    },
+    {
+      "file": "good/perf/magma-list-deep-n21.ndjson",
+      "outcome": "accept",
+      "category": "size",
+      "reason": "entrypoint size guard (1171189 > 512000 bytes)"
+    },
+    {
+      "file": "good/perf/magma-list-deep-n36.ndjson",
+      "outcome": "accept",
+      "category": "size",
+      "reason": "entrypoint size guard (1226251 > 512000 bytes)"
+    },
+    {
+      "file": "good/perf/magma-list-pair-n21.ndjson",
+      "outcome": "accept",
+      "category": "size",
+      "reason": "entrypoint size guard (595800 > 512000 bytes)"
+    },
+    {
+      "file": "good/perf/magma-list-pair-n7.ndjson",
+      "outcome": "accept",
+      "category": "size",
+      "reason": "entrypoint size guard (596351 > 512000 bytes)"
+    },
+    {
+      "file": "good/perf/magma-string-n4.ndjson",
+      "outcome": "accept",
+      "category": "size",
+      "reason": "entrypoint size guard (17248623 > 512000 bytes)"
+    },
+    {
+      "file": "good/perf/magma-string-pair-n9.ndjson",
+      "outcome": "accept",
+      "category": "size",
+      "reason": "entrypoint size guard (17250845 > 512000 bytes)"
+    },
+    {
+      "file": "good/perf/repeated-subproblem.ndjson",
+      "outcome": "accept",
+      "category": "evm-resource",
+      "reason": "EVM out of gas"
+    },
+    {
+      "file": "good/perf/shared-subterm.ndjson",
+      "outcome": "accept",
+      "category": "evm-resource",
+      "reason": "EVM stack overflow"
+    },
+    {
+      "file": "good/perf/shift-cascade.ndjson",
+      "outcome": "accept",
+      "category": "evm-resource",
+      "reason": "EVM out of gas"
+    },
+    {
+      "file": "good/perf/unroll-versus-evaluate.ndjson",
+      "outcome": "accept",
+      "category": "evm-resource",
+      "reason": "EVM stack overflow"
+    },
+    {
+      "file": "good/tutorial/045_rbTreeDef.ndjson",
+      "outcome": "accept",
+      "category": "evm-resource",
+      "reason": "EVM out of gas"
+    },
+    {
+      "file": "good/tutorial/071_rbTreeRef.ndjson",
+      "outcome": "accept",
+      "category": "evm-resource",
+      "reason": "EVM out of gas"
+    },
+    {
+      "file": "good/tutorial/079_prodRecEqns.ndjson",
+      "outcome": "accept",
+      "category": "evm-resource",
+      "reason": "EVM out of gas"
+    },
+    {
+      "file": "good/tutorial/080_nRecReduction.ndjson",
+      "outcome": "accept",
+      "category": "evm-resource",
+      "reason": "EVM out of gas"
+    },
+    {
+      "file": "good/tutorial/081_listRecReduction.ndjson",
+      "outcome": "accept",
+      "category": "evm-resource",
+      "reason": "EVM out of gas"
+    },
+    {
+      "file": "good/tutorial/082_RBTree.id_spec.ndjson",
+      "outcome": "accept",
+      "category": "evm-resource",
+      "reason": "EVM out of gas"
+    },
+    {
+      "file": "good/tutorial/125_accRecReduction.ndjson",
+      "outcome": "accept",
+      "category": "evm-resource",
+      "reason": "EVM out of gas"
+    }
+  ]
+}

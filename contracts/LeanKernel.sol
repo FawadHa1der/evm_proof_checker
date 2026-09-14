@@ -408,7 +408,8 @@ contract LeanKernel {
         }
         for (uint256 i = 1; i < nLv; i++) {
             uint256 t = _lt(m, i);
-            bool bad;
+            // Unknown tags must not reach reducers that assume max/imax.
+            bool bad = t > L_PARAM;
             if (t == L_SUCC) bad = _la(m, i) >= nLv;
             else if (t == L_MAX || t == L_IMAX) bad = _la(m, i) >= nLv || _lb(m, i) >= nLv;
             else if (t == L_PARAM) bad = _la(m, i) >= nNm;

@@ -27,7 +27,8 @@ async function main() {
   console.log(`verdict: ${VERDICT[Number(verdict)]} (decl ${failedDecl}, ${REASONS[Number(reason)] || reason})` +
     (gas ? `, estimated gas ${gas}` : ''));
   if (gas && gas > EIP7825_TX_GAS_CAP) {
-    console.warn(`warning: estimated gas exceeds the EIP-7825 per-transaction cap (${EIP7825_TX_GAS_CAP})`);
+    console.warn(`warning: direct pure-kernel estimate exceeds the execution-gas target (${EIP7825_TX_GAS_CAP}); ` +
+      'confirm the target chain rules. This is not a state-gas estimate for registry submission.');
   }
 
   if (process.env.SUBMIT && process.env.REGISTRY && process.env.PRIVATE_KEY) {

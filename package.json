@@ -6,7 +6,8 @@
   "type": "commonjs",
   "scripts": {
     "gen": "node tools/gen_tests.js",
-    "test": "node test/run.js",
+    "test": "node --test test/tooling.test.js && node test/run.js",
+    "test:tools": "node --test test/tooling.test.js",
     "test:arena": "node tools/run-arena-tests.js",
     "fuzz": "node tools/fuzz.js",
     "size": "node tools/build.js",
@@ -20,6 +21,7 @@
     "@ethereumjs/util": "^9.1.0",
     "@ethereumjs/vm": "^8.1.1",
     "ethers": "^6.13.4",
-    "solc": "0.8.28"
+    "solc": "0.8.28",
+    "yaml": "2.9.0"
   }
 }

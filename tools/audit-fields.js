@@ -22,9 +22,10 @@
 const fs = require('fs');
 const path = require('path');
 const { ethers } = require('ethers');
-const { parseNdjson, encodeForChain, KERNEL_ABI, VERDICT, REASONS } = require('./lib');
+const { parseNdjson, encodeForChain, KERNEL_ABI, VERDICT } = require('./lib');
+const { normalizeResult } = require('./checker');
 const { build } = require('./build');
-const { makeVm, installKernel, callContract, bytesToHex } = require('./evm');
+const { makeVm, installKernel, callContract } = require('./evm');
 
 const args = process.argv.slice(2);
 const opt = (n, d) => {
@@ -84,9 +85,9 @@ async function main() {
     let r;
     try { r = await callContract(vm, addr, cd); }
     catch (e) { return { v: 'FAULT', reason: 'throw: ' + String(e.message).slice(0, 60) }; }
-    if (r.execResult.exceptionError) return { v: 'FAULT', reason: r.execResult.exceptionError.error };
-    const [v, d, reason] = iface.decodeFunctionResult('check', bytesToHex(r.execResult.returnValue));
-    return { v: VERDICT[Number(v)], decl: Number(d), reason: REASONS[Number(reason)] || String(reason) };
+    const result = normalizeResult(r, iface);
+    return { v: result.verdict === 3 ? 'FAULT' : VERDICT[result.verdict],
+      decl: Number(result.failedDecl), reason: result.reason };
   }
 
   const sane = await run(base);

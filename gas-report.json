@@ -1,14 +1,23 @@
 {
-  "sourceHash": "95d3d5d2d3d2c6f9257e5b91d07696d305a3b8826a50b7cf0fd788c21422cdfc",
+  "sourceHash": "af940dbae8965f2cf36eeca91cc85c02aeec9e05d253c6094950b1346b05cf97",
+  "compiler": {
+    "version": "0.8.28+commit.7893614a.Emscripten.clang",
+    "evmVersion": "cancun",
+    "viaIR": true,
+    "optimizerRuns": 1
+  },
+  "executionModel": "Cancun EVM with state-injected runtime code",
   "budgets": {
     "eip170CodeSize": "24576",
-    "eip7907TargetCodeSize": "65536",
-    "eip7825TxGasCap": "16777216"
+    "eip7954TargetCodeSize": "65536",
+    "eip7954TargetInitcodeSize": "131072",
+    "eip7825TxGasCap": "16777216",
+    "transactionModel": "glamsterdam-draft-2026-09-11-direct-kernel"
   },
   "artifacts": {
     "LeanKernel": {
-      "deployedSize": 61604,
-      "initcodeSize": 61630
+      "deployedSize": 61609,
+      "initcodeSize": 61635
     },
     "TheoremRegistry": {
       "deployedSize": 1321,
@@ -16,22 +25,35 @@
     }
   },
   "summary": {
-    "tests": 161,
-    "passed": 161,
+    "tests": 313,
+    "passed": 313,
     "failed": 0,
-    "maxGas": "1532438800",
-    "txCapHeadroomAtMaxGas": "-1515661584",
+    "eitherChecked": 8,
+    "transactionCandidates": 303,
+    "maxGas": "1532439016",
+    "txCapHeadroomAtMaxGas": "-1515661800",
     "maxCalldataBytes": 202308
   },
-  "sizeBytes": 61604,
+  "sizeBytes": 61609,
   "rows": [
     {
       "test": "good/001_basicDef",
       "expected": "accept",
       "got": "accept",
       "reason": "",
-      "gas": "200202",
+      "gas": "200214",
       "calldataBytes": 676,
+      "budget": {
+        "model": "glamsterdam-draft-2026-09-11-direct-kernel",
+        "calldataBytes": 676,
+        "zeroBytes": 639,
+        "intrinsicGas": "18148",
+        "calldataFloorGas": "58264",
+        "executionGas": "200214",
+        "estimatedTransactionGas": "218362",
+        "executionAllowance": "16759068",
+        "fitsTransaction": true
+      },
       "ok": true
     },
     {
@@ -39,8 +61,19 @@
       "expected": "accept",
       "got": "accept",
       "reason": "",
-      "gas": "212466",
+      "gas": "212478",
       "calldataBytes": 708,
+      "budget": {
+        "model": "glamsterdam-draft-2026-09-11-direct-kernel",
+        "calldataBytes": 708,
+        "zeroBytes": 667,
+        "intrinsicGas": "18324",
+        "calldataFloorGas": "60312",
+        "executionGas": "212478",
+        "estimatedTransactionGas": "230802",
+        "executionAllowance": "16758892",
+        "fitsTransaction": true
+      },
       "ok": true
     },
     {
@@ -50,6 +83,17 @@
       "reason": "",
       "gas": "207320",
       "calldataBytes": 676,
+      "budget": {
+        "model": "glamsterdam-draft-2026-09-11-direct-kernel",
+        "calldataBytes": 676,
+        "zeroBytes": 635,
+        "intrinsicGas": "18196",
+        "calldataFloorGas": "58264",
+        "executionGas": "207320",
+        "estimatedTransactionGas": "225516",
+        "executionAllowance": "16759020",
+        "fitsTransaction": true
+      },
       "ok": true
     },
     {
@@ -57,8 +101,19 @@
       "expected": "accept",
       "got": "accept",
       "reason": "",
-      "gas": "241855",
+      "gas": "241867",
       "calldataBytes": 804,
+      "budget": {
+        "model": "glamsterdam-draft-2026-09-11-direct-kernel",
+        "calldataBytes": 804,
+        "zeroBytes": 758,
+        "intrinsicGas": "18768",
+        "calldataFloorGas": "66456",
+        "executionGas": "241867",
+        "estimatedTransactionGas": "260635",
+        "executionAllowance": "16758448",
+        "fitsTransaction": true
+      },
       "ok": true
     },
     {
@@ -66,8 +121,19 @@
       "expected": "accept",
       "got": "accept",
       "reason": "",
-      "gas": "348705",
+      "gas": "348717",
       "calldataBytes": 1124,
+      "budget": {
+        "model": "glamsterdam-draft-2026-09-11-direct-kernel",
+        "calldataBytes": 1124,
+        "zeroBytes": 1043,
+        "intrinsicGas": "20468",
+        "calldataFloorGas": "86936",
+        "executionGas": "348717",
+        "estimatedTransactionGas": "369185",
+        "executionAllowance": "16756748",
+        "fitsTransaction": true
+      },
       "ok": true
     },
     {
@@ -75,8 +141,19 @@
       "expected": "accept",
       "got": "accept",
       "reason": "",
-      "gas": "383201",
+      "gas": "383213",
       "calldataBytes": 1156,
+      "budget": {
+        "model": "glamsterdam-draft-2026-09-11-direct-kernel",
+        "calldataBytes": 1156,
+        "zeroBytes": 1071,
+        "intrinsicGas": "20644",
+        "calldataFloorGas": "88984",
+        "executionGas": "383213",
+        "estimatedTransactionGas": "403857",
+        "executionAllowance": "16756572",
+        "fitsTransaction": true
+      },
       "ok": true
     },
     {
@@ -84,8 +161,19 @@
       "expected": "accept",
       "got": "accept",
       "reason": "",
-      "gas": "373133",
+      "gas": "373169",
       "calldataBytes": 1284,
+      "budget": {
+        "model": "glamsterdam-draft-2026-09-11-direct-kernel",
+        "calldataBytes": 1284,
+        "zeroBytes": 1193,
+        "intrinsicGas": "21228",
+        "calldataFloorGas": "97176",
+        "executionGas": "373169",
+        "estimatedTransactionGas": "394397",
+        "executionAllowance": "16755988",
+        "fitsTransaction": true
+      },
       "ok": true
     },
     {
@@ -93,8 +181,19 @@
       "expected": "accept",
       "got": "accept",
       "reason": "",
-      "gas": "235687",
+      "gas": "235711",
       "calldataBytes": 708,
+      "budget": {
+        "model": "glamsterdam-draft-2026-09-11-direct-kernel",
+        "calldataBytes": 708,
+        "zeroBytes": 666,
+        "intrinsicGas": "18336",
+        "calldataFloorGas": "60312",
+        "executionGas": "235711",
+        "estimatedTransactionGas": "254047",
+        "executionAllowance": "16758880",
+        "fitsTransaction": true
+      },
       "ok": true
     },
     {
@@ -102,8 +201,19 @@
       "expected": "accept",
       "got": "accept",
       "reason": "",
-      "gas": "245802",
+      "gas": "245838",
       "calldataBytes": 740,
+      "budget": {
+        "model": "glamsterdam-draft-2026-09-11-direct-kernel",
+        "calldataBytes": 740,
+        "zeroBytes": 697,
+        "intrinsicGas": "18476",
+        "calldataFloorGas": "62360",
+        "executionGas": "245838",
+        "estimatedTransactionGas": "264314",
+        "executionAllowance": "16758740",
+        "fitsTransaction": true
+      },
       "ok": true
     },
     {
@@ -111,8 +221,19 @@
       "expected": "accept",
       "got": "accept",
       "reason": "",
-      "gas": "265233",
+      "gas": "265281",
       "calldataBytes": 772,
+      "budget": {
+        "model": "glamsterdam-draft-2026-09-11-direct-kernel",
+        "calldataBytes": 772,
+        "zeroBytes": 725,
+        "intrinsicGas": "18652",
+        "calldataFloorGas": "64408",
+        "executionGas": "265281",
+        "estimatedTransactionGas": "283933",
+        "executionAllowance": "16758564",
+        "fitsTransaction": true
+      },
       "ok": true
     },
     {
@@ -120,8 +241,19 @@
       "expected": "accept",
       "got": "accept",
       "reason": "",
-      "gas": "364560",
+      "gas": "364584",
       "calldataBytes": 1252,
+      "budget": {
+        "model": "glamsterdam-draft-2026-09-11-direct-kernel",
+        "calldataBytes": 1252,
+        "zeroBytes": 1159,
+        "intrinsicGas": "21124",
+        "calldataFloorGas": "95128",
+        "executionGas": "364584",
+        "estimatedTransactionGas": "385708",
+        "executionAllowance": "16756092",
+        "fitsTransaction": true
+      },
       "ok": true
     },
     {
@@ -129,8 +261,19 @@
       "expected": "accept",
       "got": "accept",
       "reason": "",
-      "gas": "241331",
+      "gas": "241367",
       "calldataBytes": 804,
+      "budget": {
+        "model": "glamsterdam-draft-2026-09-11-direct-kernel",
+        "calldataBytes": 804,
+        "zeroBytes": 754,
+        "intrinsicGas": "18816",
+        "calldataFloorGas": "66456",
+        "executionGas": "241367",
+        "estimatedTransactionGas": "260183",
+        "executionAllowance": "16758400",
+        "fitsTransaction": true
+      },
       "ok": true
     },
     {
@@ -138,8 +281,19 @@
       "expected": "accept",
       "got": "accept",
       "reason": "",
-      "gas": "243025",
+      "gas": "243061",
       "calldataBytes": 804,
+      "budget": {
+        "model": "glamsterdam-draft-2026-09-11-direct-kernel",
+        "calldataBytes": 804,
+        "zeroBytes": 752,
+        "intrinsicGas": "18840",
+        "calldataFloorGas": "66456",
+        "executionGas": "243061",
+        "estimatedTransactionGas": "261901",
+        "executionAllowance": "16758376",
+        "fitsTransaction": true
+      },
       "ok": true
     },
     {
@@ -147,8 +301,19 @@
       "expected": "accept",
       "got": "accept",
       "reason": "",
-      "gas": "231675",
+      "gas": "231687",
       "calldataBytes": 804,
+      "budget": {
+        "model": "glamsterdam-draft-2026-09-11-direct-kernel",
+        "calldataBytes": 804,
+        "zeroBytes": 762,
+        "intrinsicGas": "18720",
+        "calldataFloorGas": "66456",
+        "executionGas": "231687",
+        "estimatedTransactionGas": "250407",
+        "executionAllowance": "16758496",
+        "fitsTransaction": true
+      },
       "ok": true
     },
     {
@@ -156,8 +321,19 @@
       "expected": "accept",
       "got": "accept",
       "reason": "",
-      "gas": "325521",
+      "gas": "325545",
       "calldataBytes": 836,
+      "budget": {
+        "model": "glamsterdam-draft-2026-09-11-direct-kernel",
+        "calldataBytes": 836,
+        "zeroBytes": 791,
+        "intrinsicGas": "18884",
+        "calldataFloorGas": "68504",
+        "executionGas": "325545",
+        "estimatedTransactionGas": "344429",
+        "executionAllowance": "16758332",
+        "fitsTransaction": true
+      },
       "ok": true
     },
     {
@@ -167,6 +343,17 @@
       "reason": "",
       "gas": "234618",
       "calldataBytes": 804,
+      "budget": {
+        "model": "glamsterdam-draft-2026-09-11-direct-kernel",
+        "calldataBytes": 804,
+        "zeroBytes": 758,
+        "intrinsicGas": "18768",
+        "calldataFloorGas": "66456",
+        "executionGas": "234618",
+        "estimatedTransactionGas": "253386",
+        "executionAllowance": "16758448",
+        "fitsTransaction": true
+      },
       "ok": true
     },
     {
@@ -176,6 +363,17 @@
       "reason": "",
       "gas": "398988",
       "calldataBytes": 1060,
+      "budget": {
+        "model": "glamsterdam-draft-2026-09-11-direct-kernel",
+        "calldataBytes": 1060,
+        "zeroBytes": 989,
+        "intrinsicGas": "20092",
+        "calldataFloorGas": "82840",
+        "executionGas": "398988",
+        "estimatedTransactionGas": "419080",
+        "executionAllowance": "16757124",
+        "fitsTransaction": true
+      },
       "ok": true
     },
     {
@@ -183,8 +381,19 @@
       "expected": "accept",
       "got": "accept",
       "reason": "",
-      "gas": "2012767",
+      "gas": "2012803",
       "calldataBytes": 4196,
+      "budget": {
+        "model": "glamsterdam-draft-2026-09-11-direct-kernel",
+        "calldataBytes": 4196,
+        "zeroBytes": 3829,
+        "intrinsicGas": "36188",
+        "calldataFloorGas": "283544",
+        "executionGas": "2012803",
+        "estimatedTransactionGas": "2048991",
+        "executionAllowance": "16741028",
+        "fitsTransaction": true
+      },
       "ok": true
     },
     {
@@ -192,8 +401,19 @@
       "expected": "accept",
       "got": "accept",
       "reason": "",
-      "gas": "3511740",
+      "gas": "3511776",
       "calldataBytes": 4324,
+      "budget": {
+        "model": "glamsterdam-draft-2026-09-11-direct-kernel",
+        "calldataBytes": 4324,
+        "zeroBytes": 3947,
+        "intrinsicGas": "36820",
+        "calldataFloorGas": "291736",
+        "executionGas": "3511776",
+        "estimatedTransactionGas": "3548596",
+        "executionAllowance": "16740396",
+        "fitsTransaction": true
+      },
       "ok": true
     },
     {
@@ -201,8 +421,19 @@
       "expected": "accept",
       "got": "accept",
       "reason": "",
-      "gas": "5055610",
+      "gas": "5055646",
       "calldataBytes": 4388,
+      "budget": {
+        "model": "glamsterdam-draft-2026-09-11-direct-kernel",
+        "calldataBytes": 4388,
+        "zeroBytes": 4005,
+        "intrinsicGas": "37148",
+        "calldataFloorGas": "295832",
+        "executionGas": "5055646",
+        "estimatedTransactionGas": "5092794",
+        "executionAllowance": "16740068",
+        "fitsTransaction": true
+      },
       "ok": true
     },
     {
@@ -210,8 +441,19 @@
       "expected": "accept",
       "got": "accept",
       "reason": "",
-      "gas": "213244",
+      "gas": "213256",
       "calldataBytes": 740,
+      "budget": {
+        "model": "glamsterdam-draft-2026-09-11-direct-kernel",
+        "calldataBytes": 740,
+        "zeroBytes": 701,
+        "intrinsicGas": "18428",
+        "calldataFloorGas": "62360",
+        "executionGas": "213256",
+        "estimatedTransactionGas": "231684",
+        "executionAllowance": "16758788",
+        "fitsTransaction": true
+      },
       "ok": true
     },
     {
@@ -219,8 +461,19 @@
       "expected": "accept",
       "got": "accept",
       "reason": "",
-      "gas": "308884",
+      "gas": "308896",
       "calldataBytes": 1156,
+      "budget": {
+        "model": "glamsterdam-draft-2026-09-11-direct-kernel",
+        "calldataBytes": 1156,
+        "zeroBytes": 1059,
+        "intrinsicGas": "20788",
+        "calldataFloorGas": "88984",
+        "executionGas": "308896",
+        "estimatedTransactionGas": "329684",
+        "executionAllowance": "16756428",
+        "fitsTransaction": true
+      },
       "ok": true
     },
     {
@@ -228,8 +481,19 @@
       "expected": "accept",
       "got": "accept",
       "reason": "",
-      "gas": "233124",
+      "gas": "233136",
       "calldataBytes": 868,
+      "budget": {
+        "model": "glamsterdam-draft-2026-09-11-direct-kernel",
+        "calldataBytes": 868,
+        "zeroBytes": 813,
+        "intrinsicGas": "19132",
+        "calldataFloorGas": "70552",
+        "executionGas": "233136",
+        "estimatedTransactionGas": "252268",
+        "executionAllowance": "16758084",
+        "fitsTransaction": true
+      },
       "ok": true
     },
     {
@@ -237,8 +501,19 @@
       "expected": "accept",
       "got": "accept",
       "reason": "",
-      "gas": "277164",
+      "gas": "277176",
       "calldataBytes": 1124,
+      "budget": {
+        "model": "glamsterdam-draft-2026-09-11-direct-kernel",
+        "calldataBytes": 1124,
+        "zeroBytes": 1025,
+        "intrinsicGas": "20684",
+        "calldataFloorGas": "86936",
+        "executionGas": "277176",
+        "estimatedTransactionGas": "297860",
+        "executionAllowance": "16756532",
+        "fitsTransaction": true
+      },
       "ok": true
     },
     {
@@ -248,6 +523,17 @@
       "reason": "",
       "gas": "486067",
       "calldataBytes": 1284,
+      "budget": {
+        "model": "glamsterdam-draft-2026-09-11-direct-kernel",
+        "calldataBytes": 1284,
+        "zeroBytes": 1193,
+        "intrinsicGas": "21228",
+        "calldataFloorGas": "97176",
+        "executionGas": "486067",
+        "estimatedTransactionGas": "507295",
+        "executionAllowance": "16755988",
+        "fitsTransaction": true
+      },
       "ok": true
     },
     {
@@ -257,6 +543,17 @@
       "reason": "",
       "gas": "610958",
       "calldataBytes": 1124,
+      "budget": {
+        "model": "glamsterdam-draft-2026-09-11-direct-kernel",
+        "calldataBytes": 1124,
+        "zeroBytes": 1052,
+        "intrinsicGas": "20360",
+        "calldataFloorGas": "86936",
+        "executionGas": "610958",
+        "estimatedTransactionGas": "631318",
+        "executionAllowance": "16756856",
+        "fitsTransaction": true
+      },
       "ok": true
     },
     {
@@ -264,8 +561,19 @@
       "expected": "reject",
       "got": "reject",
       "reason": "decl#0: value/type mismatch",
-      "gas": "219203",
+      "gas": "219215",
       "calldataBytes": 676,
+      "budget": {
+        "model": "glamsterdam-draft-2026-09-11-direct-kernel",
+        "calldataBytes": 676,
+        "zeroBytes": 641,
+        "intrinsicGas": "18124",
+        "calldataFloorGas": "58264",
+        "executionGas": "219215",
+        "estimatedTransactionGas": "237339",
+        "executionAllowance": "16759092",
+        "fitsTransaction": true
+      },
       "ok": true
     },
     {
@@ -273,8 +581,19 @@
       "expected": "reject",
       "got": "reject",
       "reason": "decl#1: binder domain is not a sort",
-      "gas": "346126",
+      "gas": "346162",
       "calldataBytes": 1380,
+      "budget": {
+        "model": "glamsterdam-draft-2026-09-11-direct-kernel",
+        "calldataBytes": 1380,
+        "zeroBytes": 1282,
+        "intrinsicGas": "21696",
+        "calldataFloorGas": "103320",
+        "executionGas": "346162",
+        "estimatedTransactionGas": "367858",
+        "executionAllowance": "16755520",
+        "fitsTransaction": true
+      },
       "ok": true
     },
     {
@@ -282,8 +601,19 @@
       "expected": "reject",
       "got": "reject",
       "reason": "decl#1: type is not a sort",
-      "gas": "264212",
+      "gas": "264224",
       "calldataBytes": 964,
+      "budget": {
+        "model": "glamsterdam-draft-2026-09-11-direct-kernel",
+        "calldataBytes": 964,
+        "zeroBytes": 898,
+        "intrinsicGas": "19648",
+        "calldataFloorGas": "76696",
+        "executionGas": "264224",
+        "estimatedTransactionGas": "283872",
+        "executionAllowance": "16757568",
+        "fitsTransaction": true
+      },
       "ok": true
     },
     {
@@ -293,6 +623,17 @@
       "reason": "decl#0: theorem type not a Prop",
       "gas": "197872",
       "calldataBytes": 676,
+      "budget": {
+        "model": "glamsterdam-draft-2026-09-11-direct-kernel",
+        "calldataBytes": 676,
+        "zeroBytes": 639,
+        "intrinsicGas": "18148",
+        "calldataFloorGas": "58264",
+        "executionGas": "197872",
+        "estimatedTransactionGas": "216020",
+        "executionAllowance": "16759068",
+        "fitsTransaction": true
+      },
       "ok": true
     },
     {
@@ -300,8 +641,19 @@
       "expected": "reject",
       "got": "reject",
       "reason": "decl#0: duplicate universe param",
-      "gas": "192398",
+      "gas": "192410",
       "calldataBytes": 772,
+      "budget": {
+        "model": "glamsterdam-draft-2026-09-11-direct-kernel",
+        "calldataBytes": 772,
+        "zeroBytes": 725,
+        "intrinsicGas": "18652",
+        "calldataFloorGas": "64408",
+        "executionGas": "192410",
+        "estimatedTransactionGas": "211062",
+        "executionAllowance": "16758564",
+        "fitsTransaction": true
+      },
       "ok": true
     },
     {
@@ -309,8 +661,19 @@
       "expected": "reject",
       "got": "reject",
       "reason": "decl#10: value/type mismatch",
-      "gas": "4971446",
+      "gas": "4971482",
       "calldataBytes": 4196,
+      "budget": {
+        "model": "glamsterdam-draft-2026-09-11-direct-kernel",
+        "calldataBytes": 4196,
+        "zeroBytes": 3825,
+        "intrinsicGas": "36236",
+        "calldataFloorGas": "283544",
+        "executionGas": "4971482",
+        "estimatedTransactionGas": "5007718",
+        "executionAllowance": "16740980",
+        "fitsTransaction": true
+      },
       "ok": true
     },
     {
@@ -318,8 +681,19 @@
       "expected": "reject",
       "got": "reject",
       "reason": "decl#1: duplicate name",
-      "gas": "207995",
+      "gas": "208007",
       "calldataBytes": 772,
+      "budget": {
+        "model": "glamsterdam-draft-2026-09-11-direct-kernel",
+        "calldataBytes": 772,
+        "zeroBytes": 721,
+        "intrinsicGas": "18700",
+        "calldataFloorGas": "64408",
+        "executionGas": "208007",
+        "estimatedTransactionGas": "226707",
+        "executionAllowance": "16758516",
+        "fitsTransaction": true
+      },
       "ok": true
     },
     {
@@ -327,8 +701,19 @@
       "expected": "reject",
       "got": "reject",
       "reason": "decl#0: unknown constant",
-      "gas": "199761",
+      "gas": "199773",
       "calldataBytes": 708,
+      "budget": {
+        "model": "glamsterdam-draft-2026-09-11-direct-kernel",
+        "calldataBytes": 708,
+        "zeroBytes": 662,
+        "intrinsicGas": "18384",
+        "calldataFloorGas": "60312",
+        "executionGas": "199773",
+        "estimatedTransactionGas": "218157",
+        "executionAllowance": "16758832",
+        "fitsTransaction": true
+      },
       "ok": true
     },
     {
@@ -336,8 +721,19 @@
       "expected": "reject",
       "got": "reject",
       "reason": "decl#0: bvar out of range",
-      "gas": "196644",
+      "gas": "196656",
       "calldataBytes": 676,
+      "budget": {
+        "model": "glamsterdam-draft-2026-09-11-direct-kernel",
+        "calldataBytes": 676,
+        "zeroBytes": 642,
+        "intrinsicGas": "18112",
+        "calldataFloorGas": "58264",
+        "executionGas": "196656",
+        "estimatedTransactionGas": "214768",
+        "executionAllowance": "16759104",
+        "fitsTransaction": true
+      },
       "ok": true
     },
     {
@@ -345,8 +741,19 @@
       "expected": "reject",
       "got": "reject",
       "reason": "decl#0: undeclared universe param",
-      "gas": "195477",
+      "gas": "195501",
       "calldataBytes": 740,
+      "budget": {
+        "model": "glamsterdam-draft-2026-09-11-direct-kernel",
+        "calldataBytes": 740,
+        "zeroBytes": 697,
+        "intrinsicGas": "18476",
+        "calldataFloorGas": "62360",
+        "executionGas": "195501",
+        "estimatedTransactionGas": "213977",
+        "executionAllowance": "16758740",
+        "fitsTransaction": true
+      },
       "ok": true
     },
     {
@@ -354,8 +761,19 @@
       "expected": "reject",
       "got": "reject",
       "reason": "decl#1: universe count mismatch",
-      "gas": "266777",
+      "gas": "266789",
       "calldataBytes": 1060,
+      "budget": {
+        "model": "glamsterdam-draft-2026-09-11-direct-kernel",
+        "calldataBytes": 1060,
+        "zeroBytes": 985,
+        "intrinsicGas": "20140",
+        "calldataFloorGas": "82840",
+        "executionGas": "266789",
+        "estimatedTransactionGas": "286929",
+        "executionAllowance": "16757076",
+        "fitsTransaction": true
+      },
       "ok": true
     },
     {
@@ -365,6 +783,17 @@
       "reason": "decl#1: duplicate name",
       "gas": "188998",
       "calldataBytes": 676,
+      "budget": {
+        "model": "glamsterdam-draft-2026-09-11-direct-kernel",
+        "calldataBytes": 676,
+        "zeroBytes": 640,
+        "intrinsicGas": "18136",
+        "calldataFloorGas": "58264",
+        "executionGas": "188998",
+        "estimatedTransactionGas": "207134",
+        "executionAllowance": "16759080",
+        "fitsTransaction": true
+      },
       "ok": true
     },
     {
@@ -372,8 +801,19 @@
       "expected": "reject",
       "got": "reject",
       "reason": "decl#3: value/type mismatch",
-      "gas": "540205",
+      "gas": "540217",
       "calldataBytes": 1348,
+      "budget": {
+        "model": "glamsterdam-draft-2026-09-11-direct-kernel",
+        "calldataBytes": 1348,
+        "zeroBytes": 1250,
+        "intrinsicGas": "21568",
+        "calldataFloorGas": "101272",
+        "executionGas": "540217",
+        "estimatedTransactionGas": "561785",
+        "executionAllowance": "16755648",
+        "fitsTransaction": true
+      },
       "ok": true
     },
     {
@@ -383,6 +823,17 @@
       "reason": "decl#2: value/type mismatch",
       "gas": "1046483",
       "calldataBytes": 1284,
+      "budget": {
+        "model": "glamsterdam-draft-2026-09-11-direct-kernel",
+        "calldataBytes": 1284,
+        "zeroBytes": 1194,
+        "intrinsicGas": "21216",
+        "calldataFloorGas": "97176",
+        "executionGas": "1046483",
+        "estimatedTransactionGas": "1067699",
+        "executionAllowance": "16756000",
+        "fitsTransaction": true
+      },
       "ok": true
     },
     {
@@ -390,8 +841,19 @@
       "expected": "reject",
       "got": "reject",
       "reason": "decl#10: value/type mismatch",
-      "gas": "6201876",
+      "gas": "6201912",
       "calldataBytes": 4324,
+      "budget": {
+        "model": "glamsterdam-draft-2026-09-11-direct-kernel",
+        "calldataBytes": 4324,
+        "zeroBytes": 3940,
+        "intrinsicGas": "36904",
+        "calldataFloorGas": "291736",
+        "executionGas": "6201912",
+        "estimatedTransactionGas": "6238816",
+        "executionAllowance": "16740312",
+        "fitsTransaction": true
+      },
       "ok": true
     },
     {
@@ -399,8 +861,19 @@
       "expected": "accept",
       "got": "accept",
       "reason": "",
-      "gas": "493772",
+      "gas": "493796",
       "calldataBytes": 1540,
+      "budget": {
+        "model": "glamsterdam-draft-2026-09-11-direct-kernel",
+        "calldataBytes": 1540,
+        "zeroBytes": 1418,
+        "intrinsicGas": "22624",
+        "calldataFloorGas": "113560",
+        "executionGas": "493796",
+        "estimatedTransactionGas": "516420",
+        "executionAllowance": "16754592",
+        "fitsTransaction": true
+      },
       "ok": true
     },
     {
@@ -408,8 +881,19 @@
       "expected": "accept",
       "got": "accept",
       "reason": "",
-      "gas": "1295814",
+      "gas": "1295838",
       "calldataBytes": 2884,
+      "budget": {
+        "model": "glamsterdam-draft-2026-09-11-direct-kernel",
+        "calldataBytes": 2884,
+        "zeroBytes": 2634,
+        "intrinsicGas": "29536",
+        "calldataFloorGas": "199576",
+        "executionGas": "1295838",
+        "estimatedTransactionGas": "1325374",
+        "executionAllowance": "16747680",
+        "fitsTransaction": true
+      },
       "ok": true
     },
     {
@@ -417,8 +901,19 @@
       "expected": "accept",
       "got": "accept",
       "reason": "",
-      "gas": "2222245",
+      "gas": "2222269",
       "calldataBytes": 3556,
+      "budget": {
+        "model": "glamsterdam-draft-2026-09-11-direct-kernel",
+        "calldataBytes": 3556,
+        "zeroBytes": 3248,
+        "intrinsicGas": "32920",
+        "calldataFloorGas": "242584",
+        "executionGas": "2222269",
+        "estimatedTransactionGas": "2255189",
+        "executionAllowance": "16744296",
+        "fitsTransaction": true
+      },
       "ok": true
     },
     {
@@ -426,8 +921,19 @@
       "expected": "accept",
       "got": "accept",
       "reason": "",
-      "gas": "4001206",
+      "gas": "4001242",
       "calldataBytes": 5092,
+      "budget": {
+        "model": "glamsterdam-draft-2026-09-11-direct-kernel",
+        "calldataBytes": 5092,
+        "zeroBytes": 4646,
+        "intrinsicGas": "40720",
+        "calldataFloorGas": "340888",
+        "executionGas": "4001242",
+        "estimatedTransactionGas": "4041962",
+        "executionAllowance": "16736496",
+        "fitsTransaction": true
+      },
       "ok": true
     },
     {
@@ -435,8 +941,19 @@
       "expected": "accept",
       "got": "accept",
       "reason": "",
-      "gas": "2874160",
+      "gas": "2874184",
       "calldataBytes": 4708,
+      "budget": {
+        "model": "glamsterdam-draft-2026-09-11-direct-kernel",
+        "calldataBytes": 4708,
+        "zeroBytes": 4274,
+        "intrinsicGas": "39040",
+        "calldataFloorGas": "316312",
+        "executionGas": "2874184",
+        "estimatedTransactionGas": "2913224",
+        "executionAllowance": "16738176",
+        "fitsTransaction": true
+      },
       "ok": true
     },
     {
@@ -444,8 +961,19 @@
       "expected": "accept",
       "got": "accept",
       "reason": "",
-      "gas": "2368623",
+      "gas": "2368647",
       "calldataBytes": 4516,
+      "budget": {
+        "model": "glamsterdam-draft-2026-09-11-direct-kernel",
+        "calldataBytes": 4516,
+        "zeroBytes": 4136,
+        "intrinsicGas": "37624",
+        "calldataFloorGas": "304024",
+        "executionGas": "2368647",
+        "estimatedTransactionGas": "2406271",
+        "executionAllowance": "16739592",
+        "fitsTransaction": true
+      },
       "ok": true
     },
     {
@@ -453,8 +981,19 @@
       "expected": "accept",
       "got": "accept",
       "reason": "",
-      "gas": "1276137",
+      "gas": "1276161",
       "calldataBytes": 2084,
+      "budget": {
+        "model": "glamsterdam-draft-2026-09-11-direct-kernel",
+        "calldataBytes": 2084,
+        "zeroBytes": 1915,
+        "intrinsicGas": "25364",
+        "calldataFloorGas": "148376",
+        "executionGas": "1276161",
+        "estimatedTransactionGas": "1301525",
+        "executionAllowance": "16751852",
+        "fitsTransaction": true
+      },
       "ok": true
     },
     {
@@ -462,8 +1001,19 @@
       "expected": "accept",
       "got": "accept",
       "reason": "",
-      "gas": "9487088",
+      "gas": "9487136",
       "calldataBytes": 7812,
+      "budget": {
+        "model": "glamsterdam-draft-2026-09-11-direct-kernel",
+        "calldataBytes": 7812,
+        "zeroBytes": 7081,
+        "intrinsicGas": "55020",
+        "calldataFloorGas": "514968",
+        "executionGas": "9487136",
+        "estimatedTransactionGas": "9542156",
+        "executionAllowance": "16722196",
+        "fitsTransaction": true
+      },
       "ok": true
     },
     {
@@ -471,8 +1021,19 @@
       "expected": "reject",
       "got": "reject",
       "reason": "decl#1: quotient shape",
-      "gas": "358340",
+      "gas": "358352",
       "calldataBytes": 1060,
+      "budget": {
+        "model": "glamsterdam-draft-2026-09-11-direct-kernel",
+        "calldataBytes": 1060,
+        "zeroBytes": 986,
+        "intrinsicGas": "20128",
+        "calldataFloorGas": "82840",
+        "executionGas": "358352",
+        "estimatedTransactionGas": "378480",
+        "executionAllowance": "16757088",
+        "fitsTransaction": true
+      },
       "ok": true
     },
     {
@@ -480,8 +1041,19 @@
       "expected": "reject",
       "got": "reject",
       "reason": "decl#0: quotient shape",
-      "gas": "254901",
+      "gas": "254913",
       "calldataBytes": 772,
+      "budget": {
+        "model": "glamsterdam-draft-2026-09-11-direct-kernel",
+        "calldataBytes": 772,
+        "zeroBytes": 725,
+        "intrinsicGas": "18652",
+        "calldataFloorGas": "64408",
+        "executionGas": "254913",
+        "estimatedTransactionGas": "273565",
+        "executionAllowance": "16758564",
+        "fitsTransaction": true
+      },
       "ok": true
     },
     {
@@ -489,8 +1061,19 @@
       "expected": "reject",
       "got": "reject",
       "reason": "decl#1: quotient shape",
-      "gas": "606540",
+      "gas": "606552",
       "calldataBytes": 1316,
+      "budget": {
+        "model": "glamsterdam-draft-2026-09-11-direct-kernel",
+        "calldataBytes": 1316,
+        "zeroBytes": 1225,
+        "intrinsicGas": "21356",
+        "calldataFloorGas": "99224",
+        "executionGas": "606552",
+        "estimatedTransactionGas": "627908",
+        "executionAllowance": "16755860",
+        "fitsTransaction": true
+      },
       "ok": true
     },
     {
@@ -498,8 +1081,19 @@
       "expected": "reject",
       "got": "reject",
       "reason": "decl#1: inductive shape",
-      "gas": "215282",
+      "gas": "215294",
       "calldataBytes": 868,
+      "budget": {
+        "model": "glamsterdam-draft-2026-09-11-direct-kernel",
+        "calldataBytes": 868,
+        "zeroBytes": 818,
+        "intrinsicGas": "19072",
+        "calldataFloorGas": "70552",
+        "executionGas": "215294",
+        "estimatedTransactionGas": "234366",
+        "executionAllowance": "16758144",
+        "fitsTransaction": true
+      },
       "ok": true
     },
     {
@@ -507,8 +1101,19 @@
       "expected": "reject",
       "got": "reject",
       "reason": "decl#0: duplicate universe param",
-      "gas": "195046",
+      "gas": "195058",
       "calldataBytes": 836,
+      "budget": {
+        "model": "glamsterdam-draft-2026-09-11-direct-kernel",
+        "calldataBytes": 836,
+        "zeroBytes": 793,
+        "intrinsicGas": "18860",
+        "calldataFloorGas": "68504",
+        "executionGas": "195058",
+        "estimatedTransactionGas": "213918",
+        "executionAllowance": "16758356",
+        "fitsTransaction": true
+      },
       "ok": true
     },
     {
@@ -516,8 +1121,19 @@
       "expected": "reject",
       "got": "reject",
       "reason": "decl#0: inductive shape",
-      "gas": "215240",
+      "gas": "215252",
       "calldataBytes": 804,
+      "budget": {
+        "model": "glamsterdam-draft-2026-09-11-direct-kernel",
+        "calldataBytes": 804,
+        "zeroBytes": 762,
+        "intrinsicGas": "18720",
+        "calldataFloorGas": "66456",
+        "executionGas": "215252",
+        "estimatedTransactionGas": "233972",
+        "executionAllowance": "16758496",
+        "fitsTransaction": true
+      },
       "ok": true
     },
     {
@@ -525,8 +1141,19 @@
       "expected": "reject",
       "got": "reject",
       "reason": "decl#0: constructor result type",
-      "gas": "331309",
+      "gas": "331321",
       "calldataBytes": 1188,
+      "budget": {
+        "model": "glamsterdam-draft-2026-09-11-direct-kernel",
+        "calldataBytes": 1188,
+        "zeroBytes": 1111,
+        "intrinsicGas": "20676",
+        "calldataFloorGas": "91032",
+        "executionGas": "331321",
+        "estimatedTransactionGas": "351997",
+        "executionAllowance": "16756540",
+        "fitsTransaction": true
+      },
       "ok": true
     },
     {
@@ -534,8 +1161,19 @@
       "expected": "reject",
       "got": "reject",
       "reason": "decl#0: constructor result levels",
-      "gas": "248807",
+      "gas": "248843",
       "calldataBytes": 1220,
+      "budget": {
+        "model": "glamsterdam-draft-2026-09-11-direct-kernel",
+        "calldataBytes": 1220,
+        "zeroBytes": 1140,
+        "intrinsicGas": "20840",
+        "calldataFloorGas": "93080",
+        "executionGas": "248843",
+        "estimatedTransactionGas": "269683",
+        "executionAllowance": "16756376",
+        "fitsTransaction": true
+      },
       "ok": true
     },
     {
@@ -543,8 +1181,19 @@
       "expected": "reject",
       "got": "reject",
       "reason": "decl#0: positivity violation",
-      "gas": "255024",
+      "gas": "255036",
       "calldataBytes": 964,
+      "budget": {
+        "model": "glamsterdam-draft-2026-09-11-direct-kernel",
+        "calldataBytes": 964,
+        "zeroBytes": 899,
+        "intrinsicGas": "19636",
+        "calldataFloorGas": "76696",
+        "executionGas": "255036",
+        "estimatedTransactionGas": "274672",
+        "executionAllowance": "16757580",
+        "fitsTransaction": true
+      },
       "ok": true
     },
     {
@@ -554,6 +1203,17 @@
       "reason": "decl#1: constructor result type",
       "gas": "272529",
       "calldataBytes": 1092,
+      "budget": {
+        "model": "glamsterdam-draft-2026-09-11-direct-kernel",
+        "calldataBytes": 1092,
+        "zeroBytes": 1014,
+        "intrinsicGas": "20304",
+        "calldataFloorGas": "84888",
+        "executionGas": "272529",
+        "estimatedTransactionGas": "292833",
+        "executionAllowance": "16756912",
+        "fitsTransaction": true
+      },
       "ok": true
     },
     {
@@ -561,8 +1221,19 @@
       "expected": "reject",
       "got": "reject",
       "reason": "decl#1: constructor result type",
-      "gas": "240591",
+      "gas": "240603",
       "calldataBytes": 996,
+      "budget": {
+        "model": "glamsterdam-draft-2026-09-11-direct-kernel",
+        "calldataBytes": 996,
+        "zeroBytes": 924,
+        "intrinsicGas": "19848",
+        "calldataFloorGas": "78744",
+        "executionGas": "240603",
+        "estimatedTransactionGas": "260451",
+        "executionAllowance": "16757368",
+        "fitsTransaction": true
+      },
       "ok": true
     },
     {
@@ -570,8 +1241,19 @@
       "expected": "reject",
       "got": "reject",
       "reason": "decl#0: field universe too large",
-      "gas": "252966",
+      "gas": "252978",
       "calldataBytes": 932,
+      "budget": {
+        "model": "glamsterdam-draft-2026-09-11-direct-kernel",
+        "calldataBytes": 932,
+        "zeroBytes": 870,
+        "intrinsicGas": "19472",
+        "calldataFloorGas": "74648",
+        "executionGas": "252978",
+        "estimatedTransactionGas": "272450",
+        "executionAllowance": "16757744",
+        "fitsTransaction": true
+      },
       "ok": true
     },
     {
@@ -579,8 +1261,19 @@
       "expected": "reject",
       "got": "reject",
       "reason": "decl#8: projection violation",
-      "gas": "870080",
+      "gas": "870104",
       "calldataBytes": 2724,
+      "budget": {
+        "model": "glamsterdam-draft-2026-09-11-direct-kernel",
+        "calldataBytes": 2724,
+        "zeroBytes": 2490,
+        "intrinsicGas": "28704",
+        "calldataFloorGas": "189336",
+        "executionGas": "870104",
+        "estimatedTransactionGas": "898808",
+        "executionAllowance": "16748512",
+        "fitsTransaction": true
+      },
       "ok": true
     },
     {
@@ -588,8 +1281,19 @@
       "expected": "reject",
       "got": "reject",
       "reason": "decl#5: projection violation",
-      "gas": "981462",
+      "gas": "981486",
       "calldataBytes": 2692,
+      "budget": {
+        "model": "glamsterdam-draft-2026-09-11-direct-kernel",
+        "calldataBytes": 2692,
+        "zeroBytes": 2469,
+        "intrinsicGas": "28444",
+        "calldataFloorGas": "187288",
+        "executionGas": "981486",
+        "estimatedTransactionGas": "1009930",
+        "executionAllowance": "16748772",
+        "fitsTransaction": true
+      },
       "ok": true
     },
     {
@@ -597,8 +1301,19 @@
       "expected": "reject",
       "got": "reject",
       "reason": "decl#0: recursor rule invalid",
-      "gas": "988696",
+      "gas": "988720",
       "calldataBytes": 1988,
+      "budget": {
+        "model": "glamsterdam-draft-2026-09-11-direct-kernel",
+        "calldataBytes": 1988,
+        "zeroBytes": 1831,
+        "intrinsicGas": "24836",
+        "calldataFloorGas": "142232",
+        "executionGas": "988720",
+        "estimatedTransactionGas": "1013556",
+        "executionAllowance": "16752380",
+        "fitsTransaction": true
+      },
       "ok": true
     },
     {
@@ -606,8 +1321,19 @@
       "expected": "reject",
       "got": "reject",
       "reason": "decl#1: recursor shape",
-      "gas": "403800",
+      "gas": "403824",
       "calldataBytes": 2148,
+      "budget": {
+        "model": "glamsterdam-draft-2026-09-11-direct-kernel",
+        "calldataBytes": 2148,
+        "zeroBytes": 1972,
+        "intrinsicGas": "25704",
+        "calldataFloorGas": "152472",
+        "executionGas": "403824",
+        "estimatedTransactionGas": "429528",
+        "executionAllowance": "16751512",
+        "fitsTransaction": true
+      },
       "ok": true
     },
     {
@@ -615,8 +1341,19 @@
       "expected": "reject",
       "got": "reject",
       "reason": "decl#0: recursor shape",
-      "gas": "657059",
+      "gas": "657083",
       "calldataBytes": 2084,
+      "budget": {
+        "model": "glamsterdam-draft-2026-09-11-direct-kernel",
+        "calldataBytes": 2084,
+        "zeroBytes": 1915,
+        "intrinsicGas": "25364",
+        "calldataFloorGas": "148376",
+        "executionGas": "657083",
+        "estimatedTransactionGas": "682447",
+        "executionAllowance": "16751852",
+        "fitsTransaction": true
+      },
       "ok": true
     },
     {
@@ -624,8 +1361,19 @@
       "expected": "reject",
       "got": "reject",
       "reason": "decl#0: invalid K flag",
-      "gas": "440453",
+      "gas": "440477",
       "calldataBytes": 1604,
+      "budget": {
+        "model": "glamsterdam-draft-2026-09-11-direct-kernel",
+        "calldataBytes": 1604,
+        "zeroBytes": 1483,
+        "intrinsicGas": "22868",
+        "calldataFloorGas": "117656",
+        "executionGas": "440477",
+        "estimatedTransactionGas": "463345",
+        "executionAllowance": "16754348",
+        "fitsTransaction": true
+      },
       "ok": true
     },
     {
@@ -633,8 +1381,19 @@
       "expected": "reject",
       "got": "reject",
       "reason": "decl#0: elimination universe violation",
-      "gas": "476631",
+      "gas": "476643",
       "calldataBytes": 2052,
+      "budget": {
+        "model": "glamsterdam-draft-2026-09-11-direct-kernel",
+        "calldataBytes": 2052,
+        "zeroBytes": 1895,
+        "intrinsicGas": "25092",
+        "calldataFloorGas": "146328",
+        "executionGas": "476643",
+        "estimatedTransactionGas": "501735",
+        "executionAllowance": "16752124",
+        "fitsTransaction": true
+      },
       "ok": true
     },
     {
@@ -642,8 +1401,19 @@
       "expected": "reject",
       "got": "reject",
       "reason": "decl#0: nested inductive violation",
-      "gas": "202962",
+      "gas": "202974",
       "calldataBytes": 740,
+      "budget": {
+        "model": "glamsterdam-draft-2026-09-11-direct-kernel",
+        "calldataBytes": 740,
+        "zeroBytes": 701,
+        "intrinsicGas": "18428",
+        "calldataFloorGas": "62360",
+        "executionGas": "202974",
+        "estimatedTransactionGas": "221402",
+        "executionAllowance": "16758788",
+        "fitsTransaction": true
+      },
       "ok": true
     },
     {
@@ -651,8 +1421,19 @@
       "expected": "decline",
       "got": "decline",
       "reason": "decl#0: unsupported feature",
-      "gas": "185244",
+      "gas": "185256",
       "calldataBytes": 676,
+      "budget": {
+        "model": "glamsterdam-draft-2026-09-11-direct-kernel",
+        "calldataBytes": 676,
+        "zeroBytes": 639,
+        "intrinsicGas": "18148",
+        "calldataFloorGas": "58264",
+        "executionGas": "185256",
+        "estimatedTransactionGas": "203404",
+        "executionAllowance": "16759068",
+        "fitsTransaction": true
+      },
       "ok": true
     },
     {
@@ -660,8 +1441,19 @@
       "expected": "reject",
       "got": "reject",
       "reason": "decl#11: projection violation",
-      "gas": "905893",
+      "gas": "905917",
       "calldataBytes": 3044,
+      "budget": {
+        "model": "glamsterdam-draft-2026-09-11-direct-kernel",
+        "calldataBytes": 3044,
+        "zeroBytes": 2776,
+        "intrinsicGas": "30392",
+        "calldataFloorGas": "209816",
+        "executionGas": "905917",
+        "estimatedTransactionGas": "936309",
+        "executionAllowance": "16746824",
+        "fitsTransaction": true
+      },
       "ok": true
     },
     {
@@ -669,8 +1461,19 @@
       "expected": "reject",
       "got": "reject",
       "reason": "decl#11: projection violation",
-      "gas": "905893",
+      "gas": "905917",
       "calldataBytes": 3044,
+      "budget": {
+        "model": "glamsterdam-draft-2026-09-11-direct-kernel",
+        "calldataBytes": 3044,
+        "zeroBytes": 2776,
+        "intrinsicGas": "30392",
+        "calldataFloorGas": "209816",
+        "executionGas": "905917",
+        "estimatedTransactionGas": "936309",
+        "executionAllowance": "16746824",
+        "fitsTransaction": true
+      },
       "ok": true
     },
     {
@@ -678,8 +1481,19 @@
       "expected": "reject",
       "got": "reject",
       "reason": "decl#11: projection violation",
-      "gas": "905893",
+      "gas": "905917",
       "calldataBytes": 3044,
+      "budget": {
+        "model": "glamsterdam-draft-2026-09-11-direct-kernel",
+        "calldataBytes": 3044,
+        "zeroBytes": 2776,
+        "intrinsicGas": "30392",
+        "calldataFloorGas": "209816",
+        "executionGas": "905917",
+        "estimatedTransactionGas": "936309",
+        "executionAllowance": "16746824",
+        "fitsTransaction": true
+      },
       "ok": true
     },
     {
@@ -687,8 +1501,19 @@
       "expected": "accept",
       "got": "accept",
       "reason": "",
-      "gas": "2104637",
+      "gas": "2104673",
       "calldataBytes": 5636,
+      "budget": {
+        "model": "glamsterdam-draft-2026-09-11-direct-kernel",
+        "calldataBytes": 5636,
+        "zeroBytes": 5109,
+        "intrinsicGas": "43868",
+        "calldataFloorGas": "375704",
+        "executionGas": "2104673",
+        "estimatedTransactionGas": "2148541",
+        "executionAllowance": "16733348",
+        "fitsTransaction": true
+      },
       "ok": true
     },
     {
@@ -696,8 +1521,19 @@
       "expected": "accept",
       "got": "accept",
       "reason": "",
-      "gas": "1690406",
+      "gas": "1690442",
       "calldataBytes": 5092,
+      "budget": {
+        "model": "glamsterdam-draft-2026-09-11-direct-kernel",
+        "calldataBytes": 5092,
+        "zeroBytes": 4604,
+        "intrinsicGas": "41224",
+        "calldataFloorGas": "340888",
+        "executionGas": "1690442",
+        "estimatedTransactionGas": "1731666",
+        "executionAllowance": "16735992",
+        "fitsTransaction": true
+      },
       "ok": true
     },
     {
@@ -705,8 +1541,19 @@
       "expected": "accept",
       "got": "accept",
       "reason": "",
-      "gas": "2106291",
+      "gas": "2106327",
       "calldataBytes": 5636,
+      "budget": {
+        "model": "glamsterdam-draft-2026-09-11-direct-kernel",
+        "calldataBytes": 5636,
+        "zeroBytes": 5105,
+        "intrinsicGas": "43916",
+        "calldataFloorGas": "375704",
+        "executionGas": "2106327",
+        "estimatedTransactionGas": "2150243",
+        "executionAllowance": "16733300",
+        "fitsTransaction": true
+      },
       "ok": true
     },
     {
@@ -714,8 +1561,19 @@
       "expected": "reject",
       "got": "reject",
       "reason": "decl#17: value/type mismatch",
-      "gas": "7651211",
+      "gas": "7651247",
       "calldataBytes": 5636,
+      "budget": {
+        "model": "glamsterdam-draft-2026-09-11-direct-kernel",
+        "calldataBytes": 5636,
+        "zeroBytes": 5109,
+        "intrinsicGas": "43868",
+        "calldataFloorGas": "375704",
+        "executionGas": "7651247",
+        "estimatedTransactionGas": "7695115",
+        "executionAllowance": "16733348",
+        "fitsTransaction": true
+      },
       "ok": true
     },
     {
@@ -723,8 +1581,19 @@
       "expected": "accept",
       "got": "accept",
       "reason": "",
-      "gas": "1679604",
+      "gas": "1679628",
       "calldataBytes": 4900,
+      "budget": {
+        "model": "glamsterdam-draft-2026-09-11-direct-kernel",
+        "calldataBytes": 4900,
+        "zeroBytes": 4461,
+        "intrinsicGas": "39868",
+        "calldataFloorGas": "328600",
+        "executionGas": "1679628",
+        "estimatedTransactionGas": "1719496",
+        "executionAllowance": "16737348",
+        "fitsTransaction": true
+      },
       "ok": true
     },
     {
@@ -732,8 +1601,19 @@
       "expected": "accept",
       "got": "accept",
       "reason": "",
-      "gas": "1680287",
+      "gas": "1680311",
       "calldataBytes": 4900,
+      "budget": {
+        "model": "glamsterdam-draft-2026-09-11-direct-kernel",
+        "calldataBytes": 4900,
+        "zeroBytes": 4461,
+        "intrinsicGas": "39868",
+        "calldataFloorGas": "328600",
+        "executionGas": "1680311",
+        "estimatedTransactionGas": "1720179",
+        "executionAllowance": "16737348",
+        "fitsTransaction": true
+      },
       "ok": true
     },
     {
@@ -741,8 +1621,19 @@
       "expected": "accept",
       "got": "accept",
       "reason": "",
-      "gas": "1679679",
+      "gas": "1679703",
       "calldataBytes": 4900,
+      "budget": {
+        "model": "glamsterdam-draft-2026-09-11-direct-kernel",
+        "calldataBytes": 4900,
+        "zeroBytes": 4462,
+        "intrinsicGas": "39856",
+        "calldataFloorGas": "328600",
+        "executionGas": "1679703",
+        "estimatedTransactionGas": "1719559",
+        "executionAllowance": "16737360",
+        "fitsTransaction": true
+      },
       "ok": true
     },
     {
@@ -750,8 +1641,19 @@
       "expected": "accept",
       "got": "accept",
       "reason": "",
-      "gas": "1681205",
+      "gas": "1681229",
       "calldataBytes": 4900,
+      "budget": {
+        "model": "glamsterdam-draft-2026-09-11-direct-kernel",
+        "calldataBytes": 4900,
+        "zeroBytes": 4461,
+        "intrinsicGas": "39868",
+        "calldataFloorGas": "328600",
+        "executionGas": "1681229",
+        "estimatedTransactionGas": "1721097",
+        "executionAllowance": "16737348",
+        "fitsTransaction": true
+      },
       "ok": true
     },
     {
@@ -759,8 +1661,19 @@
       "expected": "accept",
       "got": "accept",
       "reason": "",
-      "gas": "1682142",
+      "gas": "1682166",
       "calldataBytes": 4900,
+      "budget": {
+        "model": "glamsterdam-draft-2026-09-11-direct-kernel",
+        "calldataBytes": 4900,
+        "zeroBytes": 4461,
+        "intrinsicGas": "39868",
+        "calldataFloorGas": "328600",
+        "executionGas": "1682166",
+        "estimatedTransactionGas": "1722034",
+        "executionAllowance": "16737348",
+        "fitsTransaction": true
+      },
       "ok": true
     },
     {
@@ -768,8 +1681,19 @@
       "expected": "accept",
       "got": "accept",
       "reason": "",
-      "gas": "1681107",
+      "gas": "1681131",
       "calldataBytes": 4900,
+      "budget": {
+        "model": "glamsterdam-draft-2026-09-11-direct-kernel",
+        "calldataBytes": 4900,
+        "zeroBytes": 4461,
+        "intrinsicGas": "39868",
+        "calldataFloorGas": "328600",
+        "executionGas": "1681131",
+        "estimatedTransactionGas": "1720999",
+        "executionAllowance": "16737348",
+        "fitsTransaction": true
+      },
       "ok": true
     },
     {
@@ -777,8 +1701,19 @@
       "expected": "reject",
       "got": "reject",
       "reason": "decl#13: value/type mismatch",
-      "gas": "1705529",
+      "gas": "1705553",
       "calldataBytes": 4900,
+      "budget": {
+        "model": "glamsterdam-draft-2026-09-11-direct-kernel",
+        "calldataBytes": 4900,
+        "zeroBytes": 4461,
+        "intrinsicGas": "39868",
+        "calldataFloorGas": "328600",
+        "executionGas": "1705553",
+        "estimatedTransactionGas": "1745421",
+        "executionAllowance": "16737348",
+        "fitsTransaction": true
+      },
       "ok": true
     },
     {
@@ -786,8 +1721,19 @@
       "expected": "reject",
       "got": "reject",
       "reason": "decl#13: value/type mismatch",
-      "gas": "1706867",
+      "gas": "1706891",
       "calldataBytes": 4900,
+      "budget": {
+        "model": "glamsterdam-draft-2026-09-11-direct-kernel",
+        "calldataBytes": 4900,
+        "zeroBytes": 4462,
+        "intrinsicGas": "39856",
+        "calldataFloorGas": "328600",
+        "executionGas": "1706891",
+        "estimatedTransactionGas": "1746747",
+        "executionAllowance": "16737360",
+        "fitsTransaction": true
+      },
       "ok": true
     },
     {
@@ -795,8 +1741,19 @@
       "expected": "accept",
       "got": "accept",
       "reason": "",
-      "gas": "1681359",
+      "gas": "1681383",
       "calldataBytes": 4836,
+      "budget": {
+        "model": "glamsterdam-draft-2026-09-11-direct-kernel",
+        "calldataBytes": 4836,
+        "zeroBytes": 4398,
+        "intrinsicGas": "39600",
+        "calldataFloorGas": "324504",
+        "executionGas": "1681383",
+        "estimatedTransactionGas": "1720983",
+        "executionAllowance": "16737616",
+        "fitsTransaction": true
+      },
       "ok": true
     },
     {
@@ -804,8 +1761,19 @@
       "expected": "accept",
       "got": "accept",
       "reason": "",
-      "gas": "1681687",
+      "gas": "1681711",
       "calldataBytes": 4836,
+      "budget": {
+        "model": "glamsterdam-draft-2026-09-11-direct-kernel",
+        "calldataBytes": 4836,
+        "zeroBytes": 4398,
+        "intrinsicGas": "39600",
+        "calldataFloorGas": "324504",
+        "executionGas": "1681711",
+        "estimatedTransactionGas": "1721311",
+        "executionAllowance": "16737616",
+        "fitsTransaction": true
+      },
       "ok": true
     },
     {
@@ -813,8 +1781,19 @@
       "expected": "accept",
       "got": "accept",
       "reason": "",
-      "gas": "1681699",
+      "gas": "1681723",
       "calldataBytes": 4836,
+      "budget": {
+        "model": "glamsterdam-draft-2026-09-11-direct-kernel",
+        "calldataBytes": 4836,
+        "zeroBytes": 4398,
+        "intrinsicGas": "39600",
+        "calldataFloorGas": "324504",
+        "executionGas": "1681723",
+        "estimatedTransactionGas": "1721323",
+        "executionAllowance": "16737616",
+        "fitsTransaction": true
+      },
       "ok": true
     },
     {
@@ -822,8 +1801,19 @@
       "expected": "reject",
       "got": "reject",
       "reason": "decl#13: value/type mismatch",
-      "gas": "1727402",
+      "gas": "1727426",
       "calldataBytes": 4836,
+      "budget": {
+        "model": "glamsterdam-draft-2026-09-11-direct-kernel",
+        "calldataBytes": 4836,
+        "zeroBytes": 4398,
+        "intrinsicGas": "39600",
+        "calldataFloorGas": "324504",
+        "executionGas": "1727426",
+        "estimatedTransactionGas": "1767026",
+        "executionAllowance": "16737616",
+        "fitsTransaction": true
+      },
       "ok": true
     },
     {
@@ -831,8 +1821,19 @@
       "expected": "reject",
       "got": "reject",
       "reason": "decl#8: positivity violation",
-      "gas": "1002238",
+      "gas": "1002262",
       "calldataBytes": 3012,
+      "budget": {
+        "model": "glamsterdam-draft-2026-09-11-direct-kernel",
+        "calldataBytes": 3012,
+        "zeroBytes": 2743,
+        "intrinsicGas": "30276",
+        "calldataFloorGas": "207768",
+        "executionGas": "1002262",
+        "estimatedTransactionGas": "1032538",
+        "executionAllowance": "16746940",
+        "fitsTransaction": true
+      },
       "ok": true
     },
     {
@@ -840,8 +1841,19 @@
       "expected": "reject",
       "got": "reject",
       "reason": "decl#4: positivity violation",
-      "gas": "407616",
+      "gas": "407628",
       "calldataBytes": 1572,
+      "budget": {
+        "model": "glamsterdam-draft-2026-09-11-direct-kernel",
+        "calldataBytes": 1572,
+        "zeroBytes": 1448,
+        "intrinsicGas": "22776",
+        "calldataFloorGas": "115608",
+        "executionGas": "407628",
+        "estimatedTransactionGas": "430404",
+        "executionAllowance": "16754440",
+        "fitsTransaction": true
+      },
       "ok": true
     },
     {
@@ -849,8 +1861,19 @@
       "expected": "reject",
       "got": "reject",
       "reason": "decl#3: positivity violation",
-      "gas": "431398",
+      "gas": "431410",
       "calldataBytes": 1540,
+      "budget": {
+        "model": "glamsterdam-draft-2026-09-11-direct-kernel",
+        "calldataBytes": 1540,
+        "zeroBytes": 1420,
+        "intrinsicGas": "22600",
+        "calldataFloorGas": "113560",
+        "executionGas": "431410",
+        "estimatedTransactionGas": "454010",
+        "executionAllowance": "16754616",
+        "fitsTransaction": true
+      },
       "ok": true
     },
     {
@@ -858,8 +1881,19 @@
       "expected": "reject",
       "got": "reject",
       "reason": "decl#8: nested inductive violation",
-      "gas": "933870",
+      "gas": "933894",
       "calldataBytes": 3172,
+      "budget": {
+        "model": "glamsterdam-draft-2026-09-11-direct-kernel",
+        "calldataBytes": 3172,
+        "zeroBytes": 2894,
+        "intrinsicGas": "31024",
+        "calldataFloorGas": "218008",
+        "executionGas": "933894",
+        "estimatedTransactionGas": "964918",
+        "executionAllowance": "16746192",
+        "fitsTransaction": true
+      },
       "ok": true
     },
     {
@@ -867,8 +1901,19 @@
       "expected": "reject",
       "got": "reject",
       "reason": "decl#11: projection violation",
-      "gas": "1114918",
+      "gas": "1114942",
       "calldataBytes": 3620,
+      "budget": {
+        "model": "glamsterdam-draft-2026-09-11-direct-kernel",
+        "calldataBytes": 3620,
+        "zeroBytes": 3292,
+        "intrinsicGas": "33416",
+        "calldataFloorGas": "246680",
+        "executionGas": "1114942",
+        "estimatedTransactionGas": "1148358",
+        "executionAllowance": "16743800",
+        "fitsTransaction": true
+      },
       "ok": true
     },
     {
@@ -876,8 +1921,79 @@
       "expected": "reject",
       "got": "reject",
       "reason": "decl#23: universe count mismatch",
-      "gas": "8181916",
+      "gas": "8181952",
       "calldataBytes": 12484,
+      "budget": {
+        "model": "glamsterdam-draft-2026-09-11-direct-kernel",
+        "calldataBytes": 12484,
+        "zeroBytes": 11198,
+        "intrinsicGas": "80368",
+        "calldataFloorGas": "813976",
+        "executionGas": "8181952",
+        "estimatedTransactionGas": "8262320",
+        "executionAllowance": "16696848",
+        "fitsTransaction": true
+      },
+      "ok": true
+    },
+    {
+      "test": "arena/corner-cases/positivity-whnf",
+      "expected": "either",
+      "got": "reject",
+      "reason": "decl#6: positivity violation",
+      "gas": "813518",
+      "calldataBytes": 4292,
+      "budget": {
+        "model": "glamsterdam-draft-2026-09-11-direct-kernel",
+        "calldataBytes": 4292,
+        "zeroBytes": 3869,
+        "intrinsicGas": "37244",
+        "calldataFloorGas": "289688",
+        "executionGas": "813518",
+        "estimatedTransactionGas": "850762",
+        "executionAllowance": "16739972",
+        "fitsTransaction": true
+      },
+      "ok": true
+    },
+    {
+      "test": "arena/corner-cases/proof-param-ok",
+      "expected": "accept",
+      "got": "accept",
+      "reason": "",
+      "gas": "2046034",
+      "calldataBytes": 2628,
+      "budget": {
+        "model": "glamsterdam-draft-2026-09-11-direct-kernel",
+        "calldataBytes": 2628,
+        "zeroBytes": 2400,
+        "intrinsicGas": "28248",
+        "calldataFloorGas": "183192",
+        "executionGas": "2046034",
+        "estimatedTransactionGas": "2074282",
+        "executionAllowance": "16748968",
+        "fitsTransaction": true
+      },
+      "ok": true
+    },
+    {
+      "test": "arena/corner-cases/proof-param-swap",
+      "expected": "either",
+      "got": "reject",
+      "reason": "decl#0: constructor result type",
+      "gas": "427650",
+      "calldataBytes": 2628,
+      "budget": {
+        "model": "glamsterdam-draft-2026-09-11-direct-kernel",
+        "calldataBytes": 2628,
+        "zeroBytes": 2400,
+        "intrinsicGas": "28248",
+        "calldataFloorGas": "183192",
+        "executionGas": "427650",
+        "estimatedTransactionGas": "455898",
+        "executionAllowance": "16748968",
+        "fitsTransaction": true
+      },
       "ok": true
     },
     {
@@ -885,8 +2001,19 @@
       "expected": "reject",
       "got": "reject",
       "reason": "decl#0: recursor shape",
-      "gas": "251802",
+      "gas": "251814",
       "calldataBytes": 1540,
+      "budget": {
+        "model": "glamsterdam-draft-2026-09-11-direct-kernel",
+        "calldataBytes": 1540,
+        "zeroBytes": 1409,
+        "intrinsicGas": "22732",
+        "calldataFloorGas": "113560",
+        "executionGas": "251814",
+        "estimatedTransactionGas": "274546",
+        "executionAllowance": "16754484",
+        "fitsTransaction": true
+      },
       "ok": true
     },
     {
@@ -894,8 +2021,19 @@
       "expected": "reject",
       "got": "reject",
       "reason": "decl#7: elimination universe violation",
-      "gas": "1038329",
+      "gas": "1038365",
       "calldataBytes": 5124,
+      "budget": {
+        "model": "glamsterdam-draft-2026-09-11-direct-kernel",
+        "calldataBytes": 5124,
+        "zeroBytes": 4658,
+        "intrinsicGas": "41088",
+        "calldataFloorGas": "342936",
+        "executionGas": "1038365",
+        "estimatedTransactionGas": "1079453",
+        "executionAllowance": "16736128",
+        "fitsTransaction": true
+      },
       "ok": true
     },
     {
@@ -903,8 +2041,19 @@
       "expected": "reject",
       "got": "reject",
       "reason": "decl#12: value/type mismatch",
-      "gas": "1330366",
+      "gas": "1330438",
       "calldataBytes": 5060,
+      "budget": {
+        "model": "glamsterdam-draft-2026-09-11-direct-kernel",
+        "calldataBytes": 5060,
+        "zeroBytes": 4587,
+        "intrinsicGas": "40916",
+        "calldataFloorGas": "338840",
+        "executionGas": "1330438",
+        "estimatedTransactionGas": "1371354",
+        "executionAllowance": "16736300",
+        "fitsTransaction": true
+      },
       "ok": true
     },
     {
@@ -912,17 +2061,39 @@
       "expected": "reject",
       "got": "reject",
       "reason": "decl#12: value/type mismatch",
-      "gas": "1329249",
+      "gas": "1329309",
       "calldataBytes": 5124,
+      "budget": {
+        "model": "glamsterdam-draft-2026-09-11-direct-kernel",
+        "calldataBytes": 5124,
+        "zeroBytes": 4640,
+        "intrinsicGas": "41304",
+        "calldataFloorGas": "342936",
+        "executionGas": "1329309",
+        "estimatedTransactionGas": "1370613",
+        "executionAllowance": "16735912",
+        "fitsTransaction": true
+      },
       "ok": true
     },
     {
-      "test": "arena-accept/level-index-out-of-order",
+      "test": "arena/level-index-out-of-order",
       "expected": "accept",
       "got": "accept",
       "reason": "",
-      "gas": "194591",
+      "gas": "194615",
       "calldataBytes": 676,
+      "budget": {
+        "model": "glamsterdam-draft-2026-09-11-direct-kernel",
+        "calldataBytes": 676,
+        "zeroBytes": 640,
+        "intrinsicGas": "18136",
+        "calldataFloorGas": "58264",
+        "executionGas": "194615",
+        "estimatedTransactionGas": "212751",
+        "executionAllowance": "16759080",
+        "fitsTransaction": true
+      },
       "ok": true
     },
     {
@@ -930,8 +2101,19 @@
       "expected": "reject",
       "got": "reject",
       "reason": "decl#3: invalid K flag",
-      "gas": "888488",
+      "gas": "888512",
       "calldataBytes": 5476,
+      "budget": {
+        "model": "glamsterdam-draft-2026-09-11-direct-kernel",
+        "calldataBytes": 5476,
+        "zeroBytes": 4947,
+        "intrinsicGas": "43252",
+        "calldataFloorGas": "365464",
+        "executionGas": "888512",
+        "estimatedTransactionGas": "931764",
+        "executionAllowance": "16733964",
+        "fitsTransaction": true
+      },
       "ok": true
     },
     {
@@ -939,8 +2121,19 @@
       "expected": "reject",
       "got": "reject",
       "reason": "decl#12: recursor rule invalid",
-      "gas": "2397681",
+      "gas": "2397705",
       "calldataBytes": 6916,
+      "budget": {
+        "model": "glamsterdam-draft-2026-09-11-direct-kernel",
+        "calldataBytes": 6916,
+        "zeroBytes": 6252,
+        "intrinsicGas": "50632",
+        "calldataFloorGas": "457624",
+        "executionGas": "2397705",
+        "estimatedTransactionGas": "2448337",
+        "executionAllowance": "16726584",
+        "fitsTransaction": true
+      },
       "ok": true
     },
     {
@@ -948,8 +2141,19 @@
       "expected": "reject",
       "got": "reject",
       "reason": "decl#0: constructor shape",
-      "gas": "252455",
+      "gas": "252467",
       "calldataBytes": 1540,
+      "budget": {
+        "model": "glamsterdam-draft-2026-09-11-direct-kernel",
+        "calldataBytes": 1540,
+        "zeroBytes": 1400,
+        "intrinsicGas": "22840",
+        "calldataFloorGas": "113560",
+        "executionGas": "252467",
+        "estimatedTransactionGas": "275307",
+        "executionAllowance": "16754376",
+        "fitsTransaction": true
+      },
       "ok": true
     },
     {
@@ -957,8 +2161,19 @@
       "expected": "reject",
       "got": "reject",
       "reason": "decl#0: recursor shape",
-      "gas": "251802",
+      "gas": "251814",
       "calldataBytes": 1540,
+      "budget": {
+        "model": "glamsterdam-draft-2026-09-11-direct-kernel",
+        "calldataBytes": 1540,
+        "zeroBytes": 1409,
+        "intrinsicGas": "22732",
+        "calldataFloorGas": "113560",
+        "executionGas": "251814",
+        "estimatedTransactionGas": "274546",
+        "executionAllowance": "16754484",
+        "fitsTransaction": true
+      },
       "ok": true
     },
     {
@@ -966,17 +2181,3019 @@
       "expected": "reject",
       "got": "reject",
       "reason": "decl#168: positivity violation",
-      "gas": "1532438800",
+      "gas": "1532439016",
       "calldataBytes": 202308,
+      "budget": {
+        "model": "glamsterdam-draft-2026-09-11-direct-kernel",
+        "calldataBytes": 202308,
+        "zeroBytes": 173346,
+        "intrinsicGas": "1171776",
+        "calldataFloorGas": "12962712",
+        "executionGas": "1532439016",
+        "estimatedTransactionGas": "1533610792",
+        "executionAllowance": "15605440",
+        "fitsTransaction": false
+      },
       "ok": true
     },
     {
-      "test": "arena-accept/sparse-name-index",
+      "test": "arena/sparse-name-index",
       "expected": "accept",
       "got": "accept",
       "reason": "",
       "gas": "194328",
       "calldataBytes": 772,
+      "budget": {
+        "model": "glamsterdam-draft-2026-09-11-direct-kernel",
+        "calldataBytes": 772,
+        "zeroBytes": 735,
+        "intrinsicGas": "18532",
+        "calldataFloorGas": "64408",
+        "executionGas": "194328",
+        "estimatedTransactionGas": "212860",
+        "executionAllowance": "16758684",
+        "fitsTransaction": true
+      },
+      "ok": true
+    },
+    {
+      "test": "upstream/bad/bogus1",
+      "expected": "reject",
+      "got": "reject",
+      "reason": "decl#19: value/type mismatch",
+      "gas": "5379486",
+      "calldataBytes": 9636,
+      "budget": {
+        "model": "glamsterdam-draft-2026-09-11-direct-kernel",
+        "calldataBytes": 9636,
+        "zeroBytes": 8682,
+        "intrinsicGas": "64992",
+        "calldataFloorGas": "631704",
+        "executionGas": "5379486",
+        "estimatedTransactionGas": "5444478",
+        "executionAllowance": "16712224",
+        "fitsTransaction": true
+      },
+      "ok": true
+    },
+    {
+      "test": "upstream/bad/ctor-num-fields",
+      "expected": "reject",
+      "got": "reject",
+      "reason": "decl#20: constructor result type",
+      "gas": "7786304",
+      "calldataBytes": 26084,
+      "budget": {
+        "model": "glamsterdam-draft-2026-09-11-direct-kernel",
+        "calldataBytes": 26084,
+        "zeroBytes": 23078,
+        "intrinsicGas": "155408",
+        "calldataFloorGas": "1684376",
+        "executionGas": "7786304",
+        "estimatedTransactionGas": "7941712",
+        "executionAllowance": "16621808",
+        "fitsTransaction": true
+      },
+      "ok": true
+    },
+    {
+      "test": "upstream/bad/k-rec-conv",
+      "expected": "reject",
+      "got": "reject",
+      "reason": "decl#19: value/type mismatch",
+      "gas": "10423423",
+      "calldataBytes": 10820,
+      "budget": {
+        "model": "glamsterdam-draft-2026-09-11-direct-kernel",
+        "calldataBytes": 10820,
+        "zeroBytes": 9719,
+        "intrinsicGas": "71492",
+        "calldataFloorGas": "707480",
+        "executionGas": "10423423",
+        "estimatedTransactionGas": "10494915",
+        "executionAllowance": "16705724",
+        "fitsTransaction": true
+      },
+      "ok": true
+    },
+    {
+      "test": "upstream/bad/large-elim-prop-bool",
+      "expected": "reject",
+      "got": "reject",
+      "reason": "decl#17: elimination universe violation",
+      "gas": "15663151",
+      "calldataBytes": 18404,
+      "budget": {
+        "model": "glamsterdam-draft-2026-09-11-direct-kernel",
+        "calldataBytes": 18404,
+        "zeroBytes": 16441,
+        "intrinsicGas": "112172",
+        "calldataFloorGas": "1192856",
+        "executionGas": "15663151",
+        "estimatedTransactionGas": "15775323",
+        "executionAllowance": "16665044",
+        "fitsTransaction": true
+      },
+      "ok": true
+    },
+    {
+      "test": "upstream/bad/proj-non-structure",
+      "expected": "reject",
+      "got": "reject",
+      "reason": "decl#12: projection violation",
+      "gas": "1257516",
+      "calldataBytes": 4260,
+      "budget": {
+        "model": "glamsterdam-draft-2026-09-11-direct-kernel",
+        "calldataBytes": 4260,
+        "zeroBytes": 3853,
+        "intrinsicGas": "36924",
+        "calldataFloorGas": "287640",
+        "executionGas": "1257516",
+        "estimatedTransactionGas": "1294440",
+        "executionAllowance": "16740292",
+        "fitsTransaction": true
+      },
+      "ok": true
+    },
+    {
+      "test": "upstream/bad/proj-of-imax-prop",
+      "expected": "reject",
+      "got": "reject",
+      "reason": "decl#30: projection violation",
+      "gas": "7023412",
+      "calldataBytes": 15332,
+      "budget": {
+        "model": "glamsterdam-draft-2026-09-11-direct-kernel",
+        "calldataBytes": 15332,
+        "zeroBytes": 13688,
+        "intrinsicGas": "96056",
+        "calldataFloorGas": "996248",
+        "executionGas": "7023412",
+        "estimatedTransactionGas": "7119468",
+        "executionAllowance": "16681160",
+        "fitsTransaction": true
+      },
+      "ok": true
+    },
+    {
+      "test": "upstream/bad/proj-of-prop",
+      "expected": "reject",
+      "got": "reject",
+      "reason": "decl#11: application argument type mismatch",
+      "gas": "1029857",
+      "calldataBytes": 3460,
+      "budget": {
+        "model": "glamsterdam-draft-2026-09-11-direct-kernel",
+        "calldataBytes": 3460,
+        "zeroBytes": 3133,
+        "intrinsicGas": "32764",
+        "calldataFloorGas": "236440",
+        "executionGas": "1029857",
+        "estimatedTransactionGas": "1062621",
+        "executionAllowance": "16744452",
+        "fitsTransaction": true
+      },
+      "ok": true
+    },
+    {
+      "test": "upstream/bad/rec-k-lie",
+      "expected": "reject",
+      "got": "reject",
+      "reason": "decl#0: invalid K flag",
+      "gas": "731747",
+      "calldataBytes": 4772,
+      "budget": {
+        "model": "glamsterdam-draft-2026-09-11-direct-kernel",
+        "calldataBytes": 4772,
+        "zeroBytes": 4294,
+        "intrinsicGas": "39824",
+        "calldataFloorGas": "320408",
+        "executionGas": "731747",
+        "estimatedTransactionGas": "771571",
+        "executionAllowance": "16737392",
+        "fitsTransaction": true
+      },
+      "ok": true
+    },
+    {
+      "test": "upstream/bad/tutorial/002_badDef",
+      "expected": "reject",
+      "got": "reject",
+      "reason": "decl#0: value/type mismatch",
+      "gas": "219215",
+      "calldataBytes": 676,
+      "budget": {
+        "model": "glamsterdam-draft-2026-09-11-direct-kernel",
+        "calldataBytes": 676,
+        "zeroBytes": 641,
+        "intrinsicGas": "18124",
+        "calldataFloorGas": "58264",
+        "executionGas": "219215",
+        "estimatedTransactionGas": "237339",
+        "executionAllowance": "16759092",
+        "fitsTransaction": true
+      },
+      "ok": true
+    },
+    {
+      "test": "upstream/bad/tutorial/009_forallSortBad",
+      "expected": "reject",
+      "got": "reject",
+      "reason": "decl#1: binder domain is not a sort",
+      "gas": "356750",
+      "calldataBytes": 1412,
+      "budget": {
+        "model": "glamsterdam-draft-2026-09-11-direct-kernel",
+        "calldataBytes": 1412,
+        "zeroBytes": 1310,
+        "intrinsicGas": "21872",
+        "calldataFloorGas": "105368",
+        "executionGas": "356750",
+        "estimatedTransactionGas": "378622",
+        "executionAllowance": "16755344",
+        "fitsTransaction": true
+      },
+      "ok": true
+    },
+    {
+      "test": "upstream/bad/tutorial/010_nonTypeType",
+      "expected": "reject",
+      "got": "reject",
+      "reason": "decl#1: type is not a sort",
+      "gas": "294901",
+      "calldataBytes": 1220,
+      "budget": {
+        "model": "glamsterdam-draft-2026-09-11-direct-kernel",
+        "calldataBytes": 1220,
+        "zeroBytes": 1119,
+        "intrinsicGas": "21092",
+        "calldataFloorGas": "93080",
+        "executionGas": "294901",
+        "estimatedTransactionGas": "315993",
+        "executionAllowance": "16756124",
+        "fitsTransaction": true
+      },
+      "ok": true
+    },
+    {
+      "test": "upstream/bad/tutorial/011_nonTypeAxiom",
+      "expected": "reject",
+      "got": "reject",
+      "reason": "decl#1: type is not a sort",
+      "gas": "290624",
+      "calldataBytes": 1188,
+      "budget": {
+        "model": "glamsterdam-draft-2026-09-11-direct-kernel",
+        "calldataBytes": 1188,
+        "zeroBytes": 1084,
+        "intrinsicGas": "21000",
+        "calldataFloorGas": "91032",
+        "executionGas": "290624",
+        "estimatedTransactionGas": "311624",
+        "executionAllowance": "16756216",
+        "fitsTransaction": true
+      },
+      "ok": true
+    },
+    {
+      "test": "upstream/bad/tutorial/012_nonPropThm",
+      "expected": "reject",
+      "got": "reject",
+      "reason": "decl#0: theorem type not a Prop",
+      "gas": "201935",
+      "calldataBytes": 708,
+      "budget": {
+        "model": "glamsterdam-draft-2026-09-11-direct-kernel",
+        "calldataBytes": 708,
+        "zeroBytes": 668,
+        "intrinsicGas": "18312",
+        "calldataFloorGas": "60312",
+        "executionGas": "201935",
+        "estimatedTransactionGas": "220247",
+        "executionAllowance": "16758904",
+        "fitsTransaction": true
+      },
+      "ok": true
+    },
+    {
+      "test": "upstream/bad/tutorial/014_selfProof",
+      "expected": "reject",
+      "got": "reject",
+      "reason": "decl#0: unknown constant",
+      "gas": "198324",
+      "calldataBytes": 740,
+      "budget": {
+        "model": "glamsterdam-draft-2026-09-11-direct-kernel",
+        "calldataBytes": 740,
+        "zeroBytes": 698,
+        "intrinsicGas": "18464",
+        "calldataFloorGas": "62360",
+        "executionGas": "198324",
+        "estimatedTransactionGas": "216788",
+        "executionAllowance": "16758752",
+        "fitsTransaction": true
+      },
+      "ok": true
+    },
+    {
+      "test": "upstream/bad/tutorial/019_tut06_bad01",
+      "expected": "reject",
+      "got": "reject",
+      "reason": "decl#0: duplicate universe param",
+      "gas": "194581",
+      "calldataBytes": 804,
+      "budget": {
+        "model": "glamsterdam-draft-2026-09-11-direct-kernel",
+        "calldataBytes": 804,
+        "zeroBytes": 756,
+        "intrinsicGas": "18792",
+        "calldataFloorGas": "66456",
+        "executionGas": "194581",
+        "estimatedTransactionGas": "213373",
+        "executionAllowance": "16758424",
+        "fitsTransaction": true
+      },
+      "ok": true
+    },
+    {
+      "test": "upstream/bad/tutorial/046_inductBadNonSort",
+      "expected": "reject",
+      "got": "reject",
+      "reason": "decl#1: inductive shape",
+      "gas": "297880",
+      "calldataBytes": 1284,
+      "budget": {
+        "model": "glamsterdam-draft-2026-09-11-direct-kernel",
+        "calldataBytes": 1284,
+        "zeroBytes": 1170,
+        "intrinsicGas": "21504",
+        "calldataFloorGas": "97176",
+        "executionGas": "297880",
+        "estimatedTransactionGas": "319384",
+        "executionAllowance": "16755712",
+        "fitsTransaction": true
+      },
+      "ok": true
+    },
+    {
+      "test": "upstream/bad/tutorial/047_inductBadNonSort2",
+      "expected": "reject",
+      "got": "reject",
+      "reason": "decl#1: inductive shape",
+      "gas": "220234",
+      "calldataBytes": 868,
+      "budget": {
+        "model": "glamsterdam-draft-2026-09-11-direct-kernel",
+        "calldataBytes": 868,
+        "zeroBytes": 798,
+        "intrinsicGas": "19312",
+        "calldataFloorGas": "70552",
+        "executionGas": "220234",
+        "estimatedTransactionGas": "239546",
+        "executionAllowance": "16757904",
+        "fitsTransaction": true
+      },
+      "ok": true
+    },
+    {
+      "test": "upstream/bad/tutorial/048_inductLevelParam",
+      "expected": "reject",
+      "got": "reject",
+      "reason": "decl#0: duplicate universe param",
+      "gas": "200934",
+      "calldataBytes": 868,
+      "budget": {
+        "model": "glamsterdam-draft-2026-09-11-direct-kernel",
+        "calldataBytes": 868,
+        "zeroBytes": 809,
+        "intrinsicGas": "19180",
+        "calldataFloorGas": "70552",
+        "executionGas": "200934",
+        "estimatedTransactionGas": "220114",
+        "executionAllowance": "16758036",
+        "fitsTransaction": true
+      },
+      "ok": true
+    },
+    {
+      "test": "upstream/bad/tutorial/049_inductTooFewParams",
+      "expected": "reject",
+      "got": "reject",
+      "reason": "decl#0: inductive shape",
+      "gas": "216799",
+      "calldataBytes": 772,
+      "budget": {
+        "model": "glamsterdam-draft-2026-09-11-direct-kernel",
+        "calldataBytes": 772,
+        "zeroBytes": 714,
+        "intrinsicGas": "18784",
+        "calldataFloorGas": "64408",
+        "executionGas": "216799",
+        "estimatedTransactionGas": "235583",
+        "executionAllowance": "16758432",
+        "fitsTransaction": true
+      },
+      "ok": true
+    },
+    {
+      "test": "upstream/bad/tutorial/050_inductWrongCtorParams",
+      "expected": "reject",
+      "got": "reject",
+      "reason": "decl#1: constructor shape",
+      "gas": "316758",
+      "calldataBytes": 1316,
+      "budget": {
+        "model": "glamsterdam-draft-2026-09-11-direct-kernel",
+        "calldataBytes": 1316,
+        "zeroBytes": 1190,
+        "intrinsicGas": "21776",
+        "calldataFloorGas": "99224",
+        "executionGas": "316758",
+        "estimatedTransactionGas": "338534",
+        "executionAllowance": "16755440",
+        "fitsTransaction": true
+      },
+      "ok": true
+    },
+    {
+      "test": "upstream/bad/tutorial/051_inductWrongCtorResParams",
+      "expected": "reject",
+      "got": "reject",
+      "reason": "decl#0: constructor result type",
+      "gas": "351699",
+      "calldataBytes": 1380,
+      "budget": {
+        "model": "glamsterdam-draft-2026-09-11-direct-kernel",
+        "calldataBytes": 1380,
+        "zeroBytes": 1257,
+        "intrinsicGas": "21996",
+        "calldataFloorGas": "103320",
+        "executionGas": "351699",
+        "estimatedTransactionGas": "373695",
+        "executionAllowance": "16755220",
+        "fitsTransaction": true
+      },
+      "ok": true
+    },
+    {
+      "test": "upstream/bad/tutorial/052_inductWrongCtorResLevel",
+      "expected": "reject",
+      "got": "reject",
+      "reason": "decl#0: constructor result levels",
+      "gas": "377205",
+      "calldataBytes": 1732,
+      "budget": {
+        "model": "glamsterdam-draft-2026-09-11-direct-kernel",
+        "calldataBytes": 1732,
+        "zeroBytes": 1588,
+        "intrinsicGas": "23656",
+        "calldataFloorGas": "125848",
+        "executionGas": "377205",
+        "estimatedTransactionGas": "400861",
+        "executionAllowance": "16753560",
+        "fitsTransaction": true
+      },
+      "ok": true
+    },
+    {
+      "test": "upstream/bad/tutorial/053_inductInIndex",
+      "expected": "reject",
+      "got": "reject",
+      "reason": "decl#1: constructor result type",
+      "gas": "286868",
+      "calldataBytes": 1252,
+      "budget": {
+        "model": "glamsterdam-draft-2026-09-11-direct-kernel",
+        "calldataBytes": 1252,
+        "zeroBytes": 1140,
+        "intrinsicGas": "21352",
+        "calldataFloorGas": "95128",
+        "executionGas": "286868",
+        "estimatedTransactionGas": "308220",
+        "executionAllowance": "16755864",
+        "fitsTransaction": true
+      },
+      "ok": true
+    },
+    {
+      "test": "upstream/bad/tutorial/054_indNeg",
+      "expected": "reject",
+      "got": "reject",
+      "reason": "decl#0: positivity violation",
+      "gas": "267743",
+      "calldataBytes": 1156,
+      "budget": {
+        "model": "glamsterdam-draft-2026-09-11-direct-kernel",
+        "calldataBytes": 1156,
+        "zeroBytes": 1064,
+        "intrinsicGas": "20728",
+        "calldataFloorGas": "88984",
+        "executionGas": "267743",
+        "estimatedTransactionGas": "288471",
+        "executionAllowance": "16756488",
+        "fitsTransaction": true
+      },
+      "ok": true
+    },
+    {
+      "test": "upstream/bad/tutorial/056_reduceCtorType.mk",
+      "expected": "reject",
+      "got": "reject",
+      "reason": "decl#1: constructor result type",
+      "gas": "350245",
+      "calldataBytes": 1700,
+      "budget": {
+        "model": "glamsterdam-draft-2026-09-11-direct-kernel",
+        "calldataBytes": 1700,
+        "zeroBytes": 1558,
+        "intrinsicGas": "23504",
+        "calldataFloorGas": "123800",
+        "executionGas": "350245",
+        "estimatedTransactionGas": "373749",
+        "executionAllowance": "16753712",
+        "fitsTransaction": true
+      },
+      "ok": true
+    },
+    {
+      "test": "upstream/bad/tutorial/057_indNegReducible",
+      "expected": "reject",
+      "got": "reject",
+      "reason": "decl#2: positivity violation",
+      "gas": "411033",
+      "calldataBytes": 1860,
+      "budget": {
+        "model": "glamsterdam-draft-2026-09-11-direct-kernel",
+        "calldataBytes": 1860,
+        "zeroBytes": 1679,
+        "intrinsicGas": "24612",
+        "calldataFloorGas": "134040",
+        "executionGas": "411033",
+        "estimatedTransactionGas": "435645",
+        "executionAllowance": "16752604",
+        "fitsTransaction": true
+      },
+      "ok": true
+    },
+    {
+      "test": "upstream/bad/tutorial/061_typeWithTooHighTypeField.mk",
+      "expected": "reject",
+      "got": "reject",
+      "reason": "decl#0: field universe too large",
+      "gas": "269883",
+      "calldataBytes": 1124,
+      "budget": {
+        "model": "glamsterdam-draft-2026-09-11-direct-kernel",
+        "calldataBytes": 1124,
+        "zeroBytes": 1018,
+        "intrinsicGas": "20768",
+        "calldataFloorGas": "86936",
+        "executionGas": "269883",
+        "estimatedTransactionGas": "290651",
+        "executionAllowance": "16756448",
+        "fitsTransaction": true
+      },
+      "ok": true
+    },
+    {
+      "test": "upstream/bad/tutorial/073_BogusRecursor",
+      "expected": "reject",
+      "got": "reject",
+      "reason": "decl#3: recursor shape",
+      "gas": "415704",
+      "calldataBytes": 1956,
+      "budget": {
+        "model": "glamsterdam-draft-2026-09-11-direct-kernel",
+        "calldataBytes": 1956,
+        "zeroBytes": 1767,
+        "intrinsicGas": "25092",
+        "calldataFloorGas": "140184",
+        "executionGas": "415704",
+        "estimatedTransactionGas": "440796",
+        "executionAllowance": "16752124",
+        "fitsTransaction": true
+      },
+      "ok": true
+    },
+    {
+      "test": "upstream/bad/tutorial/087_projOutOfRange",
+      "expected": "reject",
+      "got": "reject",
+      "reason": "decl#4: projection violation",
+      "gas": "1432825",
+      "calldataBytes": 3108,
+      "budget": {
+        "model": "glamsterdam-draft-2026-09-11-direct-kernel",
+        "calldataBytes": 3108,
+        "zeroBytes": 2830,
+        "intrinsicGas": "30768",
+        "calldataFloorGas": "213912",
+        "executionGas": "1432825",
+        "estimatedTransactionGas": "1463593",
+        "executionAllowance": "16746448",
+        "fitsTransaction": true
+      },
+      "ok": true
+    },
+    {
+      "test": "upstream/bad/tutorial/088_projNotStruct",
+      "expected": "reject",
+      "got": "reject",
+      "reason": "decl#5: projection violation",
+      "gas": "1069657",
+      "calldataBytes": 3268,
+      "budget": {
+        "model": "glamsterdam-draft-2026-09-11-direct-kernel",
+        "calldataBytes": 3268,
+        "zeroBytes": 2947,
+        "intrinsicGas": "31924",
+        "calldataFloorGas": "224152",
+        "executionGas": "1069657",
+        "estimatedTransactionGas": "1101581",
+        "executionAllowance": "16745292",
+        "fitsTransaction": true
+      },
+      "ok": true
+    },
+    {
+      "test": "upstream/bad/tutorial/090_projProp2",
+      "expected": "reject",
+      "got": "reject",
+      "reason": "decl#12: projection violation",
+      "gas": "4385304",
+      "calldataBytes": 7300,
+      "budget": {
+        "model": "glamsterdam-draft-2026-09-11-direct-kernel",
+        "calldataBytes": 7300,
+        "zeroBytes": 6570,
+        "intrinsicGas": "52960",
+        "calldataFloorGas": "482200",
+        "executionGas": "4385304",
+        "estimatedTransactionGas": "4438264",
+        "executionAllowance": "16724256",
+        "fitsTransaction": true
+      },
+      "ok": true
+    },
+    {
+      "test": "upstream/bad/tutorial/092_projProp4",
+      "expected": "reject",
+      "got": "reject",
+      "reason": "decl#12: projection violation",
+      "gas": "4424462",
+      "calldataBytes": 7300,
+      "budget": {
+        "model": "glamsterdam-draft-2026-09-11-direct-kernel",
+        "calldataBytes": 7300,
+        "zeroBytes": 6570,
+        "intrinsicGas": "52960",
+        "calldataFloorGas": "482200",
+        "executionGas": "4424462",
+        "estimatedTransactionGas": "4477422",
+        "executionAllowance": "16724256",
+        "fitsTransaction": true
+      },
+      "ok": true
+    },
+    {
+      "test": "upstream/bad/tutorial/093_projProp5",
+      "expected": "reject",
+      "got": "reject",
+      "reason": "decl#12: projection violation",
+      "gas": "4445876",
+      "calldataBytes": 7492,
+      "budget": {
+        "model": "glamsterdam-draft-2026-09-11-direct-kernel",
+        "calldataBytes": 7492,
+        "zeroBytes": 6745,
+        "intrinsicGas": "53932",
+        "calldataFloorGas": "494488",
+        "executionGas": "4445876",
+        "estimatedTransactionGas": "4499808",
+        "executionAllowance": "16723284",
+        "fitsTransaction": true
+      },
+      "ok": true
+    },
+    {
+      "test": "upstream/bad/tutorial/094_projProp6",
+      "expected": "reject",
+      "got": "reject",
+      "reason": "decl#12: projection violation",
+      "gas": "4425970",
+      "calldataBytes": 7300,
+      "budget": {
+        "model": "glamsterdam-draft-2026-09-11-direct-kernel",
+        "calldataBytes": 7300,
+        "zeroBytes": 6571,
+        "intrinsicGas": "52948",
+        "calldataFloorGas": "482200",
+        "executionGas": "4425970",
+        "estimatedTransactionGas": "4478918",
+        "executionAllowance": "16724268",
+        "fitsTransaction": true
+      },
+      "ok": true
+    },
+    {
+      "test": "upstream/bad/tutorial/096_projIndexData",
+      "expected": "reject",
+      "got": "reject",
+      "reason": "decl#13: unknown constant",
+      "gas": "1921744",
+      "calldataBytes": 5732,
+      "budget": {
+        "model": "glamsterdam-draft-2026-09-11-direct-kernel",
+        "calldataBytes": 5732,
+        "zeroBytes": 5136,
+        "intrinsicGas": "45080",
+        "calldataFloorGas": "381848",
+        "executionGas": "1921744",
+        "estimatedTransactionGas": "1966824",
+        "executionAllowance": "16732136",
+        "fitsTransaction": true
+      },
+      "ok": true
+    },
+    {
+      "test": "upstream/bad/tutorial/097_projIndexData2",
+      "expected": "reject",
+      "got": "reject",
+      "reason": "decl#13: unknown constant",
+      "gas": "1922949",
+      "calldataBytes": 5732,
+      "budget": {
+        "model": "glamsterdam-draft-2026-09-11-direct-kernel",
+        "calldataBytes": 5732,
+        "zeroBytes": 5134,
+        "intrinsicGas": "45104",
+        "calldataFloorGas": "381848",
+        "executionGas": "1922949",
+        "estimatedTransactionGas": "1968053",
+        "executionAllowance": "16732112",
+        "fitsTransaction": true
+      },
+      "ok": true
+    },
+    {
+      "test": "upstream/bad/tutorial/100_ruleKbad",
+      "expected": "reject",
+      "got": "reject",
+      "reason": "decl#9: value/type mismatch",
+      "gas": "4338238",
+      "calldataBytes": 5828,
+      "budget": {
+        "model": "glamsterdam-draft-2026-09-11-direct-kernel",
+        "calldataBytes": 5828,
+        "zeroBytes": 5262,
+        "intrinsicGas": "45104",
+        "calldataFloorGas": "387992",
+        "executionGas": "4338238",
+        "estimatedTransactionGas": "4383342",
+        "executionAllowance": "16732112",
+        "fitsTransaction": true
+      },
+      "ok": true
+    },
+    {
+      "test": "upstream/bad/tutorial/101_ruleKAcc",
+      "expected": "reject",
+      "got": "reject",
+      "reason": "decl#13: value/type mismatch",
+      "gas": "14349122",
+      "calldataBytes": 10276,
+      "budget": {
+        "model": "glamsterdam-draft-2026-09-11-direct-kernel",
+        "calldataBytes": 10276,
+        "zeroBytes": 9291,
+        "intrinsicGas": "67924",
+        "calldataFloorGas": "672664",
+        "executionGas": "14349122",
+        "estimatedTransactionGas": "14417046",
+        "executionAllowance": "16709292",
+        "fitsTransaction": true
+      },
+      "ok": true
+    },
+    {
+      "test": "upstream/bad/tutorial/105_proofIrrelevanceBad",
+      "expected": "reject",
+      "got": "reject",
+      "reason": "decl#5: value/type mismatch",
+      "gas": "3223575",
+      "calldataBytes": 4324,
+      "budget": {
+        "model": "glamsterdam-draft-2026-09-11-direct-kernel",
+        "calldataBytes": 4324,
+        "zeroBytes": 3925,
+        "intrinsicGas": "37084",
+        "calldataFloorGas": "291736",
+        "executionGas": "3223575",
+        "estimatedTransactionGas": "3260659",
+        "executionAllowance": "16740132",
+        "fitsTransaction": true
+      },
+      "ok": true
+    },
+    {
+      "test": "upstream/bad/tutorial/110_indexedUnitEta",
+      "expected": "reject",
+      "got": "reject",
+      "reason": "decl#13: value/type mismatch",
+      "gas": "4172310",
+      "calldataBytes": 6212,
+      "budget": {
+        "model": "glamsterdam-draft-2026-09-11-direct-kernel",
+        "calldataBytes": 6212,
+        "zeroBytes": 5609,
+        "intrinsicGas": "47084",
+        "calldataFloorGas": "412568",
+        "executionGas": "4172310",
+        "estimatedTransactionGas": "4219394",
+        "executionAllowance": "16730132",
+        "fitsTransaction": true
+      },
+      "ok": true
+    },
+    {
+      "test": "upstream/bad/tutorial/112_indexedStructEta",
+      "expected": "reject",
+      "got": "reject",
+      "reason": "decl#17: value/type mismatch",
+      "gas": "4688305",
+      "calldataBytes": 7204,
+      "budget": {
+        "model": "glamsterdam-draft-2026-09-11-direct-kernel",
+        "calldataBytes": 7204,
+        "zeroBytes": 6484,
+        "intrinsicGas": "52456",
+        "calldataFloorGas": "476056",
+        "executionGas": "4688305",
+        "estimatedTransactionGas": "4740761",
+        "executionAllowance": "16724760",
+        "fitsTransaction": true
+      },
+      "ok": true
+    },
+    {
+      "test": "upstream/bad/tutorial/115_funEtaBad",
+      "expected": "reject",
+      "got": "reject",
+      "reason": "decl#4: value/type mismatch",
+      "gas": "4067560",
+      "calldataBytes": 4324,
+      "budget": {
+        "model": "glamsterdam-draft-2026-09-11-direct-kernel",
+        "calldataBytes": 4324,
+        "zeroBytes": 3911,
+        "intrinsicGas": "37252",
+        "calldataFloorGas": "291736",
+        "executionGas": "4067560",
+        "estimatedTransactionGas": "4104812",
+        "executionAllowance": "16739964",
+        "fitsTransaction": true
+      },
+      "ok": true
+    },
+    {
+      "test": "upstream/bad/tutorial/116_etaRuleK",
+      "expected": "reject",
+      "got": "reject",
+      "reason": "decl#9: value/type mismatch",
+      "gas": "4912716",
+      "calldataBytes": 5828,
+      "budget": {
+        "model": "glamsterdam-draft-2026-09-11-direct-kernel",
+        "calldataBytes": 5828,
+        "zeroBytes": 5261,
+        "intrinsicGas": "45116",
+        "calldataFloorGas": "387992",
+        "executionGas": "4912716",
+        "estimatedTransactionGas": "4957832",
+        "executionAllowance": "16732100",
+        "fitsTransaction": true
+      },
+      "ok": true
+    },
+    {
+      "test": "upstream/bad/tutorial/117_etaCtor",
+      "expected": "reject",
+      "got": "reject",
+      "reason": "decl#18: value/type mismatch",
+      "gas": "4740110",
+      "calldataBytes": 7556,
+      "budget": {
+        "model": "glamsterdam-draft-2026-09-11-direct-kernel",
+        "calldataBytes": 7556,
+        "zeroBytes": 6815,
+        "intrinsicGas": "54116",
+        "calldataFloorGas": "498584",
+        "executionGas": "4740110",
+        "estimatedTransactionGas": "4794226",
+        "executionAllowance": "16723100",
+        "fitsTransaction": true
+      },
+      "ok": true
+    },
+    {
+      "test": "upstream/bad/tutorial/118_reflOccLeft",
+      "expected": "reject",
+      "got": "reject",
+      "reason": "decl#5: positivity violation",
+      "gas": "1095432",
+      "calldataBytes": 3428,
+      "budget": {
+        "model": "glamsterdam-draft-2026-09-11-direct-kernel",
+        "calldataBytes": 3428,
+        "zeroBytes": 3110,
+        "intrinsicGas": "32528",
+        "calldataFloorGas": "234392",
+        "executionGas": "1095432",
+        "estimatedTransactionGas": "1127960",
+        "executionAllowance": "16744688",
+        "fitsTransaction": true
+      },
+      "ok": true
+    },
+    {
+      "test": "upstream/bad/tutorial/119_reflOccInIndex",
+      "expected": "reject",
+      "got": "reject",
+      "reason": "decl#5: application argument type mismatch",
+      "gas": "1136212",
+      "calldataBytes": 3588,
+      "budget": {
+        "model": "glamsterdam-draft-2026-09-11-direct-kernel",
+        "calldataBytes": 3588,
+        "zeroBytes": 3251,
+        "intrinsicGas": "33396",
+        "calldataFloorGas": "244632",
+        "executionGas": "1136212",
+        "estimatedTransactionGas": "1169608",
+        "executionAllowance": "16743820",
+        "fitsTransaction": true
+      },
+      "ok": true
+    },
+    {
+      "test": "upstream/bad/tutorial/126_accRecNoEta",
+      "expected": "reject",
+      "got": "reject",
+      "reason": "decl#13: value/type mismatch",
+      "gas": "14198698",
+      "calldataBytes": 10468,
+      "budget": {
+        "model": "glamsterdam-draft-2026-09-11-direct-kernel",
+        "calldataBytes": 10468,
+        "zeroBytes": 9460,
+        "intrinsicGas": "68968",
+        "calldataFloorGas": "684952",
+        "executionGas": "14198698",
+        "estimatedTransactionGas": "14267666",
+        "executionAllowance": "16708248",
+        "fitsTransaction": true
+      },
+      "ok": true
+    },
+    {
+      "test": "upstream/bad/tutorial/133_dup_defs",
+      "expected": "reject",
+      "got": "reject",
+      "reason": "decl#1: duplicate name",
+      "gas": "202215",
+      "calldataBytes": 740,
+      "budget": {
+        "model": "glamsterdam-draft-2026-09-11-direct-kernel",
+        "calldataBytes": 740,
+        "zeroBytes": 699,
+        "intrinsicGas": "18452",
+        "calldataFloorGas": "62360",
+        "executionGas": "202215",
+        "estimatedTransactionGas": "220667",
+        "executionAllowance": "16758764",
+        "fitsTransaction": true
+      },
+      "ok": true
+    },
+    {
+      "test": "upstream/bad/tutorial/134_dup_ind_def",
+      "expected": "reject",
+      "got": "reject",
+      "reason": "decl#1: duplicate name",
+      "gas": "270827",
+      "calldataBytes": 1924,
+      "budget": {
+        "model": "glamsterdam-draft-2026-09-11-direct-kernel",
+        "calldataBytes": 1924,
+        "zeroBytes": 1773,
+        "intrinsicGas": "24508",
+        "calldataFloorGas": "138136",
+        "executionGas": "270827",
+        "estimatedTransactionGas": "295335",
+        "executionAllowance": "16752708",
+        "fitsTransaction": true
+      },
+      "ok": true
+    },
+    {
+      "test": "upstream/bad/tutorial/135_dup_ctor_def",
+      "expected": "reject",
+      "got": "reject",
+      "reason": "decl#1: duplicate name",
+      "gas": "287362",
+      "calldataBytes": 1924,
+      "budget": {
+        "model": "glamsterdam-draft-2026-09-11-direct-kernel",
+        "calldataBytes": 1924,
+        "zeroBytes": 1772,
+        "intrinsicGas": "24520",
+        "calldataFloorGas": "138136",
+        "executionGas": "287362",
+        "estimatedTransactionGas": "311882",
+        "executionAllowance": "16752696",
+        "fitsTransaction": true
+      },
+      "ok": true
+    },
+    {
+      "test": "upstream/bad/tutorial/136_dup_rec_def",
+      "expected": "reject",
+      "got": "reject",
+      "reason": "decl#1: duplicate name",
+      "gas": "311654",
+      "calldataBytes": 1924,
+      "budget": {
+        "model": "glamsterdam-draft-2026-09-11-direct-kernel",
+        "calldataBytes": 1924,
+        "zeroBytes": 1773,
+        "intrinsicGas": "24508",
+        "calldataFloorGas": "138136",
+        "executionGas": "311654",
+        "estimatedTransactionGas": "336162",
+        "executionAllowance": "16752708",
+        "fitsTransaction": true
+      },
+      "ok": true
+    },
+    {
+      "test": "upstream/bad/tutorial/137_misnamed_rec_user",
+      "expected": "reject",
+      "got": "reject",
+      "reason": "decl#0: recursor shape",
+      "gas": "315826",
+      "calldataBytes": 2212,
+      "budget": {
+        "model": "glamsterdam-draft-2026-09-11-direct-kernel",
+        "calldataBytes": 2212,
+        "zeroBytes": 2016,
+        "intrinsicGas": "26200",
+        "calldataFloorGas": "156568",
+        "executionGas": "315826",
+        "estimatedTransactionGas": "342026",
+        "executionAllowance": "16751016",
+        "fitsTransaction": true
+      },
+      "ok": true
+    },
+    {
+      "test": "upstream/bad/tutorial/138_dup_rec_def2",
+      "expected": "reject",
+      "got": "reject",
+      "reason": "decl#1: recursor shape",
+      "gas": "317062",
+      "calldataBytes": 1988,
+      "budget": {
+        "model": "glamsterdam-draft-2026-09-11-direct-kernel",
+        "calldataBytes": 1988,
+        "zeroBytes": 1826,
+        "intrinsicGas": "24896",
+        "calldataFloorGas": "142232",
+        "executionGas": "317062",
+        "estimatedTransactionGas": "341958",
+        "executionAllowance": "16752320",
+        "fitsTransaction": true
+      },
+      "ok": true
+    },
+    {
+      "test": "upstream/bad/tutorial/139_dup_ctor_rec",
+      "expected": "reject",
+      "got": "reject",
+      "reason": "decl#0: duplicate name",
+      "gas": "286085",
+      "calldataBytes": 1764,
+      "budget": {
+        "model": "glamsterdam-draft-2026-09-11-direct-kernel",
+        "calldataBytes": 1764,
+        "zeroBytes": 1623,
+        "intrinsicGas": "23748",
+        "calldataFloorGas": "127896",
+        "executionGas": "286085",
+        "estimatedTransactionGas": "309833",
+        "executionAllowance": "16753468",
+        "fitsTransaction": true
+      },
+      "ok": true
+    },
+    {
+      "test": "upstream/bad/tutorial/140_DupConCon",
+      "expected": "reject",
+      "got": "reject",
+      "reason": "decl#0: duplicate name",
+      "gas": "304963",
+      "calldataBytes": 2340,
+      "budget": {
+        "model": "glamsterdam-draft-2026-09-11-direct-kernel",
+        "calldataBytes": 2340,
+        "zeroBytes": 2138,
+        "intrinsicGas": "26784",
+        "calldataFloorGas": "164760",
+        "executionGas": "304963",
+        "estimatedTransactionGas": "331747",
+        "executionAllowance": "16750432",
+        "fitsTransaction": true
+      },
+      "ok": true
+    },
+    {
+      "test": "upstream/either/corner-cases/alg-conv-trans-quot-left-def",
+      "expected": "either",
+      "got": "accept",
+      "reason": "",
+      "gas": "15886282",
+      "calldataBytes": 8740,
+      "budget": {
+        "model": "glamsterdam-draft-2026-09-11-direct-kernel",
+        "calldataBytes": 8740,
+        "zeroBytes": 7939,
+        "intrinsicGas": "59572",
+        "calldataFloorGas": "574360",
+        "executionGas": "15886282",
+        "estimatedTransactionGas": "15945854",
+        "executionAllowance": "16717644",
+        "fitsTransaction": true
+      },
+      "ok": true
+    },
+    {
+      "test": "upstream/either/corner-cases/alg-conv-trans-quot-right",
+      "expected": "either",
+      "got": "accept",
+      "reason": "",
+      "gas": "12813513",
+      "calldataBytes": 7588,
+      "budget": {
+        "model": "glamsterdam-draft-2026-09-11-direct-kernel",
+        "calldataBytes": 7588,
+        "zeroBytes": 6887,
+        "intrinsicGas": "53764",
+        "calldataFloorGas": "500632",
+        "executionGas": "12813513",
+        "estimatedTransactionGas": "12867277",
+        "executionAllowance": "16723452",
+        "fitsTransaction": true
+      },
+      "ok": true
+    },
+    {
+      "test": "upstream/either/corner-cases/imax-right-successor",
+      "expected": "either",
+      "got": "accept",
+      "reason": "",
+      "gas": "377937",
+      "calldataBytes": 1284,
+      "budget": {
+        "model": "glamsterdam-draft-2026-09-11-direct-kernel",
+        "calldataBytes": 1284,
+        "zeroBytes": 1183,
+        "intrinsicGas": "21348",
+        "calldataFloorGas": "97176",
+        "executionGas": "377937",
+        "estimatedTransactionGas": "399285",
+        "executionAllowance": "16755868",
+        "fitsTransaction": true
+      },
+      "ok": true
+    },
+    {
+      "test": "upstream/either/corner-cases/proj-maybe-prop-past",
+      "expected": "either",
+      "got": "accept",
+      "reason": "",
+      "gas": "4129482",
+      "calldataBytes": 7076,
+      "budget": {
+        "model": "glamsterdam-draft-2026-09-11-direct-kernel",
+        "calldataBytes": 7076,
+        "zeroBytes": 6371,
+        "intrinsicGas": "51764",
+        "calldataFloorGas": "467864",
+        "executionGas": "4129482",
+        "estimatedTransactionGas": "4181246",
+        "executionAllowance": "16725452",
+        "fitsTransaction": true
+      },
+      "ok": true
+    },
+    {
+      "test": "upstream/either/corner-cases/proj-maybe-prop",
+      "expected": "either",
+      "got": "accept",
+      "reason": "",
+      "gas": "4115656",
+      "calldataBytes": 7076,
+      "budget": {
+        "model": "glamsterdam-draft-2026-09-11-direct-kernel",
+        "calldataBytes": 7076,
+        "zeroBytes": 6376,
+        "intrinsicGas": "51704",
+        "calldataFloorGas": "467864",
+        "executionGas": "4115656",
+        "estimatedTransactionGas": "4167360",
+        "executionAllowance": "16725512",
+        "fitsTransaction": true
+      },
+      "ok": true
+    },
+    {
+      "test": "upstream/either/nested-nonuniform-param",
+      "expected": "either",
+      "got": "accept",
+      "reason": "",
+      "gas": "5594886",
+      "calldataBytes": 7300,
+      "budget": {
+        "model": "glamsterdam-draft-2026-09-11-direct-kernel",
+        "calldataBytes": 7300,
+        "zeroBytes": 6608,
+        "intrinsicGas": "52504",
+        "calldataFloorGas": "482200",
+        "executionGas": "5594886",
+        "estimatedTransactionGas": "5647390",
+        "executionAllowance": "16724712",
+        "fitsTransaction": true
+      },
+      "ok": true
+    },
+    {
+      "test": "upstream/good/perf/identical-nesting",
+      "expected": "accept",
+      "got": "accept",
+      "reason": "",
+      "gas": "4253459",
+      "calldataBytes": 7588,
+      "budget": {
+        "model": "glamsterdam-draft-2026-09-11-direct-kernel",
+        "calldataBytes": 7588,
+        "zeroBytes": 6856,
+        "intrinsicGas": "54136",
+        "calldataFloorGas": "500632",
+        "executionGas": "4253459",
+        "estimatedTransactionGas": "4307595",
+        "executionAllowance": "16723080",
+        "fitsTransaction": true
+      },
+      "ok": true
+    },
+    {
+      "test": "upstream/good/proof-irrel",
+      "expected": "accept",
+      "got": "accept",
+      "reason": "",
+      "gas": "551225",
+      "calldataBytes": 1892,
+      "budget": {
+        "model": "glamsterdam-draft-2026-09-11-direct-kernel",
+        "calldataBytes": 1892,
+        "zeroBytes": 1728,
+        "intrinsicGas": "24536",
+        "calldataFloorGas": "136088",
+        "executionGas": "551225",
+        "estimatedTransactionGas": "575761",
+        "executionAllowance": "16752680",
+        "fitsTransaction": true
+      },
+      "ok": true
+    },
+    {
+      "test": "upstream/good/tutorial/001_basicDef",
+      "expected": "accept",
+      "got": "accept",
+      "reason": "",
+      "gas": "200214",
+      "calldataBytes": 676,
+      "budget": {
+        "model": "glamsterdam-draft-2026-09-11-direct-kernel",
+        "calldataBytes": 676,
+        "zeroBytes": 639,
+        "intrinsicGas": "18148",
+        "calldataFloorGas": "58264",
+        "executionGas": "200214",
+        "estimatedTransactionGas": "218362",
+        "executionAllowance": "16759068",
+        "fitsTransaction": true
+      },
+      "ok": true
+    },
+    {
+      "test": "upstream/good/tutorial/003_arrowType",
+      "expected": "accept",
+      "got": "accept",
+      "reason": "",
+      "gas": "234997",
+      "calldataBytes": 868,
+      "budget": {
+        "model": "glamsterdam-draft-2026-09-11-direct-kernel",
+        "calldataBytes": 868,
+        "zeroBytes": 800,
+        "intrinsicGas": "19288",
+        "calldataFloorGas": "70552",
+        "executionGas": "234997",
+        "estimatedTransactionGas": "254285",
+        "executionAllowance": "16757928",
+        "fitsTransaction": true
+      },
+      "ok": true
+    },
+    {
+      "test": "upstream/good/tutorial/004_dependentType",
+      "expected": "accept",
+      "got": "accept",
+      "reason": "",
+      "gas": "211383",
+      "calldataBytes": 708,
+      "budget": {
+        "model": "glamsterdam-draft-2026-09-11-direct-kernel",
+        "calldataBytes": 708,
+        "zeroBytes": 664,
+        "intrinsicGas": "18360",
+        "calldataFloorGas": "60312",
+        "executionGas": "211383",
+        "estimatedTransactionGas": "229743",
+        "executionAllowance": "16758856",
+        "fitsTransaction": true
+      },
+      "ok": true
+    },
+    {
+      "test": "upstream/good/tutorial/005_constType",
+      "expected": "accept",
+      "got": "accept",
+      "reason": "",
+      "gas": "272517",
+      "calldataBytes": 1028,
+      "budget": {
+        "model": "glamsterdam-draft-2026-09-11-direct-kernel",
+        "calldataBytes": 1028,
+        "zeroBytes": 948,
+        "intrinsicGas": "20072",
+        "calldataFloorGas": "80792",
+        "executionGas": "272517",
+        "estimatedTransactionGas": "292589",
+        "executionAllowance": "16757144",
+        "fitsTransaction": true
+      },
+      "ok": true
+    },
+    {
+      "test": "upstream/good/tutorial/006_betaReduction",
+      "expected": "accept",
+      "got": "accept",
+      "reason": "",
+      "gas": "383470",
+      "calldataBytes": 1412,
+      "budget": {
+        "model": "glamsterdam-draft-2026-09-11-direct-kernel",
+        "calldataBytes": 1412,
+        "zeroBytes": 1294,
+        "intrinsicGas": "22064",
+        "calldataFloorGas": "105368",
+        "executionGas": "383470",
+        "estimatedTransactionGas": "405534",
+        "executionAllowance": "16755152",
+        "fitsTransaction": true
+      },
+      "ok": true
+    },
+    {
+      "test": "upstream/good/tutorial/007_betaReduction2",
+      "expected": "accept",
+      "got": "accept",
+      "reason": "",
+      "gas": "417966",
+      "calldataBytes": 1444,
+      "budget": {
+        "model": "glamsterdam-draft-2026-09-11-direct-kernel",
+        "calldataBytes": 1444,
+        "zeroBytes": 1323,
+        "intrinsicGas": "22228",
+        "calldataFloorGas": "107416",
+        "executionGas": "417966",
+        "estimatedTransactionGas": "440194",
+        "executionAllowance": "16754988",
+        "fitsTransaction": true
+      },
+      "ok": true
+    },
+    {
+      "test": "upstream/good/tutorial/008_forallSortWhnf",
+      "expected": "accept",
+      "got": "accept",
+      "reason": "",
+      "gas": "385379",
+      "calldataBytes": 1380,
+      "budget": {
+        "model": "glamsterdam-draft-2026-09-11-direct-kernel",
+        "calldataBytes": 1380,
+        "zeroBytes": 1280,
+        "intrinsicGas": "21720",
+        "calldataFloorGas": "103320",
+        "executionGas": "385379",
+        "estimatedTransactionGas": "407099",
+        "executionAllowance": "16755496",
+        "fitsTransaction": true
+      },
+      "ok": true
+    },
+    {
+      "test": "upstream/good/tutorial/013_thmProof",
+      "expected": "accept",
+      "got": "accept",
+      "reason": "",
+      "gas": "367192",
+      "calldataBytes": 1380,
+      "budget": {
+        "model": "glamsterdam-draft-2026-09-11-direct-kernel",
+        "calldataBytes": 1380,
+        "zeroBytes": 1269,
+        "intrinsicGas": "21852",
+        "calldataFloorGas": "103320",
+        "executionGas": "367192",
+        "estimatedTransactionGas": "389044",
+        "executionAllowance": "16755364",
+        "fitsTransaction": true
+      },
+      "ok": true
+    },
+    {
+      "test": "upstream/good/tutorial/015_levelComp1",
+      "expected": "accept",
+      "got": "accept",
+      "reason": "",
+      "gas": "235711",
+      "calldataBytes": 708,
+      "budget": {
+        "model": "glamsterdam-draft-2026-09-11-direct-kernel",
+        "calldataBytes": 708,
+        "zeroBytes": 666,
+        "intrinsicGas": "18336",
+        "calldataFloorGas": "60312",
+        "executionGas": "235711",
+        "estimatedTransactionGas": "254047",
+        "executionAllowance": "16758880",
+        "fitsTransaction": true
+      },
+      "ok": true
+    },
+    {
+      "test": "upstream/good/tutorial/016_levelComp2",
+      "expected": "accept",
+      "got": "accept",
+      "reason": "",
+      "gas": "245838",
+      "calldataBytes": 740,
+      "budget": {
+        "model": "glamsterdam-draft-2026-09-11-direct-kernel",
+        "calldataBytes": 740,
+        "zeroBytes": 697,
+        "intrinsicGas": "18476",
+        "calldataFloorGas": "62360",
+        "executionGas": "245838",
+        "estimatedTransactionGas": "264314",
+        "executionAllowance": "16758740",
+        "fitsTransaction": true
+      },
+      "ok": true
+    },
+    {
+      "test": "upstream/good/tutorial/017_levelComp3",
+      "expected": "accept",
+      "got": "accept",
+      "reason": "",
+      "gas": "265281",
+      "calldataBytes": 772,
+      "budget": {
+        "model": "glamsterdam-draft-2026-09-11-direct-kernel",
+        "calldataBytes": 772,
+        "zeroBytes": 725,
+        "intrinsicGas": "18652",
+        "calldataFloorGas": "64408",
+        "executionGas": "265281",
+        "estimatedTransactionGas": "283933",
+        "executionAllowance": "16758564",
+        "fitsTransaction": true
+      },
+      "ok": true
+    },
+    {
+      "test": "upstream/good/tutorial/018_levelParams",
+      "expected": "accept",
+      "got": "accept",
+      "reason": "",
+      "gas": "399835",
+      "calldataBytes": 1540,
+      "budget": {
+        "model": "glamsterdam-draft-2026-09-11-direct-kernel",
+        "calldataBytes": 1540,
+        "zeroBytes": 1408,
+        "intrinsicGas": "22744",
+        "calldataFloorGas": "113560",
+        "executionGas": "399835",
+        "estimatedTransactionGas": "422579",
+        "executionAllowance": "16754472",
+        "fitsTransaction": true
+      },
+      "ok": true
+    },
+    {
+      "test": "upstream/good/tutorial/020_levelComp4",
+      "expected": "accept",
+      "got": "accept",
+      "reason": "",
+      "gas": "207713",
+      "calldataBytes": 772,
+      "budget": {
+        "model": "glamsterdam-draft-2026-09-11-direct-kernel",
+        "calldataBytes": 772,
+        "zeroBytes": 726,
+        "intrinsicGas": "18640",
+        "calldataFloorGas": "64408",
+        "executionGas": "207713",
+        "estimatedTransactionGas": "226353",
+        "executionAllowance": "16758576",
+        "fitsTransaction": true
+      },
+      "ok": true
+    },
+    {
+      "test": "upstream/good/tutorial/021_levelComp5",
+      "expected": "accept",
+      "got": "accept",
+      "reason": "",
+      "gas": "207578",
+      "calldataBytes": 772,
+      "budget": {
+        "model": "glamsterdam-draft-2026-09-11-direct-kernel",
+        "calldataBytes": 772,
+        "zeroBytes": 724,
+        "intrinsicGas": "18664",
+        "calldataFloorGas": "64408",
+        "executionGas": "207578",
+        "estimatedTransactionGas": "226242",
+        "executionAllowance": "16758552",
+        "fitsTransaction": true
+      },
+      "ok": true
+    },
+    {
+      "test": "upstream/good/tutorial/022_imax1",
+      "expected": "accept",
+      "got": "accept",
+      "reason": "",
+      "gas": "258272",
+      "calldataBytes": 996,
+      "budget": {
+        "model": "glamsterdam-draft-2026-09-11-direct-kernel",
+        "calldataBytes": 996,
+        "zeroBytes": 922,
+        "intrinsicGas": "19872",
+        "calldataFloorGas": "78744",
+        "executionGas": "258272",
+        "estimatedTransactionGas": "278144",
+        "executionAllowance": "16757344",
+        "fitsTransaction": true
+      },
+      "ok": true
+    },
+    {
+      "test": "upstream/good/tutorial/023_imax2",
+      "expected": "accept",
+      "got": "accept",
+      "reason": "",
+      "gas": "352378",
+      "calldataBytes": 1028,
+      "budget": {
+        "model": "glamsterdam-draft-2026-09-11-direct-kernel",
+        "calldataBytes": 1028,
+        "zeroBytes": 950,
+        "intrinsicGas": "20048",
+        "calldataFloorGas": "80792",
+        "executionGas": "352378",
+        "estimatedTransactionGas": "372426",
+        "executionAllowance": "16757168",
+        "fitsTransaction": true
+      },
+      "ok": true
+    },
+    {
+      "test": "upstream/good/tutorial/024_levelMaxComm",
+      "expected": "accept",
+      "got": "accept",
+      "reason": "",
+      "gas": "279722",
+      "calldataBytes": 932,
+      "budget": {
+        "model": "glamsterdam-draft-2026-09-11-direct-kernel",
+        "calldataBytes": 932,
+        "zeroBytes": 869,
+        "intrinsicGas": "19484",
+        "calldataFloorGas": "74648",
+        "executionGas": "279722",
+        "estimatedTransactionGas": "299206",
+        "executionAllowance": "16757732",
+        "fitsTransaction": true
+      },
+      "ok": true
+    },
+    {
+      "test": "upstream/good/tutorial/025_levelMaxAssoc",
+      "expected": "accept",
+      "got": "accept",
+      "reason": "",
+      "gas": "322755",
+      "calldataBytes": 1092,
+      "budget": {
+        "model": "glamsterdam-draft-2026-09-11-direct-kernel",
+        "calldataBytes": 1092,
+        "zeroBytes": 1017,
+        "intrinsicGas": "20268",
+        "calldataFloorGas": "84888",
+        "executionGas": "322755",
+        "estimatedTransactionGas": "343023",
+        "executionAllowance": "16756948",
+        "fitsTransaction": true
+      },
+      "ok": true
+    },
+    {
+      "test": "upstream/good/tutorial/026_levelMaxIdem",
+      "expected": "accept",
+      "got": "accept",
+      "reason": "",
+      "gas": "242988",
+      "calldataBytes": 804,
+      "budget": {
+        "model": "glamsterdam-draft-2026-09-11-direct-kernel",
+        "calldataBytes": 804,
+        "zeroBytes": 750,
+        "intrinsicGas": "18864",
+        "calldataFloorGas": "66456",
+        "executionGas": "242988",
+        "estimatedTransactionGas": "261852",
+        "executionAllowance": "16758352",
+        "fitsTransaction": true
+      },
+      "ok": true
+    },
+    {
+      "test": "upstream/good/tutorial/027_levelMaxAbsorb",
+      "expected": "accept",
+      "got": "accept",
+      "reason": "",
+      "gas": "291765",
+      "calldataBytes": 932,
+      "budget": {
+        "model": "glamsterdam-draft-2026-09-11-direct-kernel",
+        "calldataBytes": 932,
+        "zeroBytes": 867,
+        "intrinsicGas": "19508",
+        "calldataFloorGas": "74648",
+        "executionGas": "291765",
+        "estimatedTransactionGas": "311273",
+        "executionAllowance": "16757708",
+        "fitsTransaction": true
+      },
+      "ok": true
+    },
+    {
+      "test": "upstream/good/tutorial/028_inferVar",
+      "expected": "accept",
+      "got": "accept",
+      "reason": "",
+      "gas": "242746",
+      "calldataBytes": 868,
+      "budget": {
+        "model": "glamsterdam-draft-2026-09-11-direct-kernel",
+        "calldataBytes": 868,
+        "zeroBytes": 817,
+        "intrinsicGas": "19084",
+        "calldataFloorGas": "70552",
+        "executionGas": "242746",
+        "estimatedTransactionGas": "261830",
+        "executionAllowance": "16758132",
+        "fitsTransaction": true
+      },
+      "ok": true
+    },
+    {
+      "test": "upstream/good/tutorial/029_defEqLambda",
+      "expected": "accept",
+      "got": "accept",
+      "reason": "",
+      "gas": "433711",
+      "calldataBytes": 1316,
+      "budget": {
+        "model": "glamsterdam-draft-2026-09-11-direct-kernel",
+        "calldataBytes": 1316,
+        "zeroBytes": 1207,
+        "intrinsicGas": "21572",
+        "calldataFloorGas": "99224",
+        "executionGas": "433711",
+        "estimatedTransactionGas": "455283",
+        "executionAllowance": "16755644",
+        "fitsTransaction": true
+      },
+      "ok": true
+    },
+    {
+      "test": "upstream/good/tutorial/030_peano1",
+      "expected": "accept",
+      "got": "accept",
+      "reason": "",
+      "gas": "1072480",
+      "calldataBytes": 3492,
+      "budget": {
+        "model": "glamsterdam-draft-2026-09-11-direct-kernel",
+        "calldataBytes": 3492,
+        "zeroBytes": 3183,
+        "intrinsicGas": "32676",
+        "calldataFloorGas": "238488",
+        "executionGas": "1072480",
+        "estimatedTransactionGas": "1105156",
+        "executionAllowance": "16744540",
+        "fitsTransaction": true
+      },
+      "ok": true
+    },
+    {
+      "test": "upstream/good/tutorial/031_peano2",
+      "expected": "accept",
+      "got": "accept",
+      "reason": "",
+      "gas": "3121023",
+      "calldataBytes": 4164,
+      "budget": {
+        "model": "glamsterdam-draft-2026-09-11-direct-kernel",
+        "calldataBytes": 4164,
+        "zeroBytes": 3794,
+        "intrinsicGas": "36096",
+        "calldataFloorGas": "281496",
+        "executionGas": "3121023",
+        "estimatedTransactionGas": "3157119",
+        "executionAllowance": "16741120",
+        "fitsTransaction": true
+      },
+      "ok": true
+    },
+    {
+      "test": "upstream/good/tutorial/032_peano3",
+      "expected": "accept",
+      "got": "accept",
+      "reason": "",
+      "gas": "4762211",
+      "calldataBytes": 4644,
+      "budget": {
+        "model": "glamsterdam-draft-2026-09-11-direct-kernel",
+        "calldataBytes": 4644,
+        "zeroBytes": 4229,
+        "intrinsicGas": "38556",
+        "calldataFloorGas": "312216",
+        "executionGas": "4762211",
+        "estimatedTransactionGas": "4800767",
+        "executionAllowance": "16738660",
+        "fitsTransaction": true
+      },
+      "ok": true
+    },
+    {
+      "test": "upstream/good/tutorial/033_letType",
+      "expected": "accept",
+      "got": "accept",
+      "reason": "",
+      "gas": "217321",
+      "calldataBytes": 772,
+      "budget": {
+        "model": "glamsterdam-draft-2026-09-11-direct-kernel",
+        "calldataBytes": 772,
+        "zeroBytes": 730,
+        "intrinsicGas": "18592",
+        "calldataFloorGas": "64408",
+        "executionGas": "217321",
+        "estimatedTransactionGas": "235913",
+        "executionAllowance": "16758624",
+        "fitsTransaction": true
+      },
+      "ok": true
+    },
+    {
+      "test": "upstream/good/tutorial/034_letTypeDep",
+      "expected": "accept",
+      "got": "accept",
+      "reason": "",
+      "gas": "339582",
+      "calldataBytes": 1412,
+      "budget": {
+        "model": "glamsterdam-draft-2026-09-11-direct-kernel",
+        "calldataBytes": 1412,
+        "zeroBytes": 1280,
+        "intrinsicGas": "22232",
+        "calldataFloorGas": "105368",
+        "executionGas": "339582",
+        "estimatedTransactionGas": "361814",
+        "executionAllowance": "16754984",
+        "fitsTransaction": true
+      },
+      "ok": true
+    },
+    {
+      "test": "upstream/good/tutorial/035_letRed",
+      "expected": "accept",
+      "got": "accept",
+      "reason": "",
+      "gas": "237202",
+      "calldataBytes": 900,
+      "budget": {
+        "model": "glamsterdam-draft-2026-09-11-direct-kernel",
+        "calldataBytes": 900,
+        "zeroBytes": 843,
+        "intrinsicGas": "19284",
+        "calldataFloorGas": "72600",
+        "executionGas": "237202",
+        "estimatedTransactionGas": "256486",
+        "executionAllowance": "16757932",
+        "fitsTransaction": true
+      },
+      "ok": true
+    },
+    {
+      "test": "upstream/good/tutorial/036_empty",
+      "expected": "accept",
+      "got": "accept",
+      "reason": "",
+      "gas": "367508",
+      "calldataBytes": 1380,
+      "budget": {
+        "model": "glamsterdam-draft-2026-09-11-direct-kernel",
+        "calldataBytes": 1380,
+        "zeroBytes": 1274,
+        "intrinsicGas": "21792",
+        "calldataFloorGas": "103320",
+        "executionGas": "367508",
+        "estimatedTransactionGas": "389300",
+        "executionAllowance": "16755424",
+        "fitsTransaction": true
+      },
+      "ok": true
+    },
+    {
+      "test": "upstream/good/tutorial/037_boolType",
+      "expected": "accept",
+      "got": "accept",
+      "reason": "",
+      "gas": "734492",
+      "calldataBytes": 2340,
+      "budget": {
+        "model": "glamsterdam-draft-2026-09-11-direct-kernel",
+        "calldataBytes": 2340,
+        "zeroBytes": 2136,
+        "intrinsicGas": "26808",
+        "calldataFloorGas": "164760",
+        "executionGas": "734492",
+        "estimatedTransactionGas": "761300",
+        "executionAllowance": "16750408",
+        "fitsTransaction": true
+      },
+      "ok": true
+    },
+    {
+      "test": "upstream/good/tutorial/038_twoBool",
+      "expected": "accept",
+      "got": "accept",
+      "reason": "",
+      "gas": "1254655",
+      "calldataBytes": 3684,
+      "budget": {
+        "model": "glamsterdam-draft-2026-09-11-direct-kernel",
+        "calldataBytes": 3684,
+        "zeroBytes": 3343,
+        "intrinsicGas": "33828",
+        "calldataFloorGas": "250776",
+        "executionGas": "1254655",
+        "estimatedTransactionGas": "1288483",
+        "executionAllowance": "16743388",
+        "fitsTransaction": true
+      },
+      "ok": true
+    },
+    {
+      "test": "upstream/good/tutorial/039_andType",
+      "expected": "accept",
+      "got": "accept",
+      "reason": "",
+      "gas": "1275769",
+      "calldataBytes": 2788,
+      "budget": {
+        "model": "glamsterdam-draft-2026-09-11-direct-kernel",
+        "calldataBytes": 2788,
+        "zeroBytes": 2544,
+        "intrinsicGas": "29080",
+        "calldataFloorGas": "193432",
+        "executionGas": "1275769",
+        "estimatedTransactionGas": "1304849",
+        "executionAllowance": "16748136",
+        "fitsTransaction": true
+      },
+      "ok": true
+    },
+    {
+      "test": "upstream/good/tutorial/040_prodType",
+      "expected": "accept",
+      "got": "accept",
+      "reason": "",
+      "gas": "3537234",
+      "calldataBytes": 3780,
+      "budget": {
+        "model": "glamsterdam-draft-2026-09-11-direct-kernel",
+        "calldataBytes": 3780,
+        "zeroBytes": 3454,
+        "intrinsicGas": "34032",
+        "calldataFloorGas": "256920",
+        "executionGas": "3537234",
+        "estimatedTransactionGas": "3571266",
+        "executionAllowance": "16743184",
+        "fitsTransaction": true
+      },
+      "ok": true
+    },
+    {
+      "test": "upstream/good/tutorial/041_pprodType",
+      "expected": "accept",
+      "got": "accept",
+      "reason": "",
+      "gas": "3789038",
+      "calldataBytes": 3748,
+      "budget": {
+        "model": "glamsterdam-draft-2026-09-11-direct-kernel",
+        "calldataBytes": 3748,
+        "zeroBytes": 3419,
+        "intrinsicGas": "33940",
+        "calldataFloorGas": "254872",
+        "executionGas": "3789038",
+        "estimatedTransactionGas": "3822978",
+        "executionAllowance": "16743276",
+        "fitsTransaction": true
+      },
+      "ok": true
+    },
+    {
+      "test": "upstream/good/tutorial/042_pUnitType",
+      "expected": "accept",
+      "got": "accept",
+      "reason": "",
+      "gas": "556045",
+      "calldataBytes": 2148,
+      "budget": {
+        "model": "glamsterdam-draft-2026-09-11-direct-kernel",
+        "calldataBytes": 2148,
+        "zeroBytes": 1967,
+        "intrinsicGas": "25764",
+        "calldataFloorGas": "152472",
+        "executionGas": "556045",
+        "estimatedTransactionGas": "581809",
+        "executionAllowance": "16751452",
+        "fitsTransaction": true
+      },
+      "ok": true
+    },
+    {
+      "test": "upstream/good/tutorial/043_eqType",
+      "expected": "accept",
+      "got": "accept",
+      "reason": "",
+      "gas": "2613547",
+      "calldataBytes": 3140,
+      "budget": {
+        "model": "glamsterdam-draft-2026-09-11-direct-kernel",
+        "calldataBytes": 3140,
+        "zeroBytes": 2858,
+        "intrinsicGas": "30944",
+        "calldataFloorGas": "215960",
+        "executionGas": "2613547",
+        "estimatedTransactionGas": "2644491",
+        "executionAllowance": "16746272",
+        "fitsTransaction": true
+      },
+      "ok": true
+    },
+    {
+      "test": "upstream/good/tutorial/044_natDef",
+      "expected": "accept",
+      "got": "accept",
+      "reason": "",
+      "gas": "1040032",
+      "calldataBytes": 3172,
+      "budget": {
+        "model": "glamsterdam-draft-2026-09-11-direct-kernel",
+        "calldataBytes": 3172,
+        "zeroBytes": 2869,
+        "intrinsicGas": "31324",
+        "calldataFloorGas": "218008",
+        "executionGas": "1040032",
+        "estimatedTransactionGas": "1071356",
+        "executionAllowance": "16745892",
+        "fitsTransaction": true
+      },
+      "ok": true
+    },
+    {
+      "test": "upstream/good/tutorial/055_reduceCtorParam.mk",
+      "expected": "accept",
+      "got": "accept",
+      "reason": "",
+      "gas": "2212958",
+      "calldataBytes": 3684,
+      "budget": {
+        "model": "glamsterdam-draft-2026-09-11-direct-kernel",
+        "calldataBytes": 3684,
+        "zeroBytes": 3335,
+        "intrinsicGas": "33924",
+        "calldataFloorGas": "250776",
+        "executionGas": "2212958",
+        "estimatedTransactionGas": "2246882",
+        "executionAllowance": "16743292",
+        "fitsTransaction": true
+      },
+      "ok": true
+    },
+    {
+      "test": "upstream/good/tutorial/058_predWithTypeField",
+      "expected": "accept",
+      "got": "accept",
+      "reason": "",
+      "gas": "547719",
+      "calldataBytes": 1956,
+      "budget": {
+        "model": "glamsterdam-draft-2026-09-11-direct-kernel",
+        "calldataBytes": 1956,
+        "zeroBytes": 1772,
+        "intrinsicGas": "25032",
+        "calldataFloorGas": "140184",
+        "executionGas": "547719",
+        "estimatedTransactionGas": "572751",
+        "executionAllowance": "16752184",
+        "fitsTransaction": true
+      },
+      "ok": true
+    },
+    {
+      "test": "upstream/good/tutorial/059_typeWithTypeField",
+      "expected": "accept",
+      "got": "accept",
+      "reason": "",
+      "gas": "615110",
+      "calldataBytes": 2116,
+      "budget": {
+        "model": "glamsterdam-draft-2026-09-11-direct-kernel",
+        "calldataBytes": 2116,
+        "zeroBytes": 1918,
+        "intrinsicGas": "25840",
+        "calldataFloorGas": "150424",
+        "executionGas": "615110",
+        "estimatedTransactionGas": "640950",
+        "executionAllowance": "16751376",
+        "fitsTransaction": true
+      },
+      "ok": true
+    },
+    {
+      "test": "upstream/good/tutorial/060_typeWithTypeFieldPoly",
+      "expected": "accept",
+      "got": "accept",
+      "reason": "",
+      "gas": "669637",
+      "calldataBytes": 2372,
+      "budget": {
+        "model": "glamsterdam-draft-2026-09-11-direct-kernel",
+        "calldataBytes": 2372,
+        "zeroBytes": 2145,
+        "intrinsicGas": "27212",
+        "calldataFloorGas": "166808",
+        "executionGas": "669637",
+        "estimatedTransactionGas": "696849",
+        "executionAllowance": "16750004",
+        "fitsTransaction": true
+      },
+      "ok": true
+    },
+    {
+      "test": "upstream/good/tutorial/062_emptyRec",
+      "expected": "accept",
+      "got": "accept",
+      "reason": "",
+      "gas": "448410",
+      "calldataBytes": 1476,
+      "budget": {
+        "model": "glamsterdam-draft-2026-09-11-direct-kernel",
+        "calldataBytes": 1476,
+        "zeroBytes": 1359,
+        "intrinsicGas": "22308",
+        "calldataFloorGas": "109464",
+        "executionGas": "448410",
+        "estimatedTransactionGas": "470718",
+        "executionAllowance": "16754908",
+        "fitsTransaction": true
+      },
+      "ok": true
+    },
+    {
+      "test": "upstream/good/tutorial/063_boolRec",
+      "expected": "accept",
+      "got": "accept",
+      "reason": "",
+      "gas": "1131596",
+      "calldataBytes": 2916,
+      "budget": {
+        "model": "glamsterdam-draft-2026-09-11-direct-kernel",
+        "calldataBytes": 2916,
+        "zeroBytes": 2639,
+        "intrinsicGas": "29988",
+        "calldataFloorGas": "201624",
+        "executionGas": "1131596",
+        "estimatedTransactionGas": "1161584",
+        "executionAllowance": "16747228",
+        "fitsTransaction": true
+      },
+      "ok": true
+    },
+    {
+      "test": "upstream/good/tutorial/064_twoBoolRec",
+      "expected": "accept",
+      "got": "accept",
+      "reason": "",
+      "gas": "1602643",
+      "calldataBytes": 4196,
+      "budget": {
+        "model": "glamsterdam-draft-2026-09-11-direct-kernel",
+        "calldataBytes": 4196,
+        "zeroBytes": 3783,
+        "intrinsicGas": "36740",
+        "calldataFloorGas": "283544",
+        "executionGas": "1602643",
+        "estimatedTransactionGas": "1639383",
+        "executionAllowance": "16740476",
+        "fitsTransaction": true
+      },
+      "ok": true
+    },
+    {
+      "test": "upstream/good/tutorial/065_andRec",
+      "expected": "accept",
+      "got": "accept",
+      "reason": "",
+      "gas": "1750143",
+      "calldataBytes": 2884,
+      "budget": {
+        "model": "glamsterdam-draft-2026-09-11-direct-kernel",
+        "calldataBytes": 2884,
+        "zeroBytes": 2634,
+        "intrinsicGas": "29536",
+        "calldataFloorGas": "199576",
+        "executionGas": "1750143",
+        "estimatedTransactionGas": "1779679",
+        "executionAllowance": "16747680",
+        "fitsTransaction": true
+      },
+      "ok": true
+    },
+    {
+      "test": "upstream/good/tutorial/066_prodRec",
+      "expected": "accept",
+      "got": "accept",
+      "reason": "",
+      "gas": "5142254",
+      "calldataBytes": 4004,
+      "budget": {
+        "model": "glamsterdam-draft-2026-09-11-direct-kernel",
+        "calldataBytes": 4004,
+        "zeroBytes": 3664,
+        "intrinsicGas": "35096",
+        "calldataFloorGas": "271256",
+        "executionGas": "5142254",
+        "estimatedTransactionGas": "5177350",
+        "executionAllowance": "16742120",
+        "fitsTransaction": true
+      },
+      "ok": true
+    },
+    {
+      "test": "upstream/good/tutorial/067_pprodRec",
+      "expected": "accept",
+      "got": "accept",
+      "reason": "",
+      "gas": "5233770",
+      "calldataBytes": 3972,
+      "budget": {
+        "model": "glamsterdam-draft-2026-09-11-direct-kernel",
+        "calldataBytes": 3972,
+        "zeroBytes": 3633,
+        "intrinsicGas": "34956",
+        "calldataFloorGas": "269208",
+        "executionGas": "5233770",
+        "estimatedTransactionGas": "5268726",
+        "executionAllowance": "16742260",
+        "fitsTransaction": true
+      },
+      "ok": true
+    },
+    {
+      "test": "upstream/good/tutorial/068_punitRec",
+      "expected": "accept",
+      "got": "accept",
+      "reason": "",
+      "gas": "735797",
+      "calldataBytes": 2500,
+      "budget": {
+        "model": "glamsterdam-draft-2026-09-11-direct-kernel",
+        "calldataBytes": 2500,
+        "zeroBytes": 2276,
+        "intrinsicGas": "27688",
+        "calldataFloorGas": "175000",
+        "executionGas": "735797",
+        "estimatedTransactionGas": "763485",
+        "executionAllowance": "16749528",
+        "fitsTransaction": true
+      },
+      "ok": true
+    },
+    {
+      "test": "upstream/good/tutorial/069_eqRec",
+      "expected": "accept",
+      "got": "accept",
+      "reason": "",
+      "gas": "4288663",
+      "calldataBytes": 3268,
+      "budget": {
+        "model": "glamsterdam-draft-2026-09-11-direct-kernel",
+        "calldataBytes": 3268,
+        "zeroBytes": 2980,
+        "intrinsicGas": "31528",
+        "calldataFloorGas": "224152",
+        "executionGas": "4288663",
+        "estimatedTransactionGas": "4320191",
+        "executionAllowance": "16745688",
+        "fitsTransaction": true
+      },
+      "ok": true
+    },
+    {
+      "test": "upstream/good/tutorial/070_nRec",
+      "expected": "accept",
+      "got": "accept",
+      "reason": "",
+      "gas": "1254253",
+      "calldataBytes": 3204,
+      "budget": {
+        "model": "glamsterdam-draft-2026-09-11-direct-kernel",
+        "calldataBytes": 3204,
+        "zeroBytes": 2900,
+        "intrinsicGas": "31464",
+        "calldataFloorGas": "220056",
+        "executionGas": "1254253",
+        "estimatedTransactionGas": "1285717",
+        "executionAllowance": "16745752",
+        "fitsTransaction": true
+      },
+      "ok": true
+    },
+    {
+      "test": "upstream/good/tutorial/072_boolPropRec",
+      "expected": "accept",
+      "got": "accept",
+      "reason": "",
+      "gas": "657332",
+      "calldataBytes": 2212,
+      "budget": {
+        "model": "glamsterdam-draft-2026-09-11-direct-kernel",
+        "calldataBytes": 2212,
+        "zeroBytes": 2024,
+        "intrinsicGas": "26104",
+        "calldataFloorGas": "156568",
+        "executionGas": "657332",
+        "estimatedTransactionGas": "683436",
+        "executionAllowance": "16751112",
+        "fitsTransaction": true
+      },
+      "ok": true
+    },
+    {
+      "test": "upstream/good/tutorial/074_existsRec",
+      "expected": "accept",
+      "got": "accept",
+      "reason": "",
+      "gas": "1638876",
+      "calldataBytes": 3268,
+      "budget": {
+        "model": "glamsterdam-draft-2026-09-11-direct-kernel",
+        "calldataBytes": 3268,
+        "zeroBytes": 2965,
+        "intrinsicGas": "31708",
+        "calldataFloorGas": "224152",
+        "executionGas": "1638876",
+        "estimatedTransactionGas": "1670584",
+        "executionAllowance": "16745508",
+        "fitsTransaction": true
+      },
+      "ok": true
+    },
+    {
+      "test": "upstream/good/tutorial/075_typeSingletonRecReduction",
+      "expected": "accept",
+      "got": "accept",
+      "reason": "",
+      "gas": "4235322",
+      "calldataBytes": 6948,
+      "budget": {
+        "model": "glamsterdam-draft-2026-09-11-direct-kernel",
+        "calldataBytes": 6948,
+        "zeroBytes": 6244,
+        "intrinsicGas": "51240",
+        "calldataFloorGas": "459672",
+        "executionGas": "4235322",
+        "estimatedTransactionGas": "4286562",
+        "executionAllowance": "16725976",
+        "fitsTransaction": true
+      },
+      "ok": true
+    },
+    {
+      "test": "upstream/good/tutorial/076_sortElimPropRec",
+      "expected": "accept",
+      "got": "accept",
+      "reason": "",
+      "gas": "4619711",
+      "calldataBytes": 4804,
+      "budget": {
+        "model": "glamsterdam-draft-2026-09-11-direct-kernel",
+        "calldataBytes": 4804,
+        "zeroBytes": 4332,
+        "intrinsicGas": "39880",
+        "calldataFloorGas": "322456",
+        "executionGas": "4619711",
+        "estimatedTransactionGas": "4659591",
+        "executionAllowance": "16737336",
+        "fitsTransaction": true
+      },
+      "ok": true
+    },
+    {
+      "test": "upstream/good/tutorial/077_sortElimProp2Rec",
+      "expected": "accept",
+      "got": "accept",
+      "reason": "",
+      "gas": "4025655",
+      "calldataBytes": 5348,
+      "budget": {
+        "model": "glamsterdam-draft-2026-09-11-direct-kernel",
+        "calldataBytes": 5348,
+        "zeroBytes": 4822,
+        "intrinsicGas": "42704",
+        "calldataFloorGas": "357272",
+        "executionGas": "4025655",
+        "estimatedTransactionGas": "4068359",
+        "executionAllowance": "16734512",
+        "fitsTransaction": true
+      },
+      "ok": true
+    },
+    {
+      "test": "upstream/good/tutorial/078_boolRecEqns",
+      "expected": "accept",
+      "got": "accept",
+      "reason": "",
+      "gas": "9750800",
+      "calldataBytes": 8868,
+      "budget": {
+        "model": "glamsterdam-draft-2026-09-11-direct-kernel",
+        "calldataBytes": 8868,
+        "zeroBytes": 7922,
+        "intrinsicGas": "61824",
+        "calldataFloorGas": "582552",
+        "executionGas": "9750800",
+        "estimatedTransactionGas": "9812624",
+        "executionAllowance": "16715392",
+        "fitsTransaction": true
+      },
+      "ok": true
+    },
+    {
+      "test": "upstream/good/tutorial/083_And.right",
+      "expected": "accept",
+      "got": "accept",
+      "reason": "",
+      "gas": "1585045",
+      "calldataBytes": 3364,
+      "budget": {
+        "model": "glamsterdam-draft-2026-09-11-direct-kernel",
+        "calldataBytes": 3364,
+        "zeroBytes": 3069,
+        "intrinsicGas": "31996",
+        "calldataFloorGas": "230296",
+        "executionGas": "1585045",
+        "estimatedTransactionGas": "1617041",
+        "executionAllowance": "16745220",
+        "fitsTransaction": true
+      },
+      "ok": true
+    },
+    {
+      "test": "upstream/good/tutorial/084_Prod.snd",
+      "expected": "accept",
+      "got": "accept",
+      "reason": "",
+      "gas": "4330684",
+      "calldataBytes": 4100,
+      "budget": {
+        "model": "glamsterdam-draft-2026-09-11-direct-kernel",
+        "calldataBytes": 4100,
+        "zeroBytes": 3756,
+        "intrinsicGas": "35528",
+        "calldataFloorGas": "277400",
+        "executionGas": "4330684",
+        "estimatedTransactionGas": "4366212",
+        "executionAllowance": "16741688",
+        "fitsTransaction": true
+      },
+      "ok": true
+    },
+    {
+      "test": "upstream/good/tutorial/085_PProd.snd",
+      "expected": "accept",
+      "got": "accept",
+      "reason": "",
+      "gas": "4260915",
+      "calldataBytes": 4100,
+      "budget": {
+        "model": "glamsterdam-draft-2026-09-11-direct-kernel",
+        "calldataBytes": 4100,
+        "zeroBytes": 3755,
+        "intrinsicGas": "35540",
+        "calldataFloorGas": "277400",
+        "executionGas": "4260915",
+        "estimatedTransactionGas": "4296455",
+        "executionAllowance": "16741676",
+        "fitsTransaction": true
+      },
+      "ok": true
+    },
+    {
+      "test": "upstream/good/tutorial/086_PSigma.snd",
+      "expected": "accept",
+      "got": "accept",
+      "reason": "",
+      "gas": "6042501",
+      "calldataBytes": 4580,
+      "budget": {
+        "model": "glamsterdam-draft-2026-09-11-direct-kernel",
+        "calldataBytes": 4580,
+        "zeroBytes": 4179,
+        "intrinsicGas": "38132",
+        "calldataFloorGas": "308120",
+        "executionGas": "6042501",
+        "estimatedTransactionGas": "6080633",
+        "executionAllowance": "16739084",
+        "fitsTransaction": true
+      },
+      "ok": true
+    },
+    {
+      "test": "upstream/good/tutorial/089_projProp1",
+      "expected": "accept",
+      "got": "accept",
+      "reason": "",
+      "gas": "4363504",
+      "calldataBytes": 7300,
+      "budget": {
+        "model": "glamsterdam-draft-2026-09-11-direct-kernel",
+        "calldataBytes": 7300,
+        "zeroBytes": 6572,
+        "intrinsicGas": "52936",
+        "calldataFloorGas": "482200",
+        "executionGas": "4363504",
+        "estimatedTransactionGas": "4416440",
+        "executionAllowance": "16724280",
+        "fitsTransaction": true
+      },
+      "ok": true
+    },
+    {
+      "test": "upstream/good/tutorial/091_projProp3",
+      "expected": "accept",
+      "got": "accept",
+      "reason": "",
+      "gas": "4407518",
+      "calldataBytes": 7300,
+      "budget": {
+        "model": "glamsterdam-draft-2026-09-11-direct-kernel",
+        "calldataBytes": 7300,
+        "zeroBytes": 6571,
+        "intrinsicGas": "52948",
+        "calldataFloorGas": "482200",
+        "executionGas": "4407518",
+        "estimatedTransactionGas": "4460466",
+        "executionAllowance": "16724268",
+        "fitsTransaction": true
+      },
+      "ok": true
+    },
+    {
+      "test": "upstream/good/tutorial/095_projDataIndexRec",
+      "expected": "accept",
+      "got": "accept",
+      "reason": "",
+      "gas": "2152229",
+      "calldataBytes": 5764,
+      "budget": {
+        "model": "glamsterdam-draft-2026-09-11-direct-kernel",
+        "calldataBytes": 5764,
+        "zeroBytes": 5172,
+        "intrinsicGas": "45160",
+        "calldataFloorGas": "383896",
+        "executionGas": "2152229",
+        "estimatedTransactionGas": "2197389",
+        "executionAllowance": "16732056",
+        "fitsTransaction": true
+      },
+      "ok": true
+    },
+    {
+      "test": "upstream/good/tutorial/098_projRed",
+      "expected": "accept",
+      "got": "accept",
+      "reason": "",
+      "gas": "7729939",
+      "calldataBytes": 8676,
+      "budget": {
+        "model": "glamsterdam-draft-2026-09-11-direct-kernel",
+        "calldataBytes": 8676,
+        "zeroBytes": 7874,
+        "intrinsicGas": "59328",
+        "calldataFloorGas": "570264",
+        "executionGas": "7729939",
+        "estimatedTransactionGas": "7789267",
+        "executionAllowance": "16717888",
+        "fitsTransaction": true
+      },
+      "ok": true
+    },
+    {
+      "test": "upstream/good/tutorial/099_ruleK",
+      "expected": "accept",
+      "got": "accept",
+      "reason": "",
+      "gas": "4094810",
+      "calldataBytes": 5796,
+      "budget": {
+        "model": "glamsterdam-draft-2026-09-11-direct-kernel",
+        "calldataBytes": 5796,
+        "zeroBytes": 5235,
+        "intrinsicGas": "44916",
+        "calldataFloorGas": "385944",
+        "executionGas": "4094810",
+        "estimatedTransactionGas": "4139726",
+        "executionAllowance": "16732300",
+        "fitsTransaction": true
+      },
+      "ok": true
+    },
+    {
+      "test": "upstream/good/tutorial/102_aNatLit",
+      "expected": "accept",
+      "got": "accept",
+      "reason": "",
+      "gas": "1005610",
+      "calldataBytes": 2980,
+      "budget": {
+        "model": "glamsterdam-draft-2026-09-11-direct-kernel",
+        "calldataBytes": 2980,
+        "zeroBytes": 2722,
+        "intrinsicGas": "30016",
+        "calldataFloorGas": "205720",
+        "executionGas": "1005610",
+        "estimatedTransactionGas": "1035626",
+        "executionAllowance": "16747200",
+        "fitsTransaction": true
+      },
+      "ok": true
+    },
+    {
+      "test": "upstream/good/tutorial/103_natLitEq",
+      "expected": "accept",
+      "got": "accept",
+      "reason": "",
+      "gas": "3684158",
+      "calldataBytes": 5604,
+      "budget": {
+        "model": "glamsterdam-draft-2026-09-11-direct-kernel",
+        "calldataBytes": 5604,
+        "zeroBytes": 5081,
+        "intrinsicGas": "43692",
+        "calldataFloorGas": "373656",
+        "executionGas": "3684158",
+        "estimatedTransactionGas": "3727850",
+        "executionAllowance": "16733524",
+        "fitsTransaction": true
+      },
+      "ok": true
+    },
+    {
+      "test": "upstream/good/tutorial/104_proofIrrelevance",
+      "expected": "accept",
+      "got": "accept",
+      "reason": "",
+      "gas": "3162002",
+      "calldataBytes": 4548,
+      "budget": {
+        "model": "glamsterdam-draft-2026-09-11-direct-kernel",
+        "calldataBytes": 4548,
+        "zeroBytes": 4106,
+        "intrinsicGas": "38496",
+        "calldataFloorGas": "306072",
+        "executionGas": "3162002",
+        "estimatedTransactionGas": "3200498",
+        "executionAllowance": "16738720",
+        "fitsTransaction": true
+      },
+      "ok": true
+    },
+    {
+      "test": "upstream/good/tutorial/106_proofIrrelevanceWhnf",
+      "expected": "accept",
+      "got": "accept",
+      "reason": "",
+      "gas": "3919100",
+      "calldataBytes": 5028,
+      "budget": {
+        "model": "glamsterdam-draft-2026-09-11-direct-kernel",
+        "calldataBytes": 5028,
+        "zeroBytes": 4542,
+        "intrinsicGas": "40944",
+        "calldataFloorGas": "336792",
+        "executionGas": "3919100",
+        "estimatedTransactionGas": "3960044",
+        "executionAllowance": "16736272",
+        "fitsTransaction": true
+      },
+      "ok": true
+    },
+    {
+      "test": "upstream/good/tutorial/107_unitEta1",
+      "expected": "accept",
+      "got": "accept",
+      "reason": "",
+      "gas": "3451924",
+      "calldataBytes": 5732,
+      "budget": {
+        "model": "glamsterdam-draft-2026-09-11-direct-kernel",
+        "calldataBytes": 5732,
+        "zeroBytes": 5177,
+        "intrinsicGas": "44588",
+        "calldataFloorGas": "381848",
+        "executionGas": "3451924",
+        "estimatedTransactionGas": "3496512",
+        "executionAllowance": "16732628",
+        "fitsTransaction": true
+      },
+      "ok": true
+    },
+    {
+      "test": "upstream/good/tutorial/108_unitEta2",
+      "expected": "accept",
+      "got": "accept",
+      "reason": "",
+      "gas": "3403224",
+      "calldataBytes": 5444,
+      "budget": {
+        "model": "glamsterdam-draft-2026-09-11-direct-kernel",
+        "calldataBytes": 5444,
+        "zeroBytes": 4916,
+        "intrinsicGas": "43112",
+        "calldataFloorGas": "363416",
+        "executionGas": "3403224",
+        "estimatedTransactionGas": "3446336",
+        "executionAllowance": "16734104",
+        "fitsTransaction": true
+      },
+      "ok": true
+    },
+    {
+      "test": "upstream/good/tutorial/109_unitEta3",
+      "expected": "accept",
+      "got": "accept",
+      "reason": "",
+      "gas": "3395796",
+      "calldataBytes": 5540,
+      "budget": {
+        "model": "glamsterdam-draft-2026-09-11-direct-kernel",
+        "calldataBytes": 5540,
+        "zeroBytes": 5008,
+        "intrinsicGas": "43544",
+        "calldataFloorGas": "369560",
+        "executionGas": "3395796",
+        "estimatedTransactionGas": "3439340",
+        "executionAllowance": "16733672",
+        "fitsTransaction": true
+      },
+      "ok": true
+    },
+    {
+      "test": "upstream/good/tutorial/111_structEta",
+      "expected": "accept",
+      "got": "accept",
+      "reason": "",
+      "gas": "12384023",
+      "calldataBytes": 10468,
+      "budget": {
+        "model": "glamsterdam-draft-2026-09-11-direct-kernel",
+        "calldataBytes": 10468,
+        "zeroBytes": 9473,
+        "intrinsicGas": "68812",
+        "calldataFloorGas": "684952",
+        "executionGas": "12384023",
+        "estimatedTransactionGas": "12452835",
+        "executionAllowance": "16708404",
+        "fitsTransaction": true
+      },
+      "ok": true
+    },
+    {
+      "test": "upstream/good/tutorial/113_funEta",
+      "expected": "accept",
+      "got": "accept",
+      "reason": "",
+      "gas": "3474332",
+      "calldataBytes": 4676,
+      "budget": {
+        "model": "glamsterdam-draft-2026-09-11-direct-kernel",
+        "calldataBytes": 4676,
+        "zeroBytes": 4234,
+        "intrinsicGas": "39008",
+        "calldataFloorGas": "314264",
+        "executionGas": "3474332",
+        "estimatedTransactionGas": "3513340",
+        "executionAllowance": "16738208",
+        "fitsTransaction": true
+      },
+      "ok": true
+    },
+    {
+      "test": "upstream/good/tutorial/114_funEtaDep",
+      "expected": "accept",
+      "got": "accept",
+      "reason": "",
+      "gas": "3741123",
+      "calldataBytes": 4740,
+      "budget": {
+        "model": "glamsterdam-draft-2026-09-11-direct-kernel",
+        "calldataBytes": 4740,
+        "zeroBytes": 4289,
+        "intrinsicGas": "39372",
+        "calldataFloorGas": "318360",
+        "executionGas": "3741123",
+        "estimatedTransactionGas": "3780495",
+        "executionAllowance": "16737844",
+        "fitsTransaction": true
+      },
+      "ok": true
+    },
+    {
+      "test": "upstream/good/tutorial/120_reduceCtorParamRefl.mk",
+      "expected": "accept",
+      "got": "accept",
+      "reason": "",
+      "gas": "2870384",
+      "calldataBytes": 3940,
+      "budget": {
+        "model": "glamsterdam-draft-2026-09-11-direct-kernel",
+        "calldataBytes": 3940,
+        "zeroBytes": 3565,
+        "intrinsicGas": "35260",
+        "calldataFloorGas": "267160",
+        "executionGas": "2870384",
+        "estimatedTransactionGas": "2905644",
+        "executionAllowance": "16741956",
+        "fitsTransaction": true
+      },
+      "ok": true
+    },
+    {
+      "test": "upstream/good/tutorial/121_reduceCtorParamRefl2.mk",
+      "expected": "accept",
+      "got": "accept",
+      "reason": "",
+      "gas": "2777515",
+      "calldataBytes": 3940,
+      "budget": {
+        "model": "glamsterdam-draft-2026-09-11-direct-kernel",
+        "calldataBytes": 3940,
+        "zeroBytes": 3564,
+        "intrinsicGas": "35272",
+        "calldataFloorGas": "267160",
+        "executionGas": "2777515",
+        "estimatedTransactionGas": "2812787",
+        "executionAllowance": "16741944",
+        "fitsTransaction": true
+      },
+      "ok": true
+    },
+    {
+      "test": "upstream/good/tutorial/122_rTreeRec",
+      "expected": "accept",
+      "got": "accept",
+      "reason": "",
+      "gas": "2669920",
+      "calldataBytes": 4868,
+      "budget": {
+        "model": "glamsterdam-draft-2026-09-11-direct-kernel",
+        "calldataBytes": 4868,
+        "zeroBytes": 4390,
+        "intrinsicGas": "40208",
+        "calldataFloorGas": "326552",
+        "executionGas": "2669920",
+        "estimatedTransactionGas": "2710128",
+        "executionAllowance": "16737008",
+        "fitsTransaction": true
+      },
+      "ok": true
+    },
+    {
+      "test": "upstream/good/tutorial/123_rtreeRecReduction",
+      "expected": "accept",
+      "got": "accept",
+      "reason": "",
+      "gas": "7177035",
+      "calldataBytes": 9028,
+      "budget": {
+        "model": "glamsterdam-draft-2026-09-11-direct-kernel",
+        "calldataBytes": 9028,
+        "zeroBytes": 8103,
+        "intrinsicGas": "62212",
+        "calldataFloorGas": "592792",
+        "executionGas": "7177035",
+        "estimatedTransactionGas": "7239247",
+        "executionAllowance": "16715004",
+        "fitsTransaction": true
+      },
+      "ok": true
+    },
+    {
+      "test": "upstream/good/tutorial/124_accRecType",
+      "expected": "accept",
+      "got": "accept",
+      "reason": "",
+      "gas": "13686651",
+      "calldataBytes": 6244,
+      "budget": {
+        "model": "glamsterdam-draft-2026-09-11-direct-kernel",
+        "calldataBytes": 6244,
+        "zeroBytes": 5679,
+        "intrinsicGas": "46756",
+        "calldataFloorGas": "414616",
+        "executionGas": "13686651",
+        "estimatedTransactionGas": "13733407",
+        "executionAllowance": "16730460",
+        "fitsTransaction": true
+      },
+      "ok": true
+    },
+    {
+      "test": "upstream/good/tutorial/127_quotMkType",
+      "expected": "accept",
+      "got": "accept",
+      "reason": "",
+      "gas": "5706449",
+      "calldataBytes": 5508,
+      "budget": {
+        "model": "glamsterdam-draft-2026-09-11-direct-kernel",
+        "calldataBytes": 5508,
+        "zeroBytes": 4981,
+        "intrinsicGas": "43356",
+        "calldataFloorGas": "367512",
+        "executionGas": "5706449",
+        "estimatedTransactionGas": "5749805",
+        "executionAllowance": "16733860",
+        "fitsTransaction": true
+      },
+      "ok": true
+    },
+    {
+      "test": "upstream/good/tutorial/128_quotIndType",
+      "expected": "accept",
+      "got": "accept",
+      "reason": "",
+      "gas": "5885001",
+      "calldataBytes": 5572,
+      "budget": {
+        "model": "glamsterdam-draft-2026-09-11-direct-kernel",
+        "calldataBytes": 5572,
+        "zeroBytes": 5039,
+        "intrinsicGas": "43684",
+        "calldataFloorGas": "371608",
+        "executionGas": "5885001",
+        "estimatedTransactionGas": "5928685",
+        "executionAllowance": "16733532",
+        "fitsTransaction": true
+      },
+      "ok": true
+    },
+    {
+      "test": "upstream/good/tutorial/129_quotLiftType",
+      "expected": "accept",
+      "got": "accept",
+      "reason": "",
+      "gas": "7763151",
+      "calldataBytes": 5636,
+      "budget": {
+        "model": "glamsterdam-draft-2026-09-11-direct-kernel",
+        "calldataBytes": 5636,
+        "zeroBytes": 5100,
+        "intrinsicGas": "43976",
+        "calldataFloorGas": "375704",
+        "executionGas": "7763151",
+        "estimatedTransactionGas": "7807127",
+        "executionAllowance": "16733240",
+        "fitsTransaction": true
+      },
+      "ok": true
+    },
+    {
+      "test": "upstream/good/tutorial/130_quotSoundType",
+      "expected": "accept",
+      "got": "accept",
+      "reason": "",
+      "gas": "6288649",
+      "calldataBytes": 6212,
+      "budget": {
+        "model": "glamsterdam-draft-2026-09-11-direct-kernel",
+        "calldataBytes": 6212,
+        "zeroBytes": 5611,
+        "intrinsicGas": "47060",
+        "calldataFloorGas": "412568",
+        "executionGas": "6288649",
+        "estimatedTransactionGas": "6335709",
+        "executionAllowance": "16730156",
+        "fitsTransaction": true
+      },
+      "ok": true
+    },
+    {
+      "test": "upstream/good/tutorial/131_quotLiftReduction",
+      "expected": "accept",
+      "got": "accept",
+      "reason": "",
+      "gas": "12531488",
+      "calldataBytes": 6596,
+      "budget": {
+        "model": "glamsterdam-draft-2026-09-11-direct-kernel",
+        "calldataBytes": 6596,
+        "zeroBytes": 5969,
+        "intrinsicGas": "48908",
+        "calldataFloorGas": "437144",
+        "executionGas": "12531488",
+        "estimatedTransactionGas": "12580396",
+        "executionAllowance": "16728308",
+        "fitsTransaction": true
+      },
+      "ok": true
+    },
+    {
+      "test": "upstream/good/tutorial/132_quotIndReduction",
+      "expected": "accept",
+      "got": "accept",
+      "reason": "",
+      "gas": "11738008",
+      "calldataBytes": 6500,
+      "budget": {
+        "model": "glamsterdam-draft-2026-09-11-direct-kernel",
+        "calldataBytes": 6500,
+        "zeroBytes": 5881,
+        "intrinsicGas": "48428",
+        "calldataFloorGas": "431000",
+        "executionGas": "11738008",
+        "estimatedTransactionGas": "11786436",
+        "executionAllowance": "16728788",
+        "fitsTransaction": true
+      },
       "ok": true
     },
     {
@@ -984,8 +5201,19 @@
       "expected": "accept",
       "got": "accept",
       "reason": "",
-      "gas": "19816575",
+      "gas": "19816623",
       "calldataBytes": 11268,
+      "budget": {
+        "model": "glamsterdam-draft-2026-09-11-direct-kernel",
+        "calldataBytes": 11268,
+        "zeroBytes": 10203,
+        "intrinsicGas": "72852",
+        "calldataFloorGas": "736152",
+        "executionGas": "19816623",
+        "estimatedTransactionGas": "19889475",
+        "executionAllowance": "16704364",
+        "fitsTransaction": false
+      },
       "ok": true
     },
     {
@@ -993,8 +5221,19 @@
       "expected": "accept",
       "got": "accept",
       "reason": "",
-      "gas": "13505007",
+      "gas": "13505055",
       "calldataBytes": 11716,
+      "budget": {
+        "model": "glamsterdam-draft-2026-09-11-direct-kernel",
+        "calldataBytes": 11716,
+        "zeroBytes": 10599,
+        "intrinsicGas": "75268",
+        "calldataFloorGas": "764824",
+        "executionGas": "13505055",
+        "estimatedTransactionGas": "13580323",
+        "executionAllowance": "16701948",
+        "fitsTransaction": true
+      },
       "ok": true
     },
     {
@@ -1002,8 +5241,19 @@
       "expected": "accept",
       "got": "accept",
       "reason": "",
-      "gas": "13313646",
+      "gas": "13313694",
       "calldataBytes": 10532,
+      "budget": {
+        "model": "glamsterdam-draft-2026-09-11-direct-kernel",
+        "calldataBytes": 10532,
+        "zeroBytes": 9521,
+        "intrinsicGas": "69260",
+        "calldataFloorGas": "689048",
+        "executionGas": "13313694",
+        "estimatedTransactionGas": "13382954",
+        "executionAllowance": "16707956",
+        "fitsTransaction": true
+      },
       "ok": true
     },
     {
@@ -1011,8 +5261,19 @@
       "expected": "accept",
       "got": "accept",
       "reason": "",
-      "gas": "8997375",
+      "gas": "8997423",
       "calldataBytes": 9476,
+      "budget": {
+        "model": "glamsterdam-draft-2026-09-11-direct-kernel",
+        "calldataBytes": 9476,
+        "zeroBytes": 8552,
+        "intrinsicGas": "63992",
+        "calldataFloorGas": "621464",
+        "executionGas": "8997423",
+        "estimatedTransactionGas": "9061415",
+        "executionAllowance": "16713224",
+        "fitsTransaction": true
+      },
       "ok": true
     },
     {
@@ -1020,8 +5281,19 @@
       "expected": "accept",
       "got": "accept",
       "reason": "",
-      "gas": "6241602",
+      "gas": "6241650",
       "calldataBytes": 8132,
+      "budget": {
+        "model": "glamsterdam-draft-2026-09-11-direct-kernel",
+        "calldataBytes": 8132,
+        "zeroBytes": 7335,
+        "intrinsicGas": "57092",
+        "calldataFloorGas": "535448",
+        "executionGas": "6241650",
+        "estimatedTransactionGas": "6298742",
+        "executionAllowance": "16720124",
+        "fitsTransaction": true
+      },
       "ok": true
     },
     {
@@ -1029,8 +5301,19 @@
       "expected": "accept",
       "got": "accept",
       "reason": "",
-      "gas": "17428813",
+      "gas": "17428861",
       "calldataBytes": 17668,
+      "budget": {
+        "model": "glamsterdam-draft-2026-09-11-direct-kernel",
+        "calldataBytes": 17668,
+        "zeroBytes": 15834,
+        "intrinsicGas": "107680",
+        "calldataFloorGas": "1145752",
+        "executionGas": "17428861",
+        "estimatedTransactionGas": "17536541",
+        "executionAllowance": "16669536",
+        "fitsTransaction": false
+      },
       "ok": true
     },
     {
@@ -1038,8 +5321,19 @@
       "expected": "accept",
       "got": "accept",
       "reason": "",
-      "gas": "6905318",
+      "gas": "6905366",
       "calldataBytes": 8100,
+      "budget": {
+        "model": "glamsterdam-draft-2026-09-11-direct-kernel",
+        "calldataBytes": 8100,
+        "zeroBytes": 7322,
+        "intrinsicGas": "56736",
+        "calldataFloorGas": "533400",
+        "executionGas": "6905366",
+        "estimatedTransactionGas": "6962102",
+        "executionAllowance": "16720480",
+        "fitsTransaction": true
+      },
       "ok": true
     },
     {
@@ -1047,8 +5341,19 @@
       "expected": "accept",
       "got": "accept",
       "reason": "",
-      "gas": "14191714",
+      "gas": "14191762",
       "calldataBytes": 11940,
+      "budget": {
+        "model": "glamsterdam-draft-2026-09-11-direct-kernel",
+        "calldataBytes": 11940,
+        "zeroBytes": 10789,
+        "intrinsicGas": "76572",
+        "calldataFloorGas": "779160",
+        "executionGas": "14191762",
+        "estimatedTransactionGas": "14268334",
+        "executionAllowance": "16700644",
+        "fitsTransaction": true
+      },
       "ok": true
     },
     {
@@ -1056,8 +5361,19 @@
       "expected": "accept",
       "got": "accept",
       "reason": "",
-      "gas": "20031524",
+      "gas": "20031572",
       "calldataBytes": 12708,
+      "budget": {
+        "model": "glamsterdam-draft-2026-09-11-direct-kernel",
+        "calldataBytes": 12708,
+        "zeroBytes": 11523,
+        "intrinsicGas": "80052",
+        "calldataFloorGas": "828312",
+        "executionGas": "20031572",
+        "estimatedTransactionGas": "20111624",
+        "executionAllowance": "16697164",
+        "fitsTransaction": false
+      },
       "ok": true
     },
     {
@@ -1067,6 +5383,17 @@
       "reason": "",
       "gas": "4708805",
       "calldataBytes": 7012,
+      "budget": {
+        "model": "glamsterdam-draft-2026-09-11-direct-kernel",
+        "calldataBytes": 7012,
+        "zeroBytes": 6342,
+        "intrinsicGas": "51088",
+        "calldataFloorGas": "463768",
+        "executionGas": "4708805",
+        "estimatedTransactionGas": "4759893",
+        "executionAllowance": "16726128",
+        "fitsTransaction": true
+      },
       "ok": true
     },
     {
@@ -1074,8 +5401,19 @@
       "expected": "reject",
       "got": "reject",
       "reason": "decl#49: unknown constant",
-      "gas": "18355182",
+      "gas": "18355266",
       "calldataBytes": 42820,
+      "budget": {
+        "model": "glamsterdam-draft-2026-09-11-direct-kernel",
+        "calldataBytes": 42820,
+        "zeroBytes": 37606,
+        "intrinsicGas": "248848",
+        "calldataFloorGas": "2755480",
+        "executionGas": "18355266",
+        "estimatedTransactionGas": "18604114",
+        "executionAllowance": "16528368",
+        "fitsTransaction": false
+      },
       "ok": true
     },
     {
@@ -1083,8 +5421,19 @@
       "expected": "accept",
       "got": "accept",
       "reason": "",
-      "gas": "10507944",
+      "gas": "10507980",
       "calldataBytes": 8804,
+      "budget": {
+        "model": "glamsterdam-draft-2026-09-11-direct-kernel",
+        "calldataBytes": 8804,
+        "zeroBytes": 7968,
+        "intrinsicGas": "60248",
+        "calldataFloorGas": "578456",
+        "executionGas": "10507980",
+        "estimatedTransactionGas": "10568228",
+        "executionAllowance": "16716968",
+        "fitsTransaction": true
+      },
       "ok": true
     },
     {
@@ -1092,8 +5441,19 @@
       "expected": "accept",
       "got": "accept",
       "reason": "",
-      "gas": "20330541",
+      "gas": "20330589",
       "calldataBytes": 15012,
+      "budget": {
+        "model": "glamsterdam-draft-2026-09-11-direct-kernel",
+        "calldataBytes": 15012,
+        "zeroBytes": 13526,
+        "intrinsicGas": "92880",
+        "calldataFloorGas": "975768",
+        "executionGas": "20330589",
+        "estimatedTransactionGas": "20423469",
+        "executionAllowance": "16684336",
+        "fitsTransaction": false
+      },
       "ok": true
     },
     {
@@ -1101,8 +5461,19 @@
       "expected": "accept",
       "got": "accept",
       "reason": "",
-      "gas": "21982198",
+      "gas": "21982246",
       "calldataBytes": 11140,
+      "budget": {
+        "model": "glamsterdam-draft-2026-09-11-direct-kernel",
+        "calldataBytes": 11140,
+        "zeroBytes": 10087,
+        "intrinsicGas": "72196",
+        "calldataFloorGas": "727960",
+        "executionGas": "21982246",
+        "estimatedTransactionGas": "22054442",
+        "executionAllowance": "16705020",
+        "fitsTransaction": false
+      },
       "ok": true
     },
     {
@@ -1110,8 +5481,19 @@
       "expected": "accept",
       "got": "accept",
       "reason": "",
-      "gas": "7505972",
+      "gas": "7506008",
       "calldataBytes": 10852,
+      "budget": {
+        "model": "glamsterdam-draft-2026-09-11-direct-kernel",
+        "calldataBytes": 10852,
+        "zeroBytes": 9824,
+        "intrinsicGas": "70744",
+        "calldataFloorGas": "709528",
+        "executionGas": "7506008",
+        "estimatedTransactionGas": "7576752",
+        "executionAllowance": "16706472",
+        "fitsTransaction": true
+      },
       "ok": true
     },
     {
@@ -1119,8 +5501,19 @@
       "expected": "accept",
       "got": "accept",
       "reason": "",
-      "gas": "7425037",
+      "gas": "7425073",
       "calldataBytes": 10628,
+      "budget": {
+        "model": "glamsterdam-draft-2026-09-11-direct-kernel",
+        "calldataBytes": 10628,
+        "zeroBytes": 9589,
+        "intrinsicGas": "69980",
+        "calldataFloorGas": "695192",
+        "executionGas": "7425073",
+        "estimatedTransactionGas": "7495053",
+        "executionAllowance": "16707236",
+        "fitsTransaction": true
+      },
       "ok": true
     },
     {
@@ -1128,8 +5521,19 @@
       "expected": "accept",
       "got": "accept",
       "reason": "",
-      "gas": "4842143",
+      "gas": "4842167",
       "calldataBytes": 5348,
+      "budget": {
+        "model": "glamsterdam-draft-2026-09-11-direct-kernel",
+        "calldataBytes": 5348,
+        "zeroBytes": 4856,
+        "intrinsicGas": "42296",
+        "calldataFloorGas": "357272",
+        "executionGas": "4842167",
+        "estimatedTransactionGas": "4884463",
+        "executionAllowance": "16734920",
+        "fitsTransaction": true
+      },
       "ok": true
     },
     {
@@ -1137,8 +5541,19 @@
       "expected": "accept",
       "got": "accept",
       "reason": "",
-      "gas": "1467942",
+      "gas": "1467978",
       "calldataBytes": 3332,
+      "budget": {
+        "model": "glamsterdam-draft-2026-09-11-direct-kernel",
+        "calldataBytes": 3332,
+        "zeroBytes": 3045,
+        "intrinsicGas": "31772",
+        "calldataFloorGas": "228248",
+        "executionGas": "1467978",
+        "estimatedTransactionGas": "1499750",
+        "executionAllowance": "16745444",
+        "fitsTransaction": true
+      },
       "ok": true
     },
     {
@@ -1146,8 +5561,19 @@
       "expected": "accept",
       "got": "accept",
       "reason": "",
-      "gas": "431210",
+      "gas": "431222",
       "calldataBytes": 1828,
+      "budget": {
+        "model": "glamsterdam-draft-2026-09-11-direct-kernel",
+        "calldataBytes": 1828,
+        "zeroBytes": 1681,
+        "intrinsicGas": "24076",
+        "calldataFloorGas": "131992",
+        "executionGas": "431222",
+        "estimatedTransactionGas": "455298",
+        "executionAllowance": "16753140",
+        "fitsTransaction": true
+      },
       "ok": true
     },
     {
@@ -1155,8 +5581,19 @@
       "expected": "accept",
       "got": "accept",
       "reason": "",
-      "gas": "694385",
+      "gas": "694409",
       "calldataBytes": 2084,
+      "budget": {
+        "model": "glamsterdam-draft-2026-09-11-direct-kernel",
+        "calldataBytes": 2084,
+        "zeroBytes": 1925,
+        "intrinsicGas": "25244",
+        "calldataFloorGas": "148376",
+        "executionGas": "694409",
+        "estimatedTransactionGas": "719653",
+        "executionAllowance": "16751972",
+        "fitsTransaction": true
+      },
       "ok": true
     },
     {
@@ -1164,8 +5601,19 @@
       "expected": "accept",
       "got": "accept",
       "reason": "",
-      "gas": "408190",
+      "gas": "408202",
       "calldataBytes": 1796,
+      "budget": {
+        "model": "glamsterdam-draft-2026-09-11-direct-kernel",
+        "calldataBytes": 1796,
+        "zeroBytes": 1634,
+        "intrinsicGas": "24128",
+        "calldataFloorGas": "129944",
+        "executionGas": "408202",
+        "estimatedTransactionGas": "432330",
+        "executionAllowance": "16753088",
+        "fitsTransaction": true
+      },
       "ok": true
     },
     {
@@ -1173,8 +5621,19 @@
       "expected": "accept",
       "got": "accept",
       "reason": "",
-      "gas": "393982",
+      "gas": "393994",
       "calldataBytes": 1636,
+      "budget": {
+        "model": "glamsterdam-draft-2026-09-11-direct-kernel",
+        "calldataBytes": 1636,
+        "zeroBytes": 1492,
+        "intrinsicGas": "23272",
+        "calldataFloorGas": "119704",
+        "executionGas": "393994",
+        "estimatedTransactionGas": "417266",
+        "executionAllowance": "16753944",
+        "fitsTransaction": true
+      },
       "ok": true
     },
     {
@@ -1182,8 +5641,19 @@
       "expected": "accept",
       "got": "accept",
       "reason": "",
-      "gas": "528629",
+      "gas": "528641",
       "calldataBytes": 1732,
+      "budget": {
+        "model": "glamsterdam-draft-2026-09-11-direct-kernel",
+        "calldataBytes": 1732,
+        "zeroBytes": 1597,
+        "intrinsicGas": "23548",
+        "calldataFloorGas": "125848",
+        "executionGas": "528641",
+        "estimatedTransactionGas": "552189",
+        "executionAllowance": "16753668",
+        "fitsTransaction": true
+      },
       "ok": true
     },
     {
@@ -1191,8 +5661,19 @@
       "expected": "accept",
       "got": "accept",
       "reason": "",
-      "gas": "52264215",
+      "gas": "52264299",
       "calldataBytes": 21956,
+      "budget": {
+        "model": "glamsterdam-draft-2026-09-11-direct-kernel",
+        "calldataBytes": 21956,
+        "zeroBytes": 19522,
+        "intrinsicGas": "132032",
+        "calldataFloorGas": "1420184",
+        "executionGas": "52264299",
+        "estimatedTransactionGas": "52396331",
+        "executionAllowance": "16645184",
+        "fitsTransaction": false
+      },
       "ok": true
     },
     {
@@ -1200,8 +5681,19 @@
       "expected": "accept",
       "got": "accept",
       "reason": "",
-      "gas": "31244761",
+      "gas": "31244857",
       "calldataBytes": 19684,
+      "budget": {
+        "model": "glamsterdam-draft-2026-09-11-direct-kernel",
+        "calldataBytes": 19684,
+        "zeroBytes": 17626,
+        "intrinsicGas": "118432",
+        "calldataFloorGas": "1274776",
+        "executionGas": "31244857",
+        "estimatedTransactionGas": "31363289",
+        "executionAllowance": "16658784",
+        "fitsTransaction": false
+      },
       "ok": true
     },
     {
@@ -1209,8 +5701,19 @@
       "expected": "accept",
       "got": "accept",
       "reason": "",
-      "gas": "4387865",
+      "gas": "4387901",
       "calldataBytes": 7620,
+      "budget": {
+        "model": "glamsterdam-draft-2026-09-11-direct-kernel",
+        "calldataBytes": 7620,
+        "zeroBytes": 6892,
+        "intrinsicGas": "54216",
+        "calldataFloorGas": "502680",
+        "executionGas": "4387901",
+        "estimatedTransactionGas": "4442117",
+        "executionAllowance": "16723000",
+        "fitsTransaction": true
+      },
       "ok": true
     },
     {
@@ -1218,8 +5721,19 @@
       "expected": "reject",
       "got": "reject",
       "reason": "decl#13: projection violation",
-      "gas": "647785",
+      "gas": "647797",
       "calldataBytes": 2692,
+      "budget": {
+        "model": "glamsterdam-draft-2026-09-11-direct-kernel",
+        "calldataBytes": 2692,
+        "zeroBytes": 2447,
+        "intrinsicGas": "28708",
+        "calldataFloorGas": "187288",
+        "executionGas": "647797",
+        "estimatedTransactionGas": "676505",
+        "executionAllowance": "16748508",
+        "fitsTransaction": true
+      },
       "ok": true
     },
     {
@@ -1227,8 +5741,19 @@
       "expected": "reject",
       "got": "reject",
       "reason": "decl#4: constructor result type",
-      "gas": "321488",
+      "gas": "321500",
       "calldataBytes": 1412,
+      "budget": {
+        "model": "glamsterdam-draft-2026-09-11-direct-kernel",
+        "calldataBytes": 1412,
+        "zeroBytes": 1289,
+        "intrinsicGas": "22124",
+        "calldataFloorGas": "105368",
+        "executionGas": "321500",
+        "estimatedTransactionGas": "343624",
+        "executionAllowance": "16755092",
+        "fitsTransaction": true
+      },
       "ok": true
     },
     {
@@ -1236,8 +5761,19 @@
       "expected": "reject",
       "got": "reject",
       "reason": "decl#11: value/type mismatch",
-      "gas": "6687351",
+      "gas": "6687387",
       "calldataBytes": 4868,
+      "budget": {
+        "model": "glamsterdam-draft-2026-09-11-direct-kernel",
+        "calldataBytes": 4868,
+        "zeroBytes": 4436,
+        "intrinsicGas": "39656",
+        "calldataFloorGas": "326552",
+        "executionGas": "6687387",
+        "estimatedTransactionGas": "6727043",
+        "executionAllowance": "16737560",
+        "fitsTransaction": true
+      },
       "ok": true
     },
     {
@@ -1245,8 +5781,19 @@
       "expected": "reject",
       "got": "reject",
       "reason": "decl#14: inductive shape",
-      "gas": "893572",
+      "gas": "893608",
       "calldataBytes": 3588,
+      "budget": {
+        "model": "glamsterdam-draft-2026-09-11-direct-kernel",
+        "calldataBytes": 3588,
+        "zeroBytes": 3249,
+        "intrinsicGas": "33420",
+        "calldataFloorGas": "244632",
+        "executionGas": "893608",
+        "estimatedTransactionGas": "927028",
+        "executionAllowance": "16743796",
+        "fitsTransaction": true
+      },
       "ok": true
     },
     {
@@ -1254,8 +5801,19 @@
       "expected": "reject",
       "got": "reject",
       "reason": "decl#0: elimination universe violation",
-      "gas": "476631",
+      "gas": "476643",
       "calldataBytes": 2052,
+      "budget": {
+        "model": "glamsterdam-draft-2026-09-11-direct-kernel",
+        "calldataBytes": 2052,
+        "zeroBytes": 1895,
+        "intrinsicGas": "25092",
+        "calldataFloorGas": "146328",
+        "executionGas": "476643",
+        "estimatedTransactionGas": "501735",
+        "executionAllowance": "16752124",
+        "fitsTransaction": true
+      },
       "ok": true
     },
     {
@@ -1263,8 +5821,19 @@
       "expected": "reject",
       "got": "reject",
       "reason": "decl#7: projection violation",
-      "gas": "400358",
+      "gas": "400382",
       "calldataBytes": 1700,
+      "budget": {
+        "model": "glamsterdam-draft-2026-09-11-direct-kernel",
+        "calldataBytes": 1700,
+        "zeroBytes": 1551,
+        "intrinsicGas": "23588",
+        "calldataFloorGas": "123800",
+        "executionGas": "400382",
+        "estimatedTransactionGas": "423970",
+        "executionAllowance": "16753628",
+        "fitsTransaction": true
+      },
       "ok": true
     },
     {
@@ -1272,8 +5841,19 @@
       "expected": "reject",
       "got": "reject",
       "reason": "decl#7: projection violation",
-      "gas": "390228",
+      "gas": "390240",
       "calldataBytes": 1668,
+      "budget": {
+        "model": "glamsterdam-draft-2026-09-11-direct-kernel",
+        "calldataBytes": 1668,
+        "zeroBytes": 1522,
+        "intrinsicGas": "23424",
+        "calldataFloorGas": "121752",
+        "executionGas": "390240",
+        "estimatedTransactionGas": "413664",
+        "executionAllowance": "16753792",
+        "fitsTransaction": true
+      },
       "ok": true
     },
     {
@@ -1281,8 +5861,19 @@
       "expected": "reject",
       "got": "reject",
       "reason": "decl#7: field universe too large",
-      "gas": "419061",
+      "gas": "419085",
       "calldataBytes": 2308,
+      "budget": {
+        "model": "glamsterdam-draft-2026-09-11-direct-kernel",
+        "calldataBytes": 2308,
+        "zeroBytes": 2093,
+        "intrinsicGas": "26812",
+        "calldataFloorGas": "162712",
+        "executionGas": "419085",
+        "estimatedTransactionGas": "445897",
+        "executionAllowance": "16750404",
+        "fitsTransaction": true
+      },
       "ok": true
     },
     {
@@ -1292,6 +5883,17 @@
       "reason": "decl#9: projection violation",
       "gas": "425834",
       "calldataBytes": 1860,
+      "budget": {
+        "model": "glamsterdam-draft-2026-09-11-direct-kernel",
+        "calldataBytes": 1860,
+        "zeroBytes": 1691,
+        "intrinsicGas": "24468",
+        "calldataFloorGas": "134040",
+        "executionGas": "425834",
+        "estimatedTransactionGas": "450302",
+        "executionAllowance": "16752748",
+        "fitsTransaction": true
+      },
       "ok": true
     },
     {
@@ -1301,6 +5903,17 @@
       "reason": "decl#8: application argument type mismatch",
       "gas": "410095",
       "calldataBytes": 1700,
+      "budget": {
+        "model": "glamsterdam-draft-2026-09-11-direct-kernel",
+        "calldataBytes": 1700,
+        "zeroBytes": 1547,
+        "intrinsicGas": "23636",
+        "calldataFloorGas": "123800",
+        "executionGas": "410095",
+        "estimatedTransactionGas": "433731",
+        "executionAllowance": "16753580",
+        "fitsTransaction": true
+      },
       "ok": true
     },
     {
@@ -1308,8 +5921,19 @@
       "expected": "reject",
       "got": "reject",
       "reason": "decl#0: invalid K flag",
-      "gas": "573270",
+      "gas": "573294",
       "calldataBytes": 2084,
+      "budget": {
+        "model": "glamsterdam-draft-2026-09-11-direct-kernel",
+        "calldataBytes": 2084,
+        "zeroBytes": 1924,
+        "intrinsicGas": "25256",
+        "calldataFloorGas": "148376",
+        "executionGas": "573294",
+        "estimatedTransactionGas": "598550",
+        "executionAllowance": "16751960",
+        "fitsTransaction": true
+      },
       "ok": true
     },
     {
@@ -1317,8 +5941,19 @@
       "expected": "reject",
       "got": "reject",
       "reason": "decl#5: inductive shape",
-      "gas": "541703",
+      "gas": "541727",
       "calldataBytes": 5732,
+      "budget": {
+        "model": "glamsterdam-draft-2026-09-11-direct-kernel",
+        "calldataBytes": 5732,
+        "zeroBytes": 5227,
+        "intrinsicGas": "43988",
+        "calldataFloorGas": "381848",
+        "executionGas": "541727",
+        "estimatedTransactionGas": "585715",
+        "executionAllowance": "16733228",
+        "fitsTransaction": true
+      },
       "ok": true
     },
     {
@@ -1326,8 +5961,19 @@
       "expected": "reject",
       "got": "reject",
       "reason": "decl#8: recursor shape",
-      "gas": "569474",
+      "gas": "569498",
       "calldataBytes": 3332,
+      "budget": {
+        "model": "glamsterdam-draft-2026-09-11-direct-kernel",
+        "calldataBytes": 3332,
+        "zeroBytes": 3036,
+        "intrinsicGas": "31880",
+        "calldataFloorGas": "228248",
+        "executionGas": "569498",
+        "estimatedTransactionGas": "601378",
+        "executionAllowance": "16745336",
+        "fitsTransaction": true
+      },
       "ok": true
     },
     {
@@ -1335,8 +5981,19 @@
       "expected": "reject",
       "got": "reject",
       "reason": "decl#5: inductive shape",
-      "gas": "425393",
+      "gas": "425417",
       "calldataBytes": 3300,
+      "budget": {
+        "model": "glamsterdam-draft-2026-09-11-direct-kernel",
+        "calldataBytes": 3300,
+        "zeroBytes": 3006,
+        "intrinsicGas": "31728",
+        "calldataFloorGas": "226200",
+        "executionGas": "425417",
+        "estimatedTransactionGas": "457145",
+        "executionAllowance": "16745488",
+        "fitsTransaction": true
+      },
       "ok": true
     },
     {
@@ -1344,8 +6001,19 @@
       "expected": "reject",
       "got": "reject",
       "reason": "decl#0: malformed export",
-      "gas": "184541",
+      "gas": "184553",
       "calldataBytes": 676,
+      "budget": {
+        "model": "glamsterdam-draft-2026-09-11-direct-kernel",
+        "calldataBytes": 676,
+        "zeroBytes": 636,
+        "intrinsicGas": "18184",
+        "calldataFloorGas": "58264",
+        "executionGas": "184553",
+        "estimatedTransactionGas": "202737",
+        "executionAllowance": "16759032",
+        "fitsTransaction": true
+      },
       "ok": true
     },
     {
@@ -1353,8 +6021,19 @@
       "expected": "reject",
       "got": "reject",
       "reason": "decl#21: application argument type mismatch",
-      "gas": "3457510",
+      "gas": "3457546",
       "calldataBytes": 7844,
+      "budget": {
+        "model": "glamsterdam-draft-2026-09-11-direct-kernel",
+        "calldataBytes": 7844,
+        "zeroBytes": 7143,
+        "intrinsicGas": "54788",
+        "calldataFloorGas": "517016",
+        "executionGas": "3457546",
+        "estimatedTransactionGas": "3512334",
+        "executionAllowance": "16722428",
+        "fitsTransaction": true
+      },
       "ok": true
     },
     {
@@ -1362,8 +6041,19 @@
       "expected": "reject",
       "got": "reject",
       "reason": "decl#10: value/type mismatch",
-      "gas": "1786614",
+      "gas": "1786638",
       "calldataBytes": 4164,
+      "budget": {
+        "model": "glamsterdam-draft-2026-09-11-direct-kernel",
+        "calldataBytes": 4164,
+        "zeroBytes": 3775,
+        "intrinsicGas": "36324",
+        "calldataFloorGas": "281496",
+        "executionGas": "1786638",
+        "estimatedTransactionGas": "1822962",
+        "executionAllowance": "16740892",
+        "fitsTransaction": true
+      },
       "ok": true
     },
     {
@@ -1371,8 +6061,19 @@
       "expected": "reject",
       "got": "reject",
       "reason": "decl#10: value/type mismatch",
-      "gas": "4509332",
+      "gas": "4509356",
       "calldataBytes": 4356,
+      "budget": {
+        "model": "glamsterdam-draft-2026-09-11-direct-kernel",
+        "calldataBytes": 4356,
+        "zeroBytes": 3950,
+        "intrinsicGas": "37296",
+        "calldataFloorGas": "293784",
+        "executionGas": "4509356",
+        "estimatedTransactionGas": "4546652",
+        "executionAllowance": "16739920",
+        "fitsTransaction": true
+      },
       "ok": true
     },
     {
@@ -1380,8 +6081,19 @@
       "expected": "reject",
       "got": "reject",
       "reason": "decl#0: malformed export",
-      "gas": "468937",
+      "gas": "468985",
       "calldataBytes": 8100,
+      "budget": {
+        "model": "glamsterdam-draft-2026-09-11-direct-kernel",
+        "calldataBytes": 8100,
+        "zeroBytes": 7322,
+        "intrinsicGas": "56736",
+        "calldataFloorGas": "533400",
+        "executionGas": "468985",
+        "estimatedTransactionGas": "533400",
+        "executionAllowance": "16720480",
+        "fitsTransaction": true
+      },
       "ok": true
     },
     {
@@ -1389,8 +6101,19 @@
       "expected": "reject",
       "got": "reject",
       "reason": "decl#0: inductive shape",
-      "gas": "822464",
+      "gas": "822512",
       "calldataBytes": 11204,
+      "budget": {
+        "model": "glamsterdam-draft-2026-09-11-direct-kernel",
+        "calldataBytes": 11204,
+        "zeroBytes": 10123,
+        "intrinsicGas": "72788",
+        "calldataFloorGas": "732056",
+        "executionGas": "822512",
+        "estimatedTransactionGas": "895300",
+        "executionAllowance": "16704428",
+        "fitsTransaction": true
+      },
       "ok": true
     },
     {
@@ -1398,8 +6121,19 @@
       "expected": "reject",
       "got": "reject",
       "reason": "decl#0: inductive shape",
-      "gas": "214271",
+      "gas": "214283",
       "calldataBytes": 1316,
+      "budget": {
+        "model": "glamsterdam-draft-2026-09-11-direct-kernel",
+        "calldataBytes": 1316,
+        "zeroBytes": 1214,
+        "intrinsicGas": "21488",
+        "calldataFloorGas": "99224",
+        "executionGas": "214283",
+        "estimatedTransactionGas": "235771",
+        "executionAllowance": "16755728",
+        "fitsTransaction": true
+      },
       "ok": true
     },
     {
@@ -1407,8 +6141,19 @@
       "expected": "reject",
       "got": "reject",
       "reason": "decl#0: inductive shape",
-      "gas": "267398",
+      "gas": "267410",
       "calldataBytes": 1444,
+      "budget": {
+        "model": "glamsterdam-draft-2026-09-11-direct-kernel",
+        "calldataBytes": 1444,
+        "zeroBytes": 1332,
+        "intrinsicGas": "22120",
+        "calldataFloorGas": "107416",
+        "executionGas": "267410",
+        "estimatedTransactionGas": "289530",
+        "executionAllowance": "16755096",
+        "fitsTransaction": true
+      },
       "ok": true
     },
     {
@@ -1416,8 +6161,19 @@
       "expected": "reject",
       "got": "reject",
       "reason": "decl#0: malformed export",
-      "gas": "191673",
+      "gas": "191697",
       "calldataBytes": 4900,
+      "budget": {
+        "model": "glamsterdam-draft-2026-09-11-direct-kernel",
+        "calldataBytes": 4900,
+        "zeroBytes": 4459,
+        "intrinsicGas": "39892",
+        "calldataFloorGas": "328600",
+        "executionGas": "191697",
+        "estimatedTransactionGas": "328600",
+        "executionAllowance": "16737324",
+        "fitsTransaction": true
+      },
       "ok": true
     },
     {
@@ -1425,8 +6181,19 @@
       "expected": "reject",
       "got": "reject",
       "reason": "decl#11: value/type mismatch",
-      "gas": "685761",
+      "gas": "685785",
       "calldataBytes": 3012,
+      "budget": {
+        "model": "glamsterdam-draft-2026-09-11-direct-kernel",
+        "calldataBytes": 3012,
+        "zeroBytes": 2710,
+        "intrinsicGas": "30672",
+        "calldataFloorGas": "207768",
+        "executionGas": "685785",
+        "estimatedTransactionGas": "716457",
+        "executionAllowance": "16746544",
+        "fitsTransaction": true
+      },
       "ok": true
     },
     {
@@ -1434,8 +6201,19 @@
       "expected": "reject",
       "got": "reject",
       "reason": "decl#18: value/type mismatch",
-      "gas": "4466780",
+      "gas": "4466816",
       "calldataBytes": 8420,
+      "budget": {
+        "model": "glamsterdam-draft-2026-09-11-direct-kernel",
+        "calldataBytes": 8420,
+        "zeroBytes": 7687,
+        "intrinsicGas": "57476",
+        "calldataFloorGas": "553880",
+        "executionGas": "4466816",
+        "estimatedTransactionGas": "4524292",
+        "executionAllowance": "16719740",
+        "fitsTransaction": true
+      },
       "ok": true
     },
     {
@@ -1443,8 +6221,19 @@
       "expected": "reject",
       "got": "reject",
       "reason": "decl#11: value/type mismatch",
-      "gas": "685388",
+      "gas": "685412",
       "calldataBytes": 3012,
+      "budget": {
+        "model": "glamsterdam-draft-2026-09-11-direct-kernel",
+        "calldataBytes": 3012,
+        "zeroBytes": 2711,
+        "intrinsicGas": "30660",
+        "calldataFloorGas": "207768",
+        "executionGas": "685412",
+        "estimatedTransactionGas": "716072",
+        "executionAllowance": "16746556",
+        "fitsTransaction": true
+      },
       "ok": true
     },
     {
@@ -1452,8 +6241,19 @@
       "expected": "reject",
       "got": "reject",
       "reason": "decl#5: malformed export",
-      "gas": "2262665",
+      "gas": "2262713",
       "calldataBytes": 8100,
+      "budget": {
+        "model": "glamsterdam-draft-2026-09-11-direct-kernel",
+        "calldataBytes": 8100,
+        "zeroBytes": 7322,
+        "intrinsicGas": "56736",
+        "calldataFloorGas": "533400",
+        "executionGas": "2262713",
+        "estimatedTransactionGas": "2319449",
+        "executionAllowance": "16720480",
+        "fitsTransaction": true
+      },
       "ok": true
     },
     {
@@ -1461,8 +6261,19 @@
       "expected": "reject",
       "got": "reject",
       "reason": "decl#0: recursor rule invalid",
-      "gas": "610150",
+      "gas": "610174",
       "calldataBytes": 2884,
+      "budget": {
+        "model": "glamsterdam-draft-2026-09-11-direct-kernel",
+        "calldataBytes": 2884,
+        "zeroBytes": 2634,
+        "intrinsicGas": "29536",
+        "calldataFloorGas": "199576",
+        "executionGas": "610174",
+        "estimatedTransactionGas": "639710",
+        "executionAllowance": "16747680",
+        "fitsTransaction": true
+      },
       "ok": true
     },
     {
@@ -1470,8 +6281,19 @@
       "expected": "reject",
       "got": "reject",
       "reason": "decl#0: application argument type mismatch",
-      "gas": "825002",
+      "gas": "825038",
       "calldataBytes": 3332,
+      "budget": {
+        "model": "glamsterdam-draft-2026-09-11-direct-kernel",
+        "calldataBytes": 3332,
+        "zeroBytes": 3044,
+        "intrinsicGas": "31784",
+        "calldataFloorGas": "228248",
+        "executionGas": "825038",
+        "estimatedTransactionGas": "856822",
+        "executionAllowance": "16745432",
+        "fitsTransaction": true
+      },
       "ok": true
     }
   ]

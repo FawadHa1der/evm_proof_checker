@@ -1,6 +1,40 @@
 # A Lean 4 Kernel on the EVM — Feasibility & Plan
 
-*June 15, 2026 — status: working kernel covering the Arena tutorial fragment exactly; targeting the Glamsterdam (EIP-7907) code-size budget*
+## Current Status: September 11, 2026
+
+The [dated Arena audit](ARENA-AUDIT-2026-09-11.md), README, HOWTO-ARENA.md,
+and regenerated gas-report.json supersede the historical measurements below.
+The kernel targets **EIP-7954**, not EIP-7907: runtime 61,609 / 65,536 bytes;
+initcode 61,635 / 131,072 bytes. The default suite contains 313 EVM fixtures
+plus tooling tests. A combined 208-file upstream audit returns 155 exact
+verdicts, 8 unscored either outcomes, and 45 explicit declines under the dated
+draft direct-call transaction model, with no wrong verdicts or faults.
+
+The host guard is **512,000 NDJSON bytes**, not 128 KB and not a protocol limit.
+Transaction eligibility also depends on encoded calldata and execution:
+EIP-7976's floor is 64 gas per byte, including zero bytes; EIP-2780's direct
+zero-value call base is 15,000 gas. EIP-8037 retains the 16,777,216 execution
+cap but permits separate state gas, so the old statement that *all* transaction
+gas can never exceed that cap is no longer a correct Glamsterdam assumption.
+
+Tests execute state-injected Solidity bytecode in a Cancun EVM. The draft
+envelope model is not full-fork execution/deployment validation and excludes
+registry/deployment state costs. Six published large library exports were not
+run. All six latest magma exports were generated and encoded; even with the
+host guard disabled, their calldata floors exceed the direct-call budget.
+
+Multi-transaction checking, kernel verification, and an actual Glamsterdam
+deployment remain separate work, not completed milestones of this audit.
+Do not publish changes: the user's standing local-only instruction is recorded
+in AGENTS.md and applies to all sessions working on this repository.
+
+## Historical Roadmap
+
+The June 2026 sections below are retained as design history. Their benchmark
+counts, gas/deployment estimates, fork assumptions, and milestone status are
+not current measurements. Use the dated audit above for current evidence.
+
+*Original roadmap: June 15, 2026.*
 
 ## 1. Verdict
 
