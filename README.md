@@ -62,13 +62,13 @@ returns **169 exact verdicts, all 15 either cases checked, and 24 declines**,
 again with zero wrong verdicts/faults. This is local checking, not single-transaction
 eligibility; some small files consume billions of gas.
 
-The default suite now bundles **313 EVM fixtures**: 94 generated, 14 nested,
-41 Lean regressions, 15 static Arena files, and **149 newly imported byte-real
+The default suite now bundles **315 EVM fixtures**: 95 generated, 14 nested,
+42 Lean regressions, 15 static Arena files, and **149 newly imported byte-real
 Arena exports**, plus separate tooling tests. Imported cases carry checksums,
 provenance, explicit outcomes, and transaction-budget regression assertions.
 Some older local fixtures deliberately exercise workloads above the L1 budget.
 
-Kernel runtime is **61,609 bytes**, initcode **61,635 bytes**: within the
+Kernel runtime is **62,472 bytes**, initcode **62,498 bytes**: within the
 [EIP-7954](https://eips.ethereum.org/EIPS/eip-7954) targets of 65,536 and 131,072
 bytes, respectively, but above EIP-170. Tests use a Cancun EVM with code installed
 directly into state. This is **not deployment evidence or a full Glamsterdam
@@ -86,7 +86,7 @@ or your own `lean4export` output).
 ```bash
 npm install
 npm run gen          # generate the tutorial-parity test vectors
-npm test             # tooling tests + 313 EVM fixtures + gas report
+npm test             # tooling tests + 315 EVM fixtures + gas report
 npm run size         # enforce EIP-7954 code/initcode targets; report EIP-170
 node scripts/demo-local.js                       # kernel+registry calls and record in local VM state
 node bin/evmlean.js tests/arena/nat-rec-rules.ndjson ; echo $?   # Arena checker contract: exit 1 (reject)

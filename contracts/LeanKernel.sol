@@ -119,6 +119,12 @@ contract LeanKernel {
     /// in real exports is tiny (Lean.Syntax has 2); an absurd declared value
     /// would otherwise size our worklist arrays. Declining is honest.
     uint256 internal constant MAX_NESTED = 256;
+    // _exactEq memo entries: EXQ_MARK | (min(a,b) << 80) | max(a,b), with
+    // EXQ_TRUE set when the pair is structurally equal. The mark keeps every
+    // stored word nonzero, so 0 means an empty slot.
+    uint256 internal constant EXQ_MARK = 1 << 170;
+    uint256 internal constant EXQ_TRUE = 1 << 171;
+    uint256 internal constant EXQ_INIT_SLOTS = 256;
 
     struct M {
         // expression arena (grows: beta/inst/subst create nodes)
@@ -171,6 +177,10 @@ contract LeanKernel {
         // Nat.add sub mul pow gcd mod div beq ble land lor xor shiftLeft shiftRight
         uint256[14] natOp;
         uint256 quotIdx;
+        // memo for structural sub-comparisons in _exactEq (open addressing,
+        // allocated on first use; see _exactEqM)
+        uint256[] exq;
+        uint256 exqN;
     }
 
     /// Per-inductive-group checking state.
@@ -1834,7 +1844,82 @@ contract LeanKernel {
     // ------------------------------------------------------------------
 
     /// Cheap structural equality (no unfolding; levels compared exactly).
+    /// Structural equality. The root comparison is not memoised — Lean's
+    /// `!root` rule in expr_eq_fn.cpp: most roots come from _isDefEqCore's
+    /// quick first check and fail at the head, so caching them only costs.
+    /// Sub-comparisons go through _exactEqM.
     function _exactEq(M memory m, uint256 a, uint256 b) internal pure returns (bool) {
+        if (a == b) return true;
+        return _exactEqCore(m, a, b);
+    }
+
+    /// Memoised structural sub-comparison. Without it, two DAG-shared terms
+    /// built separately (same shape, different indices) are compared as trees:
+    /// `node X X` against `node Y Y` asks X =?= Y once per occurrence, so a
+    /// shared perfect tree of depth n costs 2^n (Arena perf/repeated-subproblem:
+    /// 5.2B gas). Caching both answers is sound because _exactEqCore reads only
+    /// the arena, level and pool tables, which are append-only — written in
+    /// _init and at fresh indices by _pushEx/_pushLv/_pushPool, never in place —
+    /// and consults no context, reduction, budget or environment. Its result is
+    /// therefore a function of (a, b) alone: the property Lean's lean4#14806 fix
+    /// relies on, and which reduction or inference results do NOT have here
+    /// (de Bruijn terms depend on m.ctx). Keep it that way: any in-place write
+    /// to those tables, or a context read in _exactEqCore, would make this
+    /// memo unsound. Leaves are cheap and skip the table.
+    function _exactEqM(M memory m, uint256 a, uint256 b) internal pure returns (bool) {
+        if (a == b) return true;
+        uint256 t = _tag(m, a);
+        if (t != _tag(m, b)) return false;
+        if (t != E_APP && t != E_LAM && t != E_PI && t != E_LET && t != E_PROJ) return _exactEqCore(m, a, b);
+        uint256 k = EXQ_MARK | (a < b ? (a << 80) | b : (b << 80) | a);
+        if (m.exq.length == 0) {
+            // First use. Allocating lazily matters: an up-front table costs every
+            // run its memory-expansion charge (~180K gas measured) even when no
+            // shared structure is ever compared.
+            bool r0 = _exactEqCore(m, a, b);
+            m.exq = new uint256[](EXQ_INIT_SLOTS);
+            _exqIns(m, r0 ? k | EXQ_TRUE : k);
+            return r0;
+        }
+        uint256 mask = m.exq.length - 1;
+        uint256 s = uint256(keccak256(abi.encode(k))) & mask;
+        for (;;) {
+            uint256 v = m.exq[s];
+            if (v == 0) break;
+            if (v & ~EXQ_TRUE == k) return v & EXQ_TRUE != 0;
+            s = (s + 1) & mask;
+        }
+        bool r = _exactEqCore(m, a, b);
+        _exqPut(m, r ? k | EXQ_TRUE : k);
+        return r;
+    }
+
+    function _exqPut(M memory m, uint256 v) internal pure {
+        // keep the load factor at or below 1/2 so linear probing stays short
+        if (2 * (m.exqN + 1) > m.exq.length) {
+            uint256[] memory old = m.exq;
+            m.exq = new uint256[](old.length * 2);
+            m.exqN = 0;
+            for (uint256 i = 0; i < old.length; i++) {
+                if (old[i] != 0) _exqIns(m, old[i]);
+            }
+        }
+        _exqIns(m, v);
+    }
+
+    function _exqIns(M memory m, uint256 v) internal pure {
+        uint256 k = v & ~EXQ_TRUE;
+        uint256 mask = m.exq.length - 1;
+        uint256 s = uint256(keccak256(abi.encode(k))) & mask;
+        while (m.exq[s] != 0) {
+            if (m.exq[s] & ~EXQ_TRUE == k) return;
+            s = (s + 1) & mask;
+        }
+        m.exq[s] = v;
+        m.exqN++;
+    }
+
+    function _exactEqCore(M memory m, uint256 a, uint256 b) internal pure returns (bool) {
         if (a == b) return true;
         uint256 t = _tag(m, a);
         if (t != _tag(m, b)) return false;
@@ -1857,26 +1942,26 @@ contract LeanKernel {
             uint256 cb = b;
             while (_tag(m, ca) == E_APP && _tag(m, cb) == E_APP) {
                 if (ca == cb) return true; // shared tail
-                if (!_exactEq(m, _b(m, ca), _b(m, cb))) return false;
+                if (!_exactEqM(m, _b(m, ca), _b(m, cb))) return false;
                 ca = _a(m, ca);
                 cb = _a(m, cb);
             }
             // Unequal spine lengths leave one side an App and the other not,
             // so the tag check inside the recursive call rejects them.
-            return _exactEq(m, ca, cb);
+            return _exactEqM(m, ca, cb);
         }
         if (t == E_LAM || t == E_PI) {
-            return _exactEq(m, _a(m, a), _a(m, b)) && _exactEq(m, _b(m, a), _b(m, b));
+            return _exactEqM(m, _a(m, a), _a(m, b)) && _exactEqM(m, _b(m, a), _b(m, b));
         }
         if (t == E_LET) {
-            return _exactEq(m, _a(m, a), _a(m, b)) && _exactEq(m, _b(m, a), _b(m, b))
-                && _exactEq(m, _c(m, a), _c(m, b));
+            return _exactEqM(m, _a(m, a), _a(m, b)) && _exactEqM(m, _b(m, a), _b(m, b))
+                && _exactEqM(m, _c(m, a), _c(m, b));
         }
         if (t == E_NAT) return _natEq(m, a, b);
         if (t == E_STRL) return _strEq(m, a, b);
         if (t == E_PROJ) {
             return m.nameHash[_a(m, a)] == m.nameHash[_a(m, b)] && _b(m, a) == _b(m, b)
-                && _exactEq(m, _c(m, a), _c(m, b));
+                && _exactEqM(m, _c(m, a), _c(m, b));
         }
         return false;
     }

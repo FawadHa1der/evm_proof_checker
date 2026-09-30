@@ -13,13 +13,15 @@ const { ExportBuilder } = require('./lib');
 const ROOT = path.join(__dirname, '..', 'tests');
 const tests = [];
 
-function write(group, name, builderFn, note) {
+// `extra` carries per-vector manifest fields, e.g. { maxGas } for a
+// performance regression guard (test/run.js uses it as the call's gas limit).
+function write(group, name, builderFn, note, extra = {}) {
   const B = new ExportBuilder();
   builderFn(B);
   const dir = path.join(ROOT, group);
   fs.mkdirSync(dir, { recursive: true });
   fs.writeFileSync(path.join(dir, `${name}.ndjson`), B.emit());
-  tests.push({ group, name, note });
+  tests.push({ group, name, note, ...extra });
 }
 
 // --- shared snippets -------------------------------------------------------
@@ -1190,6 +1192,64 @@ write('bad', '098_nestedIllTypedDs', (B) => {
     recs: [],
   });
 }, 'Ill-typed projection inside a nested occurrence\'s Ds (lean4#14576/#14577) must reject');
+
+// --- _exactEq memo: DAG-shared terms built separately by reduction ---------
+//
+// perfect k t = N.rec (fun _ => Tr → Tr) (fun t => t) (fun _ ih t => ih (node t t)) k t
+// builds the perfect tree of depth k with sharing: node X X, where both
+// children are one index. Reducing two sides builds two such trees with
+// DIFFERENT indices, so structural equality without memoisation walks them as
+// trees, 2^k pairs. The statement below is FALSE and must reject:
+//
+//   perfect #n leaf = node (perfect #(n-1) leaf) (perfect #(n-1) leaf2)
+//
+// The left side reduces to node T T. Its first child is compared against an
+// equal tree (needs the memo to be cheap) and its second against a tree of
+// leaf2 — a pair sharing T with the first. A memo that ever answered the second
+// pair from the first pair's cached `true` would accept this.
+function addPerfectTree(B) {
+  addNatLike(B, 'N');
+  const Tr = B.C('Tr');
+  B.inductive({
+    types: [{ name: 'Tr', levelParams: [], type: B.S(B.lnat(1)), numParams: 0, numIndices: 0, ctors: ['Tr.leaf', 'Tr.leaf2', 'Tr.node'], isRec: true }],
+    ctors: [
+      { name: 'Tr.leaf', levelParams: [], type: Tr, induct: 'Tr', cidx: 0, numParams: 0, numFields: 0 },
+      { name: 'Tr.leaf2', levelParams: [], type: Tr, induct: 'Tr', cidx: 1, numParams: 0, numFields: 0 },
+      { name: 'Tr.node', levelParams: [], type: B.Arrow(Tr, B.Arrow(Tr, Tr)), induct: 'Tr', cidx: 2, numParams: 0, numFields: 2 },
+    ],
+    recs: [],
+  });
+  const N = B.C('N');
+  const TrTr = B.Arrow(Tr, Tr);
+  B.def('perfect', [], B.Arrow(N, TrTr),
+    B.Lam(N, (k) => B.Lam(Tr, (t) => B.A(B.C('N.rec', [B.lnat(1)]),
+      B.Lam(N, () => TrTr),
+      B.Lam(Tr, (x) => x),
+      B.Lam(N, () => B.Lam(TrTr, (ih) => B.Lam(Tr, (x) => B.A(ih, B.A(B.C('Tr.node'), x, x))))),
+      k, t))));
+}
+function natNum(B, k) {
+  let e = B.C('N.zero');
+  for (let i = 0; i < k; i++) { const prev = e; e = B.A(B.C('N.succ'), prev); }
+  return e;
+}
+// Small on purpose: this vector guards the memo's soundness, not its speed
+// (tests/lean/accept-perf-repeated-subproblem does that). Rejecting is still
+// exponential in n here — about 2x gas per level, 36M at n = 8 — because
+// proof irrelevance re-infers the shared tree with a full checking _infer:
+// there is no infer cache and no infer-only mode, unlike Lean.
+const PERFECT_N = 8;
+write('bad', '099_exactEqSharedNearMiss', (B) => {
+  addEq(B);
+  addPerfectTree(B);
+  const Tr = B.C('Tr');
+  const lhs = B.A(B.C('perfect'), natNum(B, PERFECT_N), B.C('Tr.leaf'));
+  const rhs = B.A(B.C('Tr.node'),
+    B.A(B.C('perfect'), natNum(B, PERFECT_N - 1), B.C('Tr.leaf')),
+    B.A(B.C('perfect'), natNum(B, PERFECT_N - 1), B.C('Tr.leaf2')));
+  B.thm('nearMiss', [], B.A(B.C('Eq', [B.lnat(1)]), Tr, lhs, rhs),
+    B.A(B.C('Eq.refl', [B.lnat(1)]), Tr, lhs));
+}, 'False equation between DAG-shared trees: must reject; a memo answering a pair from another pair that shares one side would accept it');
 
 fs.mkdirSync(ROOT, { recursive: true });
 // Drop vectors that earlier revisions generated but this one no longer does —

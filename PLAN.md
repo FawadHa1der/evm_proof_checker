@@ -4,8 +4,8 @@
 
 The [dated Arena audit](ARENA-AUDIT-2026-09-11.md), README, HOWTO-ARENA.md,
 and regenerated gas-report.json supersede the historical measurements below.
-The kernel targets **EIP-7954**, not EIP-7907: runtime 61,609 / 65,536 bytes;
-initcode 61,635 / 131,072 bytes. The default suite contains 313 EVM fixtures
+The kernel targets **EIP-7954**, not EIP-7907: runtime 62,472 / 65,536 bytes;
+initcode 62,498 / 131,072 bytes. The default suite contains 315 EVM fixtures
 plus tooling tests. A combined 208-file upstream audit returns 155 exact
 verdicts, 8 unscored either outcomes, and 45 explicit declines under the dated
 draft direct-call transaction model, with no wrong verdicts or faults.
@@ -42,7 +42,7 @@ Yes — implementing another Lean 4 kernel in Solidity/EVM bytecode is possible,
 
 A satisfying data point on why the Arena matters: its `level-imax-leq` test (which once broke nanoda) caught a live soundness bug in this kernel's first version — the identical-imax shortcut ignored accumulated successor offsets. Independent adversarial test suites work.
 
-The honest qualifications: the kernel is 61.6KB deployed — past today's EIP-170 (24,576 B) limit, deliberately budgeted against [EIP-7907](https://eips.ethereum.org/EIPS/eip-7907)'s 64KB raise proposed for Glamsterdam (until then: devnets/L2s with raised limits, or the M4 library split). The only remaining type-theory decline is unsafe/partial declarations, which is a deliberate reading for a proof checker rather than a gap. Multi-type mutual groups, nested inductives, String-literal constructor reduction and the full `reduce_nat` Nat-literal acceleration are all now implemented. Gas economics still confine single-transaction checking to small exports: `Init.Prelude` is a multi-transaction L2 project (§6 B); mathlib on-chain belongs to the zkVM sidecar with constant ~300k-gas verification (§6 D) — prior art ([zkPi](https://eprint.iacr.org/2024/267), CCS 2024) already proves Lean theorems inside SNARKs.
+The honest qualifications: the kernel is 62.5KB deployed — past today's EIP-170 (24,576 B) limit, deliberately budgeted against [EIP-7907](https://eips.ethereum.org/EIPS/eip-7907)'s 64KB raise proposed for Glamsterdam (until then: devnets/L2s with raised limits, or the M4 library split). The only remaining type-theory decline is unsafe/partial declarations, which is a deliberate reading for a proof checker rather than a gap. Multi-type mutual groups, nested inductives, String-literal constructor reduction and the full `reduce_nat` Nat-literal acceleration are all now implemented. Gas economics still confine single-transaction checking to small exports: `Init.Prelude` is a multi-transaction L2 project (§6 B); mathlib on-chain belongs to the zkVM sidecar with constant ~300k-gas verification (§6 D) — prior art ([zkPi](https://eprint.iacr.org/2024/267), CCS 2024) already proves Lean theorems inside SNARKs.
 
 The Arena explicitly welcomes this kind of entry: *"We welcome more alternative kernel implementations, including incomplete ones, especially if they explore a particular corner of the design space (e.g. … a different host language)"*, and its decline semantics (exit code 2) let a partial checker participate honestly — precedent: the `mini` checker declines 9 tests, `lean4lean` 6.
 
@@ -139,7 +139,7 @@ Each milestone has Arena tests as its acceptance criterion — the tutorial file
 
 **M2.5 — done.** Done: recursor declaration tails validate indices/major/final motive result; recursor names are canonical; constructor-derived recursor minor-premise binders are checked before rule validation; quotient primitive declarations validate exact canonical signatures; official Arena `Acc.rec`, eta/K, quotient, and projection corner tests are covered by the byte-real tutorial sweep. Nested inductives, multi-type mutual groups and String-literal constructor reduction have since been implemented and are covered by byte-real lean4export fixtures.
 
-**M4 — first robustness slice done; optimization remains.** Done: size reporting (`npm run size`), richer `gas-report.json` budget metadata, deploy-time EIP-170/EIP-7907 gates, on-chain EIP-7825 gas warnings, Arena tarball runner, direct environment memo fill on `_envAdd`, smaller well-formedness bitmaps, and large-file Arena declines. Remaining: whnf/defEq caches keyed by node pairs, explicit work-stack replacing recursion, calldata compression, a `DELEGATECALL` library split for today's EIP-170, fuzzing/differential testing, and adversarial gas-bomb tests.
+**M4 — first robustness slice done; optimization remains.** Done: size reporting (`npm run size`), richer `gas-report.json` budget metadata, deploy-time EIP-170/EIP-7907 gates, on-chain EIP-7825 gas warnings, Arena tarball runner, direct environment memo fill on `_envAdd`, smaller well-formedness bitmaps, and large-file Arena declines. Also done: a memo for structural sub-comparisons in `_exactEq` (DAG-shared terms built separately; Arena perf/repeated-subproblem 5.2B → 21M gas). It is sound because `_exactEq` reads only append-only tables and no context. Remaining: whnf/defEq/infer caches — much riskier here than in Lean, because de Bruijn results depend on the local context, so a key must capture it across every `ctxLen` mutation — explicit work-stack replacing recursion, calldata compression, a `DELEGATECALL` library split for today's EIP-170, fuzzing/differential testing, and adversarial gas-bomb tests.
 
 **M5 — stateful multi-tx kernel on an L2 (weeks).** Architecture B: persistent environment, per-decl submission under the tx cap, decl-payload-by-hash storage discipline. Acceptance: all of `Init.Prelude` checked on Base Sepolia for double-digit dollars; a public explorer page of checked decls.
 

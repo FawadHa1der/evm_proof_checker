@@ -1,0 +1,13 @@
+{
+  "maxGas": "100000000",
+  "sha256": "831bb058c28d82bf4c2c6146ae9f91b22b44a914ef362ee19dd66f3211104d37",
+  "note": "Arena perf/repeated-subproblem: two DAG-shared perfect trees of depth 20 built separately by reduction. Without the _exactEq memo structural equality walks them as trees (2^20 pairs, 5.2B gas, timed out at the Arena's 50 s limit on 2026-09-29); with it about 21M gas. maxGas fails the test well before the uncached cost.",
+  "source": {
+    "upstream": "https://github.com/leanprover/lean-kernel-arena/blob/master/tests/perf/repeated-subproblem.lean",
+    "tarball": "https://arena.lean-lang.org/lean-arena-tests.tar.gz",
+    "tarballPath": "good/perf/repeated-subproblem.ndjson",
+    "retrieved": "2026-09-29",
+    "arenaRevision": "cdb3497bd9080229f3ea107b0b9d5d25bd9e71a6",
+    "bytes": 11659
+  }
+}

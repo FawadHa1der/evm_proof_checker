@@ -9,7 +9,7 @@ performed by the `LeanKernel` Solidity contract inside an in-process EVM.
 
 ## Route A — the bundled suite (zero setup)
 
-The repo bundles 313 EVM fixtures: 94 generated, 14 nested, 41 Lean regressions,
+The repo bundles 315 EVM fixtures: 95 generated, 14 nested, 42 Lean regressions,
 15 upstream static fixtures, and 149 additional byte-real upstream exports.
 `tests/upstream/manifest.json` records checksums, expected outcomes, source
 provenance, byte-identical aliases, and budget-based exclusions. Tooling has a
@@ -19,7 +19,7 @@ reject, but never a decline or fault, and is not a scored soundness result.
 ```bash
 npm install
 npm run gen     # regenerate tests/good|bad|decline
-npm test        # tooling tests + 313 EVM fixtures, with gas report
+npm test        # tooling tests + 315 EVM fixtures, with gas report
 ```
 
 Run any single export through the Arena-style entry point:
@@ -163,7 +163,7 @@ fixtures must continue to fit or `npm test` fails. See the dated audit and
 Anything the local runner does can be replayed against a deployed kernel:
 
 ```bash
-# local node with a raised code-size limit (kernel is 61.6KB — Glamsterdam-class):
+# local node with a raised code-size limit (kernel is 62.5KB — Glamsterdam-class):
 anvil --code-size-limit 65536
 ALLOW_EIP7954=1 RPC_URL=http://127.0.0.1:8545 PRIVATE_KEY=<anvil key> node scripts/deploy.js
 KERNEL=0x... node scripts/check-onchain.js tests/arena/level-imax-leq.ndjson

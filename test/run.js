@@ -87,14 +87,19 @@ async function main() {
     }
   }
   // byte-real lean4export fixtures for defeq/reduction corners that our
-  // hand-built vectors cannot express; same reject-* naming convention
+  // hand-built vectors cannot express; same reject-* naming convention. An
+  // optional <name>.json sidecar adds per-fixture fields (e.g. maxGas).
   const leanDir = path.join(ROOT, 'tests', 'lean');
   if (fs.existsSync(leanDir)) {
     for (const f of fs.readdirSync(leanDir).sort()) {
       if (f.endsWith('.ndjson')) {
+        const name = f.replace(/\.ndjson$/, '');
+        const side = path.join(leanDir, `${name}.json`);
+        const extra = fs.existsSync(side) ? JSON.parse(fs.readFileSync(side, 'utf8')) : {};
         manifest.push({
+          ...extra,
           group: f.startsWith('reject-') ? 'lean-reject' : 'lean',
-          name: f.replace(/\.ndjson$/, ''),
+          name,
         });
       }
     }
@@ -126,7 +131,11 @@ async function main() {
     const calldata = iface.encodeFunctionData('check', [
       enc.nameTab, enc.nameStrs, enc.levelTab, enc.exprTab, enc.pool, enc.declTab,
     ]);
-    const r = await call(vm, kernelAddr, calldata);
+    // maxGas is a performance regression guard: it becomes the call's gas
+    // limit, so a fixture that regresses runs out of gas quickly and fails,
+    // instead of eventually succeeding after billions of gas.
+    const gasCap = t.maxGas === undefined ? undefined : BigInt(t.maxGas);
+    const r = gasCap === undefined ? await call(vm, kernelAddr, calldata) : await call(vm, kernelAddr, calldata, gasCap);
     let verdict = null, failedDecl = null, reason = null, gas = r.execResult.executionGasUsed;
     if (r.execResult.exceptionError) {
       verdict = -1n;
@@ -136,7 +145,8 @@ async function main() {
     const expected = t.outcome || VERDICT[Number(expectedOf[t.group])];
     const budget = transactionBudget(calldata, gas);
     const ok = outcomeMatches(expected, Number(verdict))
-      && (!t.requireTransactionFit || budget.fitsTransaction);
+      && (!t.requireTransactionFit || budget.fitsTransaction)
+      && (gasCap === undefined || gas <= gasCap);
     if (ok) pass++; else fail++;
     if (ok && expected === 'either') eitherChecked++;
     rows.push({

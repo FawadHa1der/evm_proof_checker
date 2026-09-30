@@ -468,5 +468,10 @@
     "group": "bad",
     "name": "098_nestedIllTypedDs",
     "note": "Ill-typed projection inside a nested occurrence's Ds (lean4#14576/#14577) must reject"
+  },
+  {
+    "group": "bad",
+    "name": "099_exactEqSharedNearMiss",
+    "note": "False equation between DAG-shared trees: must reject; a memo answering a pair from another pair that shares one side would accept it"
   }
 ]
