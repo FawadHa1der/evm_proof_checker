@@ -6,6 +6,8 @@ implemented as a Solidity smart contract. It checks declarations in the
 — the same input contract used by the [Lean Kernel Arena](https://arena.lean-lang.org/) —
 entirely on the EVM:
 
+**DO NOT DEPLOY ON THE BLOCKCHAIN, ONLY MEANT FOR LEAN KERNEL ARENA.**
+
 - universe levels with the complete `imax` decision procedure;
 - expressions, β/δ/ζ/ι reduction, definitional equality with function eta,
   structure/unit eta, and proof irrelevance;
