@@ -34,7 +34,7 @@ description: |
   (level-index-out-of-order, sparse-name-index) are accepted. Declines unsafe/partial declarations and any export beyond
   its resource budget; resource exhaustion is reported as a decline rather
   than as a wrong verdict or a checker fault.
-version: "0.4.0"
+version: "0.5.0"
 url: https://github.com/FawadHa1der/evm_proof_checker
 ref: main
 rev: b2301993b56fbf0bac7722498bb1be39f32f0a6b
